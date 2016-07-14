@@ -8,13 +8,15 @@ public class WandController : MonoBehaviour {
 	private SteamVR_TrackedObject trackedObj;
 	private Valve.VR.EVRButtonId menuButton = Valve.VR.EVRButtonId.k_EButton_ApplicationMenu;
 
-	private bool menuButtonDown = false;
-	private bool menuButtonUp = false;
+	private bool menuButtonDown;
+	private bool showMenu;
 
 	// Use this for initialization
 	void Start () {
 		trackedObj = GetComponent<SteamVR_TrackedObject> ();
 		menu.SetActive (false);
+		menuButtonDown = false;
+		showMenu = false;
 	}
 
 	// Update is called once per frame
@@ -27,14 +29,10 @@ public class WandController : MonoBehaviour {
 		}
 
 		menuButtonDown = controller.GetPressDown (menuButton);
-		menuButtonUp = controller.GetPressUp (menuButton);
 
 		if (menuButtonDown) {
-			Debug.Log ("Menu Button pressed..");
-			menu.SetActive (true);
-		}
-		if (menuButtonUp) {
-			Debug.Log ("Menu Button released..");
+			showMenu = !showMenu;
+			menu.SetActive (showMenu);
 		}
 	}
 
