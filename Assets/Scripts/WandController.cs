@@ -7,9 +7,14 @@ public class WandController : MonoBehaviour {
 
 	private SteamVR_TrackedObject trackedObj;
 	private Valve.VR.EVRButtonId menuButton = Valve.VR.EVRButtonId.k_EButton_ApplicationMenu;
+	private Valve.VR.EVRButtonId triggerButton = Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger;
 
 	private bool menuButtonDown;
+	//private bool triggerButtonDown;
+	//private bool triggerButtonUp;
 	private bool showMenu;
+
+	private GameObject selected;
 
 	// Use this for initialization
 	void Start () {
@@ -34,6 +39,25 @@ public class WandController : MonoBehaviour {
 			showMenu = !showMenu;
 			menu.SetActive (showMenu);
 		}
+
+		if (controller.GetPressDown (triggerButton) && selected != null) {
+			Debug.Log ("1st case");
+			selected.transform.parent = this.transform;
+			selected.GetComponent<Rigidbody> ().isKinematic = true;
+		}
+		if (controller.GetPressUp (triggerButton) && selected != null) {
+			Debug.Log ("2nd case");
+			selected.transform.parent = null;
+			selected.GetComponent<Rigidbody> ().isKinematic = false;
+		}
+	}
+
+	void OnTriggerEnter(Collider collider) {
+		selected = collider.gameObject;
+	}
+
+	void OnTriggerExit(Collider collider) {
+		selected = null;
 	}
 
 	/*
