@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ScaleContrller : MonoBehaviour {
+public class ScaleController : MonoBehaviour {
 
 	private SteamVR_TrackedObject trackedObj;
 	private SteamVR_Controller.Device controller;
