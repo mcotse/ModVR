@@ -5,7 +5,7 @@ public class ScaleController : MonoBehaviour {
 
 	private SteamVR_TrackedObject trackedObj;
 	private SteamVR_Controller.Device controller;
-	//private Valve.VR.EVRButtonId triggerButton = Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger;
+	private Valve.VR.EVRButtonId gripButton = Valve.VR.EVRButtonId.k_EButton_Grip;
 
 	private GameObject pickup;
 	// Use this for initialization
@@ -16,13 +16,24 @@ public class ScaleController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		Debug.Log("In update");
-		SphereCollider s = gameObject.GetComponent<SphereCollider>();
-		if(s != null){
-			Debug.Log("Sphere object found");
-			if(controller.GetHairTriggerDown()){
-				Debug.Log("Trigger Pressed");
-				s.radius += 1;
+		GameObject obj = gameObject.GetComponent<SphereCollider>().gameObject;
+		if(obj != null){
+			if(controller.GetPressDown(gripButton)){
+				Debug.Log("Grip Pressed");
+				Vector3 ctrlrVelocity = controller.velocity;
+				Vector3 objPos = obj.transform.position;
+				float diff = Vector3.Dot(ctrlrVelocity, objPos);
+				if(diff >= 0){
+
+					obj.transform.localScale += new Vector3(diff, diff, diff);
+				}
+				else{
+					obj.transform.localScale -= new Vector3(diff, diff, diff);
+				}
+
+				controller.TriggerHapticPulse(500, gripButton);
+
+
 				//Transform selected Object
 			}
 		}
