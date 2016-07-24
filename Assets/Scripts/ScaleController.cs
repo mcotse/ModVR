@@ -20,18 +20,21 @@ public class ScaleController : MonoBehaviour {
 		if(obj != null){
 			if(controller.GetPressDown(gripButton)){
 				Debug.Log("Grip Pressed");
+
 				Vector3 ctrlrVelocity = controller.velocity;
 				Vector3 objPos = obj.transform.position;
-				float diff = Vector3.Dot(ctrlrVelocity, objPos);
-				if(diff >= 0){
+				float diff = Vector3.Dot(ctrlrVelocity, objPos)
 
-					obj.transform.localScale += new Vector3(diff, diff, diff);
+				Debug.Log("Provide Haptic feedback");
+				controller.TriggerHapticPulse(500, gripButton);
+				if(diff >= 0){
+					Debug.Log("Scale up!");
+					obj.transform.localScale += new Vector3(0.1F, 0.1F, 0.1F);
 				}
 				else{
-					obj.transform.localScale -= new Vector3(diff, diff, diff);
+					Debug.Log("Scale down!");
+					obj.transform.localScale -= new Vector3(0.1F, 0.1F, 0.1F);
 				}
-
-				controller.TriggerHapticPulse(500, gripButton);
 
 
 				//Transform selected Object
