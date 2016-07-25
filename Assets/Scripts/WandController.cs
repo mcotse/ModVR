@@ -12,6 +12,7 @@ public class WandController : MonoBehaviour {
 	private Valve.VR.EVRButtonId menuButton = Valve.VR.EVRButtonId.k_EButton_ApplicationMenu;
 	private Valve.VR.EVRButtonId triggerButton = Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger;
 	private Valve.VR.EVRButtonId touchPadUp = Valve.VR.EVRButtonId.k_EButton_DPad_Up;
+	SteamVR_Controller.Device controller;
 
 	private bool menuButtonDown;
 	//private bool triggerButtonDown;
@@ -28,12 +29,12 @@ public class WandController : MonoBehaviour {
 		menuButtonDown = false;
 		showMenu = false;
 
-		gizmoControl = GameObject.Find("Gizmo").GetComponent<Gizmo>();
+		controller = SteamVR_Controller.Input ((int)trackedObj.index);
 	}
 
 	// Update is called once per frame
 	void Update () {
-		SteamVR_Controller.Device controller = SteamVR_Controller.Input ((int)trackedObj.index);
+		//SteamVR_Controller.Device controller = SteamVR_Controller.Input ((int)trackedObj.index);
 
 		if (controller == null) {
 			Debug.Log ("Controller not initialized");
@@ -56,19 +57,6 @@ public class WandController : MonoBehaviour {
 			selected.GetComponent<Rigidbody> ().isKinematic = false;
 		}
 
-		if(controller.GetPressDown(gripButton) && selected != null){
-			Debug.Log ("Grip Button pressed!");
-
-			//gizmoControl.Show();
-            //gizmoControl.SelectObject(selected.transform);
-			//gameObject.layer = 2;
-		}
-
-		if(controller.GetPressUp(gripButton)){
-			gameObject.layer = 0;
-			gizmoControl.ClearSelection();
-		}
-
 		if (controller.GetPressDown (SteamVR_Controller.ButtonMask.Touchpad) && selected != null) {
 			//Debug.Log ("Touchpad pressed");
 			if (controller.GetAxis (Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad).y > 0.5f) {
@@ -82,10 +70,17 @@ public class WandController : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider collider) {
-		selected = collider.gameObject;
+		//SteamVR_Controller.Device controller = SteamVR_Controller.Input ((int)trackedObj.index);
+		if (!(controller.GetPress (triggerButton))) {
+			selected = collider.gameObject;
+		}
 	}
 
 	void OnTriggerExit(Collider collider) {
 		selected = null;
+		Transform oldCubeTransform = this.transform.Find ("MenuCube");
+		if (oldCubeTransform != null) {
+			oldCubeTransform.SetParent (null);
+		}
 	}
 }
