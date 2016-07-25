@@ -46,16 +46,11 @@ public class WandController : MonoBehaviour {
 		}
 
 		if (controller.GetPressDown (triggerButton) && selected != null) {
-			selected.transform.parent = this.transform;
+			selected.transform.SetParent (this.transform);
 			selected.GetComponent<Rigidbody> ().isKinematic = true;
-			/*
-			if(controller.GetPressUp(Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad)){
-				Instantiate(Resources.Load("[UIMenu]"),selected.transform.position, selected.transform.rotation);
-				Debug.Log("Instantiaded menu");
-			}*/
 		}
 		if (controller.GetPressUp (triggerButton) && selected != null) {
-			selected.transform.parent = null;
+			selected.transform.SetParent (null);
 			selected.GetComponent<Rigidbody> ().isKinematic = false;
 		}
 
