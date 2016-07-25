@@ -1,0 +1,11 @@
+fileFormatVersion: 2
+guid: 2af0afb0f3e724dd6849bca21801a62c
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - gizmoAxis: {fileID: 100004, guid: 9c66e79702a42497bb43ebe5bdc589a0, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

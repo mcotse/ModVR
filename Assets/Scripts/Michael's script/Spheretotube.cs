@@ -27,8 +27,6 @@ public class Spheretotube : MonoBehaviour {
 
     // Use this for initialization
     private GameObject cube;
-    GameObject sphere;
-
     GameObject Tube1;
     GameObject Tube;
     void Start () {
@@ -37,8 +35,7 @@ public class Spheretotube : MonoBehaviour {
         menu.SetActive(false);
         menuButtonDown = false;
         showMenu = false;
-        sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        sphere.GetComponent<Renderer>().material.color.a.Equals(1);
+        
         cube = GameObject.Find("/Sphere");
         Renderer rend = GetComponent<Renderer>();
         rend.material.shader = Shader.Find("Specular");
@@ -96,8 +93,8 @@ public class Spheretotube : MonoBehaviour {
                 selected
                 a = a + (float)0.1;
                 Vector3 position = new Vector3(a, b, c);*/
-                sphere.transform.position = selected.transform.position;
-                Debug.Log( sphere.transform.position);
+                
+                Debug.Log( selected.transform.position);
 
             Vector3[] TubeVerts = Tube.GetComponent<MeshFilter>().mesh.vertices;
             Debug.Log(TubeVerts.Length);
@@ -116,7 +113,7 @@ public class Spheretotube : MonoBehaviour {
 
             MeshFilter[] meshFilters = new MeshFilter[2];
             meshFilters[0] = Tube.GetComponent<MeshFilter>();
-            meshFilters[1] = sphere.GetComponent<MeshFilter>();
+            meshFilters[1] = selected.GetComponent<MeshFilter>();
             CombineInstance[] combine = new CombineInstance[meshFilters.Length];
             int i = 0;
             while (i < meshFilters.Length)
