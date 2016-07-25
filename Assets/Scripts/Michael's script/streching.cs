@@ -38,7 +38,7 @@ public class streching : MonoBehaviour
         {
 			
 			int flag = 0;
-			switch(flag){
+			/*switch(flag){
 			case "0":
 
 				x = GameObject.CreatePrimitive (PrimitiveType.Sphere);
@@ -65,7 +65,7 @@ public class streching : MonoBehaviour
 				flag = 0; 
 				break;
 
-			}
+			}*/
             Debug.Log("1st case");
             if(selected.name == "x")
             {
