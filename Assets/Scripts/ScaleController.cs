@@ -49,7 +49,12 @@ public class ScaleController : MonoBehaviour {
 	}
 
 	public bool GripIsPressed(){
-		return controller.GetPress (gripButton);
+		if (controller != null) {
+			return controller.GetPress (gripButton);
+		}
+
+		return false;
+		//return controller.GetPress (gripButton);
 	}
 
 }
