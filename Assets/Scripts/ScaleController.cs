@@ -17,11 +17,13 @@ public class ScaleController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(controller.GetPressDown(gripButton)){
-			diff = controller.velocity.magnitude;
-			controller.TriggerHapticPulse(500, gripButton);
-			scale();
-			return;
+		if(controller.GetPress(gripButton)){
+			while(controller.GetPressUp(gripButton) == false)
+			{
+				diff = Vector3.Dot(controller.velocity, selected.transform.position);
+				controller.TriggerHapticPulse(500, gripButton);
+				scale();
+			}
 		}
 	}
 
