@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Stretching : MonoBehaviour
+public class streching : MonoBehaviour
 {
 
 
@@ -36,7 +36,36 @@ public class Stretching : MonoBehaviour
 
         if (controller.GetPressDown(triggerButton) && selected != null)
         {
+			
+			int flag = 0;
+			switch(flag){
+			case "0":
 
+				x = GameObject.CreatePrimitive (PrimitiveType.Sphere);
+				x.name = "x"; 
+				y = GameObject.CreatePrimitive (PrimitiveType.Sphere);
+				y.name = "y";
+				z = GameObject.CreatePrimitive (PrimitiveType.Sphere);	
+				z.name = "z";
+				Vector3 positionx = new Vector3 (selected.transform.position.x + 1, selected.transform.position.y, selected.transform.position.z);
+				x.transform.position = positionx;
+				Vector3 positiony = new Vector3 (selected.transform.position.x, selected.transform.position.y + 1, selected.transform.position.z);
+				y.transform.position = positiony;
+				Vector3 positionz = new Vector3 (selected.transform.position.x, selected.transform.position.y, selected.transform.position.z + 1);
+				z.transform.position = positionz;
+				flag = 1; 
+				break; 
+
+
+			case "1":
+				DestroyObject (x);
+				DestroyObject (y);
+				DestroyObject (z);
+				selected = null;
+				flag = 0; 
+				break;
+
+			}
             Debug.Log("1st case");
             if(selected.name == "x")
             {
@@ -82,30 +111,18 @@ public class Stretching : MonoBehaviour
         }
 
 
+
+
     }
 
     void OnTriggerEnter(Collider collider)
     {
-        selected = collider.gameObject;
-        x = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        x.name = "x"; 
-        y = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        y.name = "y";
-        z = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        z.name = "z";
-        Vector3 positionx = new Vector3(1,0,0);
-        x.transform.position = positionx;
-        Vector3 positiony = new Vector3(0, 1, 0);
-        y.transform.position = positiony;
-        Vector3 positionz = new Vector3(0, 0, 1);
-        z.transform.position = positionz;
+		selected = collider.gameObject;
+
     }
 
     void OnTriggerExit(Collider collider)
     {
-        DestroyObject( x);
-        DestroyObject(y);
-        DestroyObject(z);
-        selected = null;
+
     }
 }

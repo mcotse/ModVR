@@ -28,16 +28,28 @@ public class ScaleController : MonoBehaviour {
 	}
 
 	public void scale(){
-		if(diff >= 0 && selected.transform.localScale.magnitude > new Vector3(0.1F, 0.1F, 0.1F).magnitude){
+		if(diff >= 0 && selected.transform.localScale.magnitude > new Vector3(0.2F, 0.2F, 0.2F).magnitude){
 			selected.transform.localScale -= new Vector3(0.1F, 0.1F, 0.1F);
 		}
-		else{
+		if(diff < 0){
 			selected.transform.localScale += new Vector3(0.1F, 0.1F, 0.1F);
 		}
 	}
 
 	public void OnTriggerEnter(Collider collider){
 		selected = collider.gameObject;
+		while(GripIsPressed()) {
+			Debug.Log ("Here");
+			if (controller.GetPressUp (gripButton) == false) {
+				diff = controller.velocity.magnitude;
+				//controller.TriggerHapticPulse (500, gripButton);
+				scale ();
+			}
+		}
+	}
+
+	public bool GripIsPressed(){
+		return controller.GetPress (gripButton);
 	}
 
 }
