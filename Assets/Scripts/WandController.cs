@@ -5,11 +5,13 @@ public class WandController : MonoBehaviour {
 
 	public GameObject menu;
 	public GameObject cube;
+	public float scaleFactor;
 
 	private SteamVR_TrackedObject trackedObj;
 	private Valve.VR.EVRButtonId gripButton = Valve.VR.EVRButtonId.k_EButton_Grip;
 	private Valve.VR.EVRButtonId menuButton = Valve.VR.EVRButtonId.k_EButton_ApplicationMenu;
 	private Valve.VR.EVRButtonId triggerButton = Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger;
+	private Valve.VR.EVRButtonId touchPadUp = Valve.VR.EVRButtonId.k_EButton_DPad_Up;
 
 	private bool menuButtonDown;
 	//private bool triggerButtonDown;
@@ -55,14 +57,27 @@ public class WandController : MonoBehaviour {
 		}
 
 		if(controller.GetPressDown(gripButton) && selected != null){
-			gizmoControl.Show();
-            gizmoControl.SelectObject(selected.transform);
-			gameObject.layer = 2;
+			Debug.Log ("Grip Button pressed!");
+
+			//gizmoControl.Show();
+            //gizmoControl.SelectObject(selected.transform);
+			//gameObject.layer = 2;
 		}
 
 		if(controller.GetPressUp(gripButton)){
 			gameObject.layer = 0;
 			gizmoControl.ClearSelection();
+		}
+
+		if (controller.GetPressDown (SteamVR_Controller.ButtonMask.Touchpad) && selected != null) {
+			//Debug.Log ("Touchpad pressed");
+			if (controller.GetAxis (Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad).y > 0.5f) {
+				Debug.Log ("Dpad Up");
+				selected.transform.localScale += new Vector3 (scaleFactor, scaleFactor, scaleFactor);
+			} else if (controller.GetAxis (Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad).y < -0.5) {	
+				Debug.Log ("Dpad Down");
+				selected.transform.localScale -= new Vector3 (scaleFactor, scaleFactor, scaleFactor);
+			}
 		}
 	}
 
