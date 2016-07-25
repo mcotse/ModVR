@@ -4,7 +4,22 @@ using System.Collections;
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
 
+
+
 public class Spheretotube : MonoBehaviour {
+
+    public GameObject menu;
+
+    private SteamVR_TrackedObject trackedObj;
+    private Valve.VR.EVRButtonId menuButton = Valve.VR.EVRButtonId.k_EButton_ApplicationMenu;
+    private Valve.VR.EVRButtonId triggerButton = Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger;
+
+    private bool menuButtonDown;
+    //private bool triggerButtonDown;
+    //private bool triggerButtonUp;
+    private bool showMenu;
+
+    private GameObject selected;
     float a = 5;
     float b = 1;
     float r = 5;
@@ -17,6 +32,11 @@ public class Spheretotube : MonoBehaviour {
     GameObject Tube1;
     GameObject Tube;
     void Start () {
+
+        trackedObj = GetComponent<SteamVR_TrackedObject>();
+        menu.SetActive(false);
+        menuButtonDown = false;
+        showMenu = false;
         sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         sphere.GetComponent<Renderer>().material.color.a.Equals(1);
         cube = GameObject.Find("/Sphere");
@@ -36,31 +56,49 @@ public class Spheretotube : MonoBehaviour {
     }
 
     // Update is called once per frame
-    int count = 0; 
-	void Update () {
+    int count = 0;
+    void Update() {
+        SteamVR_Controller.Device controller = SteamVR_Controller.Input((int)trackedObj.index);
+
+        if (controller == null)
+        {
+            Debug.Log("Controller not initialized");
+            return;
+        }
+
+        menuButtonDown = controller.GetPressDown(menuButton);
+
+        if (menuButtonDown)
+        {
+            showMenu = !showMenu;
+            menu.SetActive(showMenu);
+        }
+
+        if (controller.GetPressDown(triggerButton) && selected != null)
+        {
+            Debug.Log("1st case");
+            selected.transform.parent = this.transform;
+            selected.GetComponent<Rigidbody>().isKinematic = true;
+        }
+        if (controller.GetPressUp(triggerButton) && selected != null)
+        {
+            Debug.Log("2nd case");
+            selected.transform.parent = null;
+            selected.GetComponent<Rigidbody>().isKinematic = false;
+        }
         if (count < 1)
         {
-            if (a < 1000 && b < 1000 && c < 1000)
-            {
+ 
                 /*a = a + 0.01;
                 b = Mathf.Sqrt(25 - Mathf.Pow(a, 2));
                 c = (a + b) / 2;
-                */
+                
+                selected
                 a = a + (float)0.1;
-                Vector3 position = new Vector3(a, b, c);
-                sphere.transform.position = position;
-                Debug.Log(position);
+                Vector3 position = new Vector3(a, b, c);*/
+                sphere.transform.position = selected.transform.position;
+                Debug.Log( sphere.transform.position);
 
-            }
-            else
-            {
-                a = 1;
-               // b = 2;
-                //c = 10;
-            }
-            count++; 
-        }
-        else {
             Vector3[] TubeVerts = Tube.GetComponent<MeshFilter>().mesh.vertices;
             Debug.Log(TubeVerts.Length);
 
@@ -96,10 +134,21 @@ public class Spheretotube : MonoBehaviour {
             Tube.name = "Tube";
 
             // Tube.transform.gameObject.active = true;
-            count = 0; 
+            count = 0;
         }
 
 
+       
+    
+
+    }
+    void OnTriggerEnter(Collider collider)
+    {
+        selected = collider.gameObject;
     }
 
+    void OnTriggerExit(Collider collider)
+    {
+        selected = null;
+    }
 }
