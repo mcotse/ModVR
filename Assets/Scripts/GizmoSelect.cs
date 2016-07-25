@@ -34,7 +34,7 @@ public class GizmoSelect : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
     {
-        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift))
+        if (!controller.GetTouchUp((int)Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad))
         {
             shiftDown = true;
         }
