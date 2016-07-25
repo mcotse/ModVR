@@ -27,7 +27,7 @@ public class WandController : MonoBehaviour
     void Update()
     {
         SteamVR_Controller.Device controller = SteamVR_Controller.Input((int)trackedObj.index);
-
+        float[] difference = new float[2]; 
         if (controller == null)
         {
             Debug.Log("Controller not initialized");
@@ -41,14 +41,26 @@ public class WandController : MonoBehaviour
             if(selected.name == "x")
             {
                 float a = selected.transform.position.x;
-                selected.transform.position = this.transform.position.x; 
+                selected.transform.position = new Vector3 (this.transform.position.x, selected.transform.position.y, selected.transform.position.z);
+                difference[0] = selected.transform.position.x - a;
+                difference[1] = 0; 
             }
-                    
-                  
-
-
+            if (selected.name == "y")
+            {
+                float a = selected.transform.position.y;
+                selected.transform.position = new Vector3(selected.transform.position.x, this.transform.position.y, selected.transform.position.z);
+                difference[0] = selected.transform.position.y - a;
+                difference[1] = 1;
+            }
+            if (selected.name == "z")
+            {
+                float a = selected.transform.position.z;
+                selected.transform.position = new Vector3(selected.transform.position.x, selected.transform.position.y, this.transform.position.z);
+                difference[0] = selected.transform.position.z - a;
+                difference[1] = 2;
+            }
             //selected.transform.parent = this.transform;
-           // selected.GetComponent<Rigidbody>().isKinematic = true;
+            // selected.GetComponent<Rigidbody>().isKinematic = true;
         }
         if (controller.GetPressUp(triggerButton) && selected != null)
         {
@@ -56,6 +68,20 @@ public class WandController : MonoBehaviour
            // selected.transform.parent = null;
             //selected.GetComponent<Rigidbody>().isKinematic = false;
         }
+        switch (difference[1].ToString()) {
+            case "0":
+                selected.transform.localScale = new Vector3(selected.transform.localScale.x*(1+difference[0]),selected.transform.localScale.y,selected.transform.localScale.z);
+                break;
+            case "1":
+                selected.transform.localScale = new Vector3(selected.transform.localScale.x , selected.transform.localScale.y * (1 + difference[0]), selected.transform.localScale.z);
+                break;
+            case "2":
+                selected.transform.localScale = new Vector3(selected.transform.localScale.x , selected.transform.localScale.y, selected.transform.localScale.z * (1 + difference[0]));
+                break;
+
+        }
+
+
     }
 
     void OnTriggerEnter(Collider collider)
