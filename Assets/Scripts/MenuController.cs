@@ -12,6 +12,7 @@ public class MenuController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		
 		if (transform.Find ("MenuCube").gameObject == null)
 			Debug.Log ("Cube NOT found");
 		else
