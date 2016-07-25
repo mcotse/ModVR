@@ -7,6 +7,7 @@ public class WandController : MonoBehaviour {
 	public GameObject cube;
 
 	private SteamVR_TrackedObject trackedObj;
+	private Valve.VR.EVRButtonId gripButton = Valve.VR.EVRButtonId.k_EButton_Grip;
 	private Valve.VR.EVRButtonId menuButton = Valve.VR.EVRButtonId.k_EButton_ApplicationMenu;
 	private Valve.VR.EVRButtonId triggerButton = Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger;
 
@@ -17,12 +18,15 @@ public class WandController : MonoBehaviour {
 
 	private GameObject selected;
 
+	private Gizmo gizmoControl;
 	// Use this for initialization
 	void Start () {
 		trackedObj = GetComponent<SteamVR_TrackedObject> ();
 		menu.SetActive (false);
 		menuButtonDown = false;
 		showMenu = false;
+
+		gizmoControl = GameObject.Find("Gizmo").GetComponent<Gizmo>();
 	}
 
 	// Update is called once per frame
@@ -48,6 +52,17 @@ public class WandController : MonoBehaviour {
 		if (controller.GetPressUp (triggerButton) && selected != null) {
 			selected.transform.SetParent (null);
 			selected.GetComponent<Rigidbody> ().isKinematic = false;
+		}
+
+		if(controller.GetPressDown(gripButton) && selected != null){
+			gizmoControl.Show();
+            gizmoControl.SelectObject(selected.transform);
+			gameObject.layer = 2;
+		}
+
+		if(controller.GetPressUp(gripButton)){
+			gameObject.layer = 0;
+			gizmoControl.ClearSelection();
 		}
 	}
 

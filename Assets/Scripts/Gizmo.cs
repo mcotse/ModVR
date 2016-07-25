@@ -77,7 +77,7 @@ public class Gizmo : MonoBehaviour
     {
         foreach (var obj in SelectedObjects)
         {
-            (obj.gameObject.GetComponent<GizmoSelect>()).Unselect();
+            //(obj.gameObject.GetComponent<GizmoSelect>()).Unselect();
         }
         SelectedObjects.Clear();
         Center = Vector3.zero;
