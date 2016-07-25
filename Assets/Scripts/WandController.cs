@@ -4,6 +4,7 @@ using System.Collections;
 public class WandController : MonoBehaviour {
 
 	public GameObject menu;
+	public GameObject cube;
 
 	private SteamVR_TrackedObject trackedObj;
 	private Valve.VR.EVRButtonId menuButton = Valve.VR.EVRButtonId.k_EButton_ApplicationMenu;
@@ -41,12 +42,10 @@ public class WandController : MonoBehaviour {
 		}
 
 		if (controller.GetPressDown (triggerButton) && selected != null) {
-			Debug.Log ("1st case");
 			selected.transform.parent = this.transform;
 			selected.GetComponent<Rigidbody> ().isKinematic = true;
 		}
 		if (controller.GetPressUp (triggerButton) && selected != null) {
-			Debug.Log ("2nd case");
 			selected.transform.parent = null;
 			selected.GetComponent<Rigidbody> ().isKinematic = false;
 		}
@@ -59,41 +58,4 @@ public class WandController : MonoBehaviour {
 	void OnTriggerExit(Collider collider) {
 		selected = null;
 	}
-
-	/*
-	private SteamVR_Controller.Device controller {
-		get {
-			return (SteamVR_Controller.Input ((int)trackedObj.index));
-		}
-	}
-		
-	private SteamVR_TrackedObject trackedObj;
-	private Valve.VR.EVRButtonId menuButton = Valve.VR.EVRButtonId.k_EButton_ApplicationMenu;
-
-	public bool menuButtonDown = false;
-	public bool menuButtonUp = false;
-
-	// Use this for initialization
-	void Start () {
-		trackedObj = GetComponent<SteamVR_TrackedObject> ();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		if (controller == null) {
-			Debug.Log ("Controller not initialized");
-			return;
-		}
-
-		menuButtonDown = controller.GetPressDown (menuButton);
-		menuButtonUp = controller.GetPressUp (menuButton);
-
-		if (menuButtonDown) {
-			Debug.Log ("Menu Button pressed..");
-		}
-		if (menuButtonUp) {
-			Debug.Log ("Menu Button released..");
-		}
-	}
-	*/
 }
