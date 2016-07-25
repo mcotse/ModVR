@@ -15,11 +15,10 @@ public class WandController : MonoBehaviour {
 	SteamVR_Controller.Device controller;
 
 	private bool menuButtonDown;
-	//private bool triggerButtonDown;
-	//private bool triggerButtonUp;
 	private bool showMenu;
 
 	private GameObject selected;
+	private GameObject grabbed;
 
 	private Gizmo gizmoControl;
 	// Use this for initialization
@@ -49,12 +48,14 @@ public class WandController : MonoBehaviour {
 		}
 
 		if (controller.GetPressDown (triggerButton) && selected != null) {
-			selected.transform.SetParent (this.transform);
-			selected.GetComponent<Rigidbody> ().isKinematic = true;
+			grabbed = selected;
+			grabbed.transform.SetParent (this.transform);
+			grabbed.GetComponent<Rigidbody> ().isKinematic = true;
 		}
 		if (controller.GetPressUp (triggerButton) && selected != null) {
-			selected.transform.SetParent (null);
-			selected.GetComponent<Rigidbody> ().isKinematic = false;
+			grabbed.transform.SetParent (null);
+			grabbed.GetComponent<Rigidbody> ().isKinematic = false;
+			grabbed = null;
 		}
 
 		if (controller.GetPressDown (SteamVR_Controller.ButtonMask.Touchpad) && selected != null) {
@@ -70,17 +71,18 @@ public class WandController : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider collider) {
-		//SteamVR_Controller.Device controller = SteamVR_Controller.Input ((int)trackedObj.index);
-		if (!(controller.GetPress (triggerButton))) {
-			selected = collider.gameObject;
-		}
+		selected = collider.gameObject;
 	}
 
 	void OnTriggerExit(Collider collider) {
 		selected = null;
 		Transform oldCubeTransform = this.transform.Find ("MenuCube");
+		Transform oldSphereTransform = this.transform.Find ("MenuSphere");
 		if (oldCubeTransform != null) {
 			oldCubeTransform.SetParent (null);
+		}
+		if (oldSphereTransform != null) {
+			oldSphereTransform.SetParent (null);
 		}
 	}
 }
