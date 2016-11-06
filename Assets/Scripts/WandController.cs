@@ -62,10 +62,12 @@ public class WandController : MonoBehaviour {
 			//Debug.Log ("Touchpad pressed");
 			if (controller.GetAxis (Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad).y > 0.5f) {
 				Debug.Log ("Dpad Up");
-				selected.transform.localScale += new Vector3 (scaleFactor, scaleFactor, scaleFactor);
+                scaleUp(selected);
+				//selected.transform.localScale += new Vector3 (scaleFactor, scaleFactor, scaleFactor);
 			} else if (controller.GetAxis (Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad).y < -0.5) {	
 				Debug.Log ("Dpad Down");
-				selected.transform.localScale -= new Vector3 (scaleFactor, scaleFactor, scaleFactor);
+                scaleDown(selected);
+				//selected.transform.localScale -= new Vector3 (scaleFactor, scaleFactor, scaleFactor);
 			}
 		}
 	}
@@ -85,4 +87,14 @@ public class WandController : MonoBehaviour {
 			oldSphereTransform.SetParent (null);
 		}
 	}
+
+    public void scaleUp(GameObject selected)
+    {
+        selected.transform.localScale = Vector3.Lerp(selected.transform.localScale, Vector3.one*scaleFactor, Time.deltaTime);
+    }
+
+    public void scaleDown(GameObject selected)
+    {
+        selected.transform.localScale = Vector3.Lerp(selected.transform.localScale, Vector3.one * scaleFactor* -1, Time.deltaTime);
+    }
 }
