@@ -13,9 +13,12 @@ public class WandController : MonoBehaviour {
 	private Valve.VR.EVRButtonId triggerButton = Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger;
 	private Valve.VR.EVRButtonId touchPadUp = Valve.VR.EVRButtonId.k_EButton_DPad_Up;
 	SteamVR_Controller.Device controller;
+    SteamVR_Controller.Device controllerRight;
+    SteamVR_Controller.Device controllerLeft;
 
-	private bool menuButtonDown;
+    private bool menuButtonDown;
 	private bool showMenu;
+    private float oldControllerDistance = float.NaN;
 
 	private GameObject selected;
 	private GameObject grabbed;
@@ -29,7 +32,9 @@ public class WandController : MonoBehaviour {
 		showMenu = false;
 
 		controller = SteamVR_Controller.Input ((int)trackedObj.index);
-	}
+        controllerLeft = SteamVR_Controller.Input(SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.Leftmost));
+        controllerRight = SteamVR_Controller.Input(SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.Rightmost));
+    }
 
 	// Update is called once per frame
 	void Update () {
@@ -58,19 +63,33 @@ public class WandController : MonoBehaviour {
 			grabbed = null;
 		}
 
-		if (controller.GetPressDown (SteamVR_Controller.ButtonMask.Touchpad) && selected != null) {
-			//Debug.Log ("Touchpad pressed");
-			if (controller.GetAxis (Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad).y > 0.5f) {
-				Debug.Log ("Dpad Up");
-                scaleUp(selected);
-				//selected.transform.localScale += new Vector3 (scaleFactor, scaleFactor, scaleFactor);
-			} else if (controller.GetAxis (Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad).y < -0.5) {	
-				Debug.Log ("Dpad Down");
-                scaleDown(selected);
-				//selected.transform.localScale -= new Vector3 (scaleFactor, scaleFactor, scaleFactor);
-			}
-		}
-	}
+        if(controllerRight.GetPressDown(Valve.VR.EVRButtonId.k_EButton_Grip) && controllerLeft.GetPressDown(Valve.VR.EVRButtonId.k_EButton_Grip))
+        {
+            scaleSelected(selected);
+        }
+        else
+        {
+            oldControllerDistance = float.NaN;
+        }
+
+        //if (controller.GetPressDown(SteamVR_Controller.ButtonMask.Touchpad) && selected != null)
+        //{
+        //    Debug.Log("Touchpad pressed");
+        //    if (controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad).y > 0.5f)
+        //    {
+        //        Debug.Log("Dpad Up");
+        //        selected.transform.localScale += new Vector3(scaleFactor, scaleFactor, scaleFactor);
+        //    }
+        //    else if (controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad).y < -0.5)
+        //    {
+        //        Debug.Log("Dpad Down");
+        //        scaleDown(selected);
+        //        selected.transform.localScale -= new Vector3(scaleFactor, scaleFactor, scaleFactor);
+        //    }
+        //}
+
+
+    }
 
 	void OnTriggerEnter(Collider collider) {
 		selected = collider.gameObject;
@@ -88,13 +107,17 @@ public class WandController : MonoBehaviour {
 		}
 	}
 
-    public void scaleUp(GameObject selected)
+    void scaleSelected(GameObject selected)
     {
-        selected.transform.localScale = Vector3.Lerp(selected.transform.localScale, Vector3.one*scaleFactor, Time.deltaTime);
-    }
+        Vector3 controllerRightPosition = controllerRight.transform.pos;
+        Vector3 controllerLeftPosition = controllerLeft.transform.pos;
+        float distance = Vector3.Distance(controllerLeftPosition, controllerRightPosition);
+        if(oldControllerDistance != float.NaN)
+        {
+            float delta = distance - oldControllerDistance;
+            selected.transform.localScale = Vector3.Lerp(selected.transform.localScale, Vector3.one * delta, Time.deltaTime);
+        }
 
-    public void scaleDown(GameObject selected)
-    {
-        selected.transform.localScale = Vector3.Lerp(selected.transform.localScale, Vector3.one * scaleFactor* -1, Time.deltaTime);
+        oldControllerDistance = distance;
     }
 }
