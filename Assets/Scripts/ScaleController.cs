@@ -36,19 +36,22 @@ public class ScaleController : MonoBehaviour {
 		}
 	}
 
-	public void OnTriggerEnter(Collider collider){
-		selected = collider.gameObject;
-		while(GripIsPressed()) {
-			Debug.Log ("Here");
-			if (controller.GetPressUp (gripButton) == false) {
-				diff = controller.velocity.magnitude;
-				//controller.TriggerHapticPulse (500, gripButton);
-				scale ();
-			}
-		}
-	}
+    public void OnTriggerEnter(Collider collider)
+    {
+        selected = collider.gameObject;
+        if (GripIsPressed())
+        {
+            Debug.Log("Here");
+            if (controller.GetPressUp(gripButton) == false)
+            {
+                diff = controller.velocity.magnitude;
+                //controller.TriggerHapticPulse (500, gripButton);
+                scale();
+            }
+        }
+    }
 
-	public bool GripIsPressed(){
+    public bool GripIsPressed(){
 		if (controller != null) {
 			return controller.GetPress (gripButton);
 		}

@@ -12,12 +12,14 @@ public class WandController : MonoBehaviour {
 	private Valve.VR.EVRButtonId menuButton = Valve.VR.EVRButtonId.k_EButton_ApplicationMenu;
 	private Valve.VR.EVRButtonId triggerButton = Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger;
 	private Valve.VR.EVRButtonId touchPadUp = Valve.VR.EVRButtonId.k_EButton_DPad_Up;
-	SteamVR_Controller.Device controller;
-    SteamVR_Controller.Device controllerRight;
-    SteamVR_Controller.Device controllerLeft;
+
+	SteamVR_Controller.Device controllerMain;
+    SteamVR_Controller.Device controllerSecondary;
 
     private bool menuButtonDown;
 	private bool showMenu;
+    private bool gripIsPressed;
+    private bool bothTriggersPressed;
     private float oldControllerDistance = float.NaN;
 
 	private GameObject selected;
@@ -31,46 +33,37 @@ public class WandController : MonoBehaviour {
 		menuButtonDown = false;
 		showMenu = false;
 
-		controller = SteamVR_Controller.Input ((int)trackedObj.index);
-        controllerLeft = SteamVR_Controller.Input(SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.Leftmost));
-        controllerRight = SteamVR_Controller.Input(SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.Rightmost));
+        setupControllers();
     }
 
 	// Update is called once per frame
 	void Update () {
 		//SteamVR_Controller.Device controller = SteamVR_Controller.Input ((int)trackedObj.index);
 
-		if (controller == null) {
+		if (controllerMain == null) {
 			Debug.Log ("Controller not initialized");
 			return;
 		}
 
-		menuButtonDown = controller.GetPressDown (menuButton);
+		menuButtonDown = controllerMain.GetPressDown (menuButton);
 
 		if (menuButtonDown) {
 			showMenu = !showMenu;
 			menu.SetActive (showMenu);
 		}
 
-		if (controller.GetPressDown (triggerButton) && selected != null) {
+		if (controllerMain.GetPressDown (triggerButton) && selected != null) {
 			grabbed = selected;
 			grabbed.transform.SetParent (this.transform);
 			grabbed.GetComponent<Rigidbody> ().isKinematic = true;
 		}
-		if (controller.GetPressUp (triggerButton) && selected != null) {
+		if (controllerMain.GetPressUp (triggerButton) && selected != null) {
 			grabbed.transform.SetParent (null);
 			grabbed.GetComponent<Rigidbody> ().isKinematic = false;
 			grabbed = null;
 		}
 
-        if(controllerRight.GetPressDown(Valve.VR.EVRButtonId.k_EButton_Grip) && controllerLeft.GetPressDown(Valve.VR.EVRButtonId.k_EButton_Grip))
-        {
-            scaleSelected(selected);
-        }
-        else
-        {
-            oldControllerDistance = float.NaN;
-        }
+
 
         //if (controller.GetPressDown(SteamVR_Controller.ButtonMask.Touchpad) && selected != null)
         //{
@@ -78,9 +71,10 @@ public class WandController : MonoBehaviour {
         //    if (controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad).y > 0.5f)
         //    {
         //        Debug.Log("Dpad Up");
+        //        float scale = Time.deltaTime;
         //        selected.transform.localScale += new Vector3(scaleFactor, scaleFactor, scaleFactor);
         //    }
-        //    else if (controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad).y < -0.5)
+        //    if (controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad).y < -0.5)
         //    {
         //        Debug.Log("Dpad Down");
         //        scaleDown(selected);
@@ -88,11 +82,37 @@ public class WandController : MonoBehaviour {
         //    }
         //}
 
+        if (controllerSecondary.GetPressDown(Valve.VR.EVRButtonId.k_EButton_Grip))
+        {
+            gripIsPressed = true;
+        }
+        if (controllerSecondary.GetPressUp(Valve.VR.EVRButtonId.k_EButton_Grip))
+        {
+            gripIsPressed = false;
+        }
 
+        if (controllerSecondary.GetPressDown(triggerButton))
+        {
+            bothTriggersPressed = true;
+        }
+        if (controllerSecondary.GetPressUp(triggerButton))
+        {
+            bothTriggersPressed = false;
+        }
+
+        if (gripIsPressed && selected != null)
+        {
+            scaleSelected(selected);
+        }
+
+        if (bothTriggersPressed && selected != null)
+        {
+            enlargeSelected(selected);
+        }
     }
-
-	void OnTriggerEnter(Collider collider) {
+    void OnTriggerEnter(Collider collider) {
 		selected = collider.gameObject;
+        setupControllers();
 	}
 
 	void OnTriggerExit(Collider collider) {
@@ -109,15 +129,51 @@ public class WandController : MonoBehaviour {
 
     void scaleSelected(GameObject selected)
     {
-        Vector3 controllerRightPosition = controllerRight.transform.pos;
-        Vector3 controllerLeftPosition = controllerLeft.transform.pos;
-        float distance = Vector3.Distance(controllerLeftPosition, controllerRightPosition);
-        if(oldControllerDistance != float.NaN)
+        Vector3 velocity = controllerSecondary.velocity;
+        Vector3 newScale = Vector3.zero;
+        float scalingFactor = 2.0f;
+
+        float max = Mathf.Max(Mathf.Max(Mathf.Abs(velocity.x), Mathf.Abs(velocity.y)), Mathf.Abs(velocity.z));
+        
+        if(max == Mathf.Abs(velocity.x))
         {
-            float delta = distance - oldControllerDistance;
-            selected.transform.localScale = Vector3.Lerp(selected.transform.localScale, Vector3.one * delta, Time.deltaTime);
+            newScale = selected.transform.localScale + new Vector3(velocity.x * scalingFactor, 0, 0);
+        }
+        else if(max == Mathf.Abs(velocity.y))
+        {
+            newScale = selected.transform.localScale + new Vector3(0, velocity.y * scalingFactor, 0);
+        }
+        else if (max == Mathf.Abs(velocity.z))
+        {
+            newScale = selected.transform.localScale + new Vector3(0, 0, velocity.z * scalingFactor);
         }
 
-        oldControllerDistance = distance;
+        selected.transform.localScale = Vector3.Lerp(selected.transform.localScale, newScale, Time.deltaTime);
+    }
+
+    void enlargeSelected(GameObject selected)
+    {
+        
+        Vector3 velocityA = controllerMain.velocity;
+        Vector3 velocityB = controllerSecondary.velocity;
+        float delta = Vector3.Dot(velocityA, velocityB);
+        //float delta = Vector3.Distance(velocityB, velocityA);
+
+        selected.transform.localScale = Vector3.Lerp(selected.transform.localScale, 2*delta * selected.transform.localScale, Time.deltaTime);
+    }
+
+    void setupControllers()
+    {
+        if ((int)trackedObj.index == SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.Leftmost))
+        {
+            controllerMain = SteamVR_Controller.Input((int)trackedObj.index);
+            controllerSecondary = SteamVR_Controller.Input(SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.Rightmost));
+        }
+        else
+        {
+            controllerMain = SteamVR_Controller.Input((int)trackedObj.index);
+            controllerSecondary = SteamVR_Controller.Input(SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.Leftmost));
+
+        }
     }
 }
