@@ -20,7 +20,6 @@ public class WandController : MonoBehaviour {
 	private bool showMenu;
     private bool gripIsPressed;
     private bool bothTriggersPressed;
-    private float oldControllerDistance = float.NaN;
 
 	private GameObject selected;
 	private GameObject grabbed;
@@ -72,6 +71,11 @@ public class WandController : MonoBehaviour {
         {
             gripIsPressed = false;
         }
+        
+        if(selected != null && controllerMain.GetPressDown(gripButton))
+        {
+            Object.Destroy(selected.gameObject);
+        }
 
         if (controllerSecondary.GetPressDown(triggerButton))
         {
@@ -91,7 +95,10 @@ public class WandController : MonoBehaviour {
         {
             enlargeSelected(selected);
         }
+
+        
     }
+
     void OnTriggerEnter(Collider collider) {
 		selected = collider.gameObject;
         setupControllers();
