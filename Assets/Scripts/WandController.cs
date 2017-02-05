@@ -44,6 +44,8 @@ public class WandController : MonoBehaviour {
 			return;
 		}
 
+
+        //menu
 		menuButtonDown = controllerMain.GetPressDown (menuButton);
 
 		if (menuButtonDown) {
@@ -51,6 +53,8 @@ public class WandController : MonoBehaviour {
 			menu.SetActive (showMenu);
 		}
 
+
+        //grabbing 
 		if (controllerMain.GetPressDown (triggerButton) && selected != null) {
 			grabbed = selected;
 			grabbed.transform.SetParent (this.transform);
@@ -62,6 +66,8 @@ public class WandController : MonoBehaviour {
 			grabbed = null;
 		}
 
+
+        //single axis scaling
         if (controllerSecondary.GetPressDown(Valve.VR.EVRButtonId.k_EButton_Grip))
         {
             gripIsPressed = true;
@@ -70,12 +76,22 @@ public class WandController : MonoBehaviour {
         {
             gripIsPressed = false;
         }
-        
-        if(selected != null && controllerMain.GetPressDown(gripButton))
+
+        if (gripIsPressed && selected != null)
+        {
+            scaleSelected(selected);
+        }
+
+
+        //Destroy objects
+        if (selected != null && controllerMain.GetPressDown(gripButton))
         {
             Object.Destroy(selected.gameObject);
         }
 
+
+
+        //enlarge selected
         if (controllerSecondary.GetPressDown(triggerButton))
         {
             bothTriggersPressed = true;
@@ -85,14 +101,15 @@ public class WandController : MonoBehaviour {
             bothTriggersPressed = false;
         }
 
-        if (gripIsPressed && selected != null)
-        {
-            scaleSelected(selected);
-        }
-
         if (bothTriggersPressed && selected != null)
         {
             enlargeSelected(selected);
+        }
+
+
+        if (controllerMain.GetPressDown(touchPadUp))
+        {
+            //show pointer
         }
 
         
