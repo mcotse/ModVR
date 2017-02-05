@@ -25,8 +25,6 @@ public class WandController : MonoBehaviour {
 	private GameObject selected;
 	private GameObject grabbed;
 
-	private Gizmo gizmoControl;
-
 	// Use this for initialization
 	void Start () {
 		trackedObj = GetComponent<SteamVR_TrackedObject> ();
