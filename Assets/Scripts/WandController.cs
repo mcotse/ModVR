@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using VRTK;
 
 public class WandController : MonoBehaviour {
 
@@ -39,7 +40,7 @@ public class WandController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		//SteamVR_Controller.Device controller = SteamVR_Controller.Input ((int)trackedObj.index);
-
+        
 		if (controllerMain == null) {
 			Debug.Log ("Controller not initialized");
 			return;
@@ -150,8 +151,7 @@ public class WandController : MonoBehaviour {
             scale = -1 * scale;
         }
         Vector3 newScale = Vector3.zero;
-
-        float max = Mathf.Max(Mathf.Max(Mathf.Abs(velocity.x), Mathf.Abs(velocity.y)), Mathf.Abs(velocity.z));
+        
 
         newScale = selected.transform.localScale + new Vector3(velocity.x * scale, velocity.x * scale, velocity.x * scale);
 
