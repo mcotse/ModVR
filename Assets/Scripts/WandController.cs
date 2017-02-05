@@ -26,6 +26,7 @@ public class WandController : MonoBehaviour {
 	private GameObject grabbed;
 
 	private Gizmo gizmoControl;
+
 	// Use this for initialization
 	void Start () {
 		trackedObj = GetComponent<SteamVR_TrackedObject> ();
@@ -62,25 +63,6 @@ public class WandController : MonoBehaviour {
 			grabbed.GetComponent<Rigidbody> ().isKinematic = false;
 			grabbed = null;
 		}
-
-
-
-        //if (controller.GetPressDown(SteamVR_Controller.ButtonMask.Touchpad) && selected != null)
-        //{
-        //    Debug.Log("Touchpad pressed");
-        //    if (controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad).y > 0.5f)
-        //    {
-        //        Debug.Log("Dpad Up");
-        //        float scale = Time.deltaTime;
-        //        selected.transform.localScale += new Vector3(scaleFactor, scaleFactor, scaleFactor);
-        //    }
-        //    if (controller.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad).y < -0.5)
-        //    {
-        //        Debug.Log("Dpad Down");
-        //        scaleDown(selected);
-        //        selected.transform.localScale -= new Vector3(scaleFactor, scaleFactor, scaleFactor);
-        //    }
-        //}
 
         if (controllerSecondary.GetPressDown(Valve.VR.EVRButtonId.k_EButton_Grip))
         {
@@ -153,13 +135,20 @@ public class WandController : MonoBehaviour {
 
     void enlargeSelected(GameObject selected)
     {
-        
-        Vector3 velocityA = controllerMain.velocity;
-        Vector3 velocityB = controllerSecondary.velocity;
-        float delta = Vector3.Dot(velocityA, velocityB);
-        //float delta = Vector3.Distance(velocityB, velocityA);
+        Vector3 velocity = controllerSecondary.velocity;
 
-        selected.transform.localScale = Vector3.Lerp(selected.transform.localScale, 2*delta * selected.transform.localScale, Time.deltaTime);
+        float scale = 2.0f;
+        if (controllerSecondary.index == SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.Leftmost))
+        {
+            scale = -1 * scale;
+        }
+        Vector3 newScale = Vector3.zero;
+
+        float max = Mathf.Max(Mathf.Max(Mathf.Abs(velocity.x), Mathf.Abs(velocity.y)), Mathf.Abs(velocity.z));
+
+        newScale = selected.transform.localScale + new Vector3(velocity.x * scale, velocity.x * scale, velocity.x * scale);
+
+        selected.transform.localScale = Vector3.Lerp(selected.transform.localScale, newScale, Time.deltaTime);
     }
 
     void setupControllers()
