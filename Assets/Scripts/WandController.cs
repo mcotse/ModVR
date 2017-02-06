@@ -29,7 +29,7 @@ public class WandController : MonoBehaviour {
 	private GameObject selected;
 	private GameObject grabbed;
 
-    private List<Collision> collisions = new List<Collision>();
+    private HashSet<List<string>> collisions = new HashSet<List<string>>();
 
 	// Use this for initialization
 	void Start () {
@@ -121,8 +121,8 @@ public class WandController : MonoBehaviour {
         if (controllerMain.GetPressDown(touchPadUp) && isSelectMode)
         {
             isSelectMode = false;
-            clearSelection();
-            collisions = new List<Collision>();
+            //clearSelection();
+            collisions = new HashSet<List<string>>();
         }
 
         if (controllerMain.GetPressDown(touchPadLeft) && isSelectMode)
@@ -207,11 +207,11 @@ public class WandController : MonoBehaviour {
         }
     }
 
-    void OnCollisionStayEvent(Collision collision)
+    void OnCollisionStayEvent(List<string> names)
     {
         if (isSelectMode)
         {
-            collisions.Add(collision);
+            collisions.Add(names);
         }
     }
 
@@ -227,16 +227,16 @@ public class WandController : MonoBehaviour {
         }
     }
 
-    List<GameObject> getSelection()
+    List<string> getSelection()
     {
-        List<GameObject> goList = new List<GameObject>();
+        List<string> goList = new List<string>();
 
         ObjectEvents[] oe = FindObjectsOfType<ObjectEvents>();
         foreach (ObjectEvents obj in oe)
         {
             if (obj.isSelected)
             {
-                goList.Add(obj.gameObject);
+                goList.Add(obj.name);
             }
         }
 

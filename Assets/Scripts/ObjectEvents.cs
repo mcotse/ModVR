@@ -17,6 +17,9 @@ public class ObjectEvents : MonoBehaviour {
 
     private void OnCollisionStay(Collision collision)
     {
-        SendMessage("OnCollisionStayEvent", collision);
+        List<string> names = new List<string>();
+        names.Add(this.name);
+        names.Add(collision.gameObject.name); 
+        SendMessage("OnCollisionStayEvent", names);
     }
 }
