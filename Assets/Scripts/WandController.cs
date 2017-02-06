@@ -105,10 +105,8 @@ public class WandController : MonoBehaviour {
     }
 
     void OnTriggerEnter(Collider collider) {
-		if (grabbed == null) {
-			selected = collider.gameObject;
-			setupControllers ();
-		}
+		selected = collider.gameObject;
+		setupControllers ();
 	}
 
 	void OnTriggerExit(Collider collider) {
