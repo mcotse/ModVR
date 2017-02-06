@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
+using VRTK;
 
 public class WandController : MonoBehaviour {
 
@@ -12,19 +13,23 @@ public class WandController : MonoBehaviour {
 	private Valve.VR.EVRButtonId menuButton = Valve.VR.EVRButtonId.k_EButton_ApplicationMenu;
 	private Valve.VR.EVRButtonId triggerButton = Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger;
 	private Valve.VR.EVRButtonId touchPadUp = Valve.VR.EVRButtonId.k_EButton_DPad_Up;
+    private Valve.VR.EVRButtonId touchPadLeft = Valve.VR.EVRButtonId.k_EButton_DPad_Left;
+    private Valve.VR.EVRButtonId touchPadRight = Valve.VR.EVRButtonId.k_EButton_DPad_Right;
+    private Valve.VR.EVRButtonId touchPadown = Valve.VR.EVRButtonId.k_EButton_DPad_Down;
 
-	SteamVR_Controller.Device controllerMain;
+    SteamVR_Controller.Device controllerMain;
     SteamVR_Controller.Device controllerSecondary;
 
     private bool menuButtonDown;
 	private bool showMenu;
     private bool gripIsPressed;
     private bool bothTriggersPressed;
+    private bool isSelectMode;
 
 	private GameObject selected;
 	private GameObject grabbed;
 
-	private Gizmo gizmoControl;
+    private HashSet<List<string>> collisions = new HashSet<List<string>>();
 
 	// Use this for initialization
 	void Start () {
@@ -39,12 +44,14 @@ public class WandController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		//SteamVR_Controller.Device controller = SteamVR_Controller.Input ((int)trackedObj.index);
-
+        
 		if (controllerMain == null) {
 			Debug.Log ("Controller not initialized");
 			return;
 		}
 
+
+        //menu
 		menuButtonDown = controllerMain.GetPressDown (menuButton);
 
 		if (menuButtonDown) {
@@ -52,6 +59,8 @@ public class WandController : MonoBehaviour {
 			menu.SetActive (showMenu);
 		}
 
+
+        //grabbing 
 		if (controllerMain.GetPressDown (triggerButton) && selected != null) {
 			grabbed = selected;
 			grabbed.transform.SetParent (this.transform);
@@ -63,6 +72,8 @@ public class WandController : MonoBehaviour {
 			grabbed = null;
 		}
 
+
+        //single axis scaling
         if (controllerSecondary.GetPressDown(Valve.VR.EVRButtonId.k_EButton_Grip))
         {
             gripIsPressed = true;
@@ -71,12 +82,22 @@ public class WandController : MonoBehaviour {
         {
             gripIsPressed = false;
         }
-        
-        if(selected != null && controllerMain.GetPressDown(gripButton))
+
+        if (gripIsPressed && selected != null)
+        {
+            scaleSelected(selected);
+        }
+
+
+        //Destroy objects
+        if (selected != null && controllerMain.GetPressDown(gripButton))
         {
             Object.Destroy(selected.gameObject);
         }
 
+
+
+        //enlarge selected
         if (controllerSecondary.GetPressDown(triggerButton))
         {
             bothTriggersPressed = true;
@@ -86,17 +107,31 @@ public class WandController : MonoBehaviour {
             bothTriggersPressed = false;
         }
 
-        if (gripIsPressed && selected != null)
-        {
-            scaleSelected(selected);
-        }
-
         if (bothTriggersPressed && selected != null)
         {
             enlargeSelected(selected);
         }
 
-        
+
+        if (controllerMain.GetPressDown(touchPadUp) && isSelectMode == false)
+        {
+            isSelectMode = true;
+        }
+
+        if (controllerMain.GetPressDown(touchPadUp) && isSelectMode)
+        {
+            isSelectMode = false;
+            //clearSelection();
+            collisions = new HashSet<List<string>>();
+        }
+
+        if (controllerMain.GetPressDown(touchPadLeft) && isSelectMode)
+        {
+            // call Matts code
+            // List<GameObject> selectedObjs = getSelection(); 
+            // merge(selectedObjs, collisions); 
+        }
+
     }
 
     void OnTriggerEnter(Collider collider) {
@@ -150,8 +185,7 @@ public class WandController : MonoBehaviour {
             scale = -1 * scale;
         }
         Vector3 newScale = Vector3.zero;
-
-        float max = Mathf.Max(Mathf.Max(Mathf.Abs(velocity.x), Mathf.Abs(velocity.y)), Mathf.Abs(velocity.z));
+        
 
         newScale = selected.transform.localScale + new Vector3(velocity.x * scale, velocity.x * scale, velocity.x * scale);
 
@@ -171,5 +205,41 @@ public class WandController : MonoBehaviour {
             controllerSecondary = SteamVR_Controller.Input(SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.Leftmost));
 
         }
+    }
+
+    void OnCollisionStayEvent(List<string> names)
+    {
+        if (isSelectMode)
+        {
+            collisions.Add(names);
+        }
+    }
+
+    void clearSelection()
+    {
+        ObjectEvents[] oe = FindObjectsOfType<ObjectEvents>();
+        foreach (ObjectEvents obj in oe)
+        {
+            if (obj.isSelected)
+            {
+                obj.isSelected = false;
+            }
+        }
+    }
+
+    List<string> getSelection()
+    {
+        List<string> goList = new List<string>();
+
+        ObjectEvents[] oe = FindObjectsOfType<ObjectEvents>();
+        foreach (ObjectEvents obj in oe)
+        {
+            if (obj.isSelected)
+            {
+                goList.Add(obj.name);
+            }
+        }
+
+        return goList;
     }
 }

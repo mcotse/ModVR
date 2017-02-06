@@ -27,6 +27,7 @@ public class MenuController : MonoBehaviour {
 			newCube.transform.SetParent (this.transform);
 			newCube.transform.position = this.transform.position + new Vector3(-0.075f, -0.1060f, -0.0353f);
 			newCube.name = "MenuCube";
+            newCube.AddComponent<ObjectEvents>();
 			//menuCubeExists = true;
 		}
 		if (menuSphereTransform == null) {
@@ -34,6 +35,7 @@ public class MenuController : MonoBehaviour {
 			newSphere.transform.SetParent (this.transform);
 			newSphere.transform.position = this.transform.position + new Vector3(0.075f, -0.1060f, -0.0353f);
 			newSphere.name = "MenuSphere";
+            newSphere.AddComponent<ObjectEvents>();
 		}
 	}
 }
