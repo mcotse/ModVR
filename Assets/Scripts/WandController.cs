@@ -53,7 +53,7 @@ public class WandController : MonoBehaviour {
 		}
 
 		if (controllerMain.GetPressDown (triggerButton) && selected != null) {
-			if ((selected.transform.parent.name).StartsWith ("Menu")) {
+			if (selected.transform.parent != null && (selected.transform.parent.name).StartsWith ("Menu")) {
 				GameObject newGameObj = Instantiate (selected, selected.transform.position, selected.transform.rotation);
 				grabbed = newGameObj;
 			} else {
