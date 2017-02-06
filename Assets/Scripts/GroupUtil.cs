@@ -5,9 +5,9 @@ using System;
 
 public class GroupUtil : MonoBehaviour {
 	public GameObject mergeObjects(GameObject obj1, GameObject obj2){
-		Debug.log("in mergeObjects");
-		Debug.log(obj1.name);
-		Debug.log(obj2.name);
+		Debug.Log("in mergeObjects");
+		Debug.Log(obj1.name);
+		Debug.Log(obj2.name);
 		List<GameObject> meshObjectList = new List<GameObject>();
     meshObjectList.Add(obj1);
     meshObjectList.Add(obj2);
@@ -28,7 +28,7 @@ public class GroupUtil : MonoBehaviour {
     foreach (GameObject obj in meshObjectList){
       Destroy(obj);
     }
-		Debug.log(newObj.name);
+		Debug.Log(newObj.name);
     return newObj;
   }
 
@@ -39,7 +39,7 @@ public class GroupUtil : MonoBehaviour {
 		// for (int i = 0; i < allCollisions.Count; i++) {
 		// 	collisionSet.Add(Tuple.Create<int>(allCollisions[i].gameObject.GetInstanceID(), collisionObjects[i].GetInstanceID()));
     // }
-		Debug.log("in mergeGroups");
+		Debug.Log("in mergeGroups");
     for (int i = 0; i < objects.Count; i++) {
       for (int j = i+1; i < objects.Count; j++) {
         List<string> pair = new List<string>();
