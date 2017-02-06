@@ -53,7 +53,12 @@ public class WandController : MonoBehaviour {
 		}
 
 		if (controllerMain.GetPressDown (triggerButton) && selected != null) {
-			grabbed = selected;
+			if ((selected.transform.parent.name).StartsWith ("Menu")) {
+				GameObject newGameObj = Instantiate (selected, selected.transform.position, selected.transform.rotation);
+				grabbed = newGameObj;
+			} else {
+				grabbed = selected;
+			}
 			grabbed.transform.SetParent (this.transform);
 			grabbed.GetComponent<Rigidbody> ().isKinematic = true;
 		}
@@ -100,8 +105,10 @@ public class WandController : MonoBehaviour {
     }
 
     void OnTriggerEnter(Collider collider) {
-		selected = collider.gameObject;
-        setupControllers();
+		if (grabbed == null) {
+			selected = collider.gameObject;
+			setupControllers ();
+		}
 	}
 
 	void OnTriggerExit(Collider collider) {
