@@ -28,6 +28,7 @@ public class MenuController : MonoBehaviour {
 			newCube.transform.position = this.transform.position + new Vector3(-0.075f, -0.1060f, -0.0353f);
 			newCube.name = "MenuCube";
             newCube.AddComponent<ObjectEvents>();
+            
 			//menuCubeExists = true;
 		}
 		if (menuSphereTransform == null) {

@@ -15,8 +15,9 @@ public class ObjectEvents : MonoBehaviour {
 		
 	}
 
-    private void OnCollisionStay(Collision collision)
+    void OnCollisionStay(Collision collision)
     {
+        Debug.Log("Collision detected for: " + this.name + " with " + collision.gameObject.name);
         List<string> names = new List<string>();
         names.Add(this.name);
         names.Add(collision.gameObject.name); 

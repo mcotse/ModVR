@@ -130,13 +130,16 @@ public class WandController : MonoBehaviour {
             collisions = new HashSet<List<string>>();
         }
 
-        if (controllerMain.GetPressDown(touchPadLeft) && isSelectMode)
+        if (controllerSecondary.GetPressDown(touchPadLeft) && isSelectMode)
         {
+            Debug.Log("Calling Matts code");
             // call Matts code
-						GroupUtil = new GroupUtil();
+			GroupUtil = new GroupUtil();
             List<GameObject> selectedObjs = getSelection();
+            Debug.Log("Num of selected objs = " + selectedObjs.Count);
             // merge(selectedObjs, collisions);
-						GroupUtil.mergeGroups(selectedObjs,collisions);
+            Debug.Log("Num of collisions =" + collisions.Count);
+			GroupUtil.mergeGroups(selectedObjs,collisions);
         }
 
     }
@@ -216,8 +219,11 @@ public class WandController : MonoBehaviour {
 
     void OnCollisionStayEvent(List<string> names)
     {
+
+        Debug.Log("Send message rcvd");
         if (isSelectMode)
         {
+            Debug.Log("Send message added");
             collisions.Add(names);
         }
     }
@@ -237,7 +243,7 @@ public class WandController : MonoBehaviour {
     List<GameObject> getSelection()
     {
         List<GameObject> goList = new List<GameObject>();
-
+        Debug.Log("get selection called");
         ObjectEvents[] oe = FindObjectsOfType<ObjectEvents>();
         foreach (ObjectEvents obj in oe)
         {
@@ -246,7 +252,7 @@ public class WandController : MonoBehaviour {
                 goList.Add(obj.gameObject);
             }
         }
-
+        Debug.Log("Selected objects: " + goList.Count);
         return goList;
     }
 }
