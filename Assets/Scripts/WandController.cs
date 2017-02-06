@@ -62,7 +62,7 @@ public class WandController : MonoBehaviour {
 			grabbed.transform.SetParent (this.transform);
 			grabbed.GetComponent<Rigidbody> ().isKinematic = true;
 		}
-		if (controllerMain.GetPressUp (triggerButton) && selected != null) {
+		if (controllerMain.GetPressUp (triggerButton) && grabbed != null) {
 			grabbed.transform.SetParent (null);
 			grabbed.GetComponent<Rigidbody> ().isKinematic = false;
 			grabbed = null;
