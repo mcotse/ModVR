@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 using VRTK;
 
 public class WandController : MonoBehaviour {
@@ -13,17 +13,23 @@ public class WandController : MonoBehaviour {
 	private Valve.VR.EVRButtonId menuButton = Valve.VR.EVRButtonId.k_EButton_ApplicationMenu;
 	private Valve.VR.EVRButtonId triggerButton = Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger;
 	private Valve.VR.EVRButtonId touchPadUp = Valve.VR.EVRButtonId.k_EButton_DPad_Up;
+    private Valve.VR.EVRButtonId touchPadLeft = Valve.VR.EVRButtonId.k_EButton_DPad_Left;
+    private Valve.VR.EVRButtonId touchPadRight = Valve.VR.EVRButtonId.k_EButton_DPad_Right;
+    private Valve.VR.EVRButtonId touchPadown = Valve.VR.EVRButtonId.k_EButton_DPad_Down;
 
-	SteamVR_Controller.Device controllerMain;
+    SteamVR_Controller.Device controllerMain;
     SteamVR_Controller.Device controllerSecondary;
 
     private bool menuButtonDown;
 	private bool showMenu;
     private bool gripIsPressed;
     private bool bothTriggersPressed;
+    private bool isSelectMode;
 
 	private GameObject selected;
 	private GameObject grabbed;
+
+    private List<Collision> collisions = new List<Collision>();
 
 	// Use this for initialization
 	void Start () {
@@ -107,12 +113,25 @@ public class WandController : MonoBehaviour {
         }
 
 
-        if (controllerMain.GetPressDown(touchPadUp))
+        if (controllerMain.GetPressDown(touchPadUp) && isSelectMode == false)
         {
-            //show pointer
+            isSelectMode = true;
         }
 
-        
+        if (controllerMain.GetPressDown(touchPadUp) && isSelectMode)
+        {
+            isSelectMode = false;
+            clearSelection();
+            collisions = new List<Collision>();
+        }
+
+        if (controllerMain.GetPressDown(touchPadLeft) && isSelectMode)
+        {
+            // call Matts code
+            // List<GameObject> selectedObjs = getSelection(); 
+            // merge(selectedObjs, collisions); 
+        }
+
     }
 
     void OnTriggerEnter(Collider collider) {
@@ -186,5 +205,41 @@ public class WandController : MonoBehaviour {
             controllerSecondary = SteamVR_Controller.Input(SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.Leftmost));
 
         }
+    }
+
+    void OnCollisionStayEvent(Collision collision)
+    {
+        if (isSelectMode)
+        {
+            collisions.Add(collision);
+        }
+    }
+
+    void clearSelection()
+    {
+        ObjectEvents[] oe = FindObjectsOfType<ObjectEvents>();
+        foreach (ObjectEvents obj in oe)
+        {
+            if (obj.isSelected)
+            {
+                obj.isSelected = false;
+            }
+        }
+    }
+
+    List<GameObject> getSelection()
+    {
+        List<GameObject> goList = new List<GameObject>();
+
+        ObjectEvents[] oe = FindObjectsOfType<ObjectEvents>();
+        foreach (ObjectEvents obj in oe)
+        {
+            if (obj.isSelected)
+            {
+                goList.Add(obj.gameObject);
+            }
+        }
+
+        return goList;
     }
 }
