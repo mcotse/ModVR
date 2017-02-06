@@ -7,7 +7,7 @@ public class WandController : MonoBehaviour {
 	public GameObject menu;
 	public GameObject cube;
 	public float scaleFactor;
-
+	public GroupUtil GroupUtil;
 	private SteamVR_TrackedObject trackedObj;
 	private Valve.VR.EVRButtonId gripButton = Valve.VR.EVRButtonId.k_EButton_Grip;
 	private Valve.VR.EVRButtonId menuButton = Valve.VR.EVRButtonId.k_EButton_ApplicationMenu;
@@ -44,7 +44,7 @@ public class WandController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		//SteamVR_Controller.Device controller = SteamVR_Controller.Input ((int)trackedObj.index);
-        
+
 		if (controllerMain == null) {
 			Debug.Log ("Controller not initialized");
 			return;
@@ -60,7 +60,7 @@ public class WandController : MonoBehaviour {
 		}
 
 
-        //grabbing 
+        //grabbing
 		if (controllerMain.GetPressDown (triggerButton) && selected != null) {
 			grabbed = selected;
 			grabbed.transform.SetParent (this.transform);
@@ -128,8 +128,10 @@ public class WandController : MonoBehaviour {
         if (controllerMain.GetPressDown(touchPadLeft) && isSelectMode)
         {
             // call Matts code
-            // List<GameObject> selectedObjs = getSelection(); 
-            // merge(selectedObjs, collisions); 
+						GroupUtil = new GroupUtil();
+            List<GameObject> selectedObjs = getSelection();
+            // merge(selectedObjs, collisions);
+						GroupUtil.mergeGroups(selectedObjs,collisions);
         }
 
     }
@@ -158,7 +160,7 @@ public class WandController : MonoBehaviour {
         float scalingFactor = 2.0f;
 
         float max = Mathf.Max(Mathf.Max(Mathf.Abs(velocity.x), Mathf.Abs(velocity.y)), Mathf.Abs(velocity.z));
-        
+
         if(max == Mathf.Abs(velocity.x))
         {
             newScale = selected.transform.localScale + new Vector3(velocity.x * scalingFactor, 0, 0);
@@ -185,7 +187,7 @@ public class WandController : MonoBehaviour {
             scale = -1 * scale;
         }
         Vector3 newScale = Vector3.zero;
-        
+
 
         newScale = selected.transform.localScale + new Vector3(velocity.x * scale, velocity.x * scale, velocity.x * scale);
 
@@ -227,16 +229,16 @@ public class WandController : MonoBehaviour {
         }
     }
 
-    List<string> getSelection()
+    List<GameObject> getSelection()
     {
-        List<string> goList = new List<string>();
+        List<GameObject> goList = new List<GameObject>();
 
         ObjectEvents[] oe = FindObjectsOfType<ObjectEvents>();
         foreach (ObjectEvents obj in oe)
         {
             if (obj.isSelected)
             {
-                goList.Add(obj.name);
+                goList.Add(obj.gameObject);
             }
         }
 
