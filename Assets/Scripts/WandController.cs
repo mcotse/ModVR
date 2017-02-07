@@ -23,7 +23,7 @@ public class WandController : MonoBehaviour {
     private bool menuButtonDown;
 	private bool showMenu;
     private bool gripIsPressed;
-    private bool bothTriggersPressed;
+    private bool secondaryTriggerPressed;
     private bool isSelectMode;
 
 	private GameObject selected;
@@ -37,6 +37,7 @@ public class WandController : MonoBehaviour {
 		menu.SetActive (false);
 		menuButtonDown = false;
 		showMenu = false;
+        secondaryTriggerPressed = false;
 
         setupControllers();
     }
@@ -96,11 +97,11 @@ public class WandController : MonoBehaviour {
         //enlarge selected
         if (controllerSecondary.GetPressDown(triggerButton))
         {
-            bothTriggersPressed = true;
+            secondaryTriggerPressed = true;
         }
         if (controllerSecondary.GetPressUp(triggerButton))
         {
-            bothTriggersPressed = false;
+            secondaryTriggerPressed = false;
         }
 
 
@@ -127,7 +128,7 @@ public class WandController : MonoBehaviour {
 
     private void FixedUpdate()
     { 
-        if (bothTriggersPressed && selected != null)
+        if (secondaryTriggerPressed && selected != null)
         {
             enlargeSelected(selected);
         }

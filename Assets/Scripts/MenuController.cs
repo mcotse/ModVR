@@ -28,15 +28,25 @@ public class MenuController : MonoBehaviour {
             newCube.transform.SetParent(this.transform);
             newCube.transform.position = this.transform.position + new Vector3(-0.075f, -0.1060f, -0.0353f);
             newCube.name = "MenuCube";
-            
-			//menuCubeExists = true;
-		}
+            SetupInteractableObject(newCube);
+
+            //menuCubeExists = true;
+        }
 		if (menuSphereTransform == null) {
 			newSphere = Instantiate (sphere);
 			newSphere.transform.SetParent (this.transform);
 			newSphere.transform.position = this.transform.position + new Vector3(0.075f, -0.1060f, -0.0353f);
 			newSphere.name = "MenuSphere";
+            SetupInteractableObject(newSphere);
 		}
 	}
+
+    private void SetupInteractableObject(GameObject obj)
+    {
+        VRTK_InteractableObject io = obj.AddComponent<VRTK_InteractableObject>();
+        io.isUsable = true;
+        io.touchHighlightColor = Color.red;
+        io.pointerActivatesUseAction = true;
+    }
 
 }
