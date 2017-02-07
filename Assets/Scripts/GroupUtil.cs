@@ -14,7 +14,7 @@ public class GroupUtil : MonoBehaviour {
     GameObject newObj = new GameObject("Empty");
 		newObj.AddComponent<MeshFilter>();
 		newObj.AddComponent<MeshRenderer>();
-		string tstamp = System.DateTime.Now.ToString("hhss", System.Globalization.CultureInfo.InvariantCulture);
+		string tstamp = getTime();
     newObj.name = "mergedObj" + tstamp;
 		newObj.tag = "mergedObj";
     CombineInstance[] combine = new CombineInstance[meshObjectList.Count];
@@ -59,7 +59,7 @@ public class GroupUtil : MonoBehaviour {
 
   public GameObject groupObjects(List<GameObject> objects){
 		GameObject newObj = new GameObject();
-		string tstamp = System.DateTime.Now.ToString("hhss", System.Globalization.CultureInfo.InvariantCulture);
+		string tstamp = getTime();
 		newObj.name = "groupObj" + tstamp;
 		newObj.tag = "groupObj";
     // List<GameObject> allChild = extractAllObjects(objects);
@@ -69,15 +69,9 @@ public class GroupUtil : MonoBehaviour {
     return newObj;
   }
 
-  public GameObject unGroupObject(List<GameObject> parent, GameObject child){
-    GameObject newObj = new GameObject();
-    // List<GameObject> allChild = extractAllObjects(parent);
-    foreach (GameObject obj in parent){
-      if (obj != child){
-        obj.transform.parent = newObj.transform;
-      }
-    }
-    return newObj;
+  public GameObject unGroupObject(GameObject child){
+		child.transform.parent = null;
+		return child;
   }
   //
   // private void isColliding(GameObject obj1, GameObject obj2){
@@ -106,4 +100,7 @@ public class GroupUtil : MonoBehaviour {
     }
     return null;
   }
+	public string getTime(){
+		return System.DateTime.Now.ToString("hhss", System.Globalization.CultureInfo.InvariantCulture);
+	}
 }
