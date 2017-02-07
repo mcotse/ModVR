@@ -14,7 +14,7 @@ public class KeyPressTrigger : MonoBehaviour {
       // util.mergeObjects(cube12,cube13);
       objects.Add(cube12);
       objects.Add(cube13);
-      groupUtil.GetComponent<GroupUtil>().mergeObjects(cube12,cube13);
+      groupUtil.GetComponent<GroupUtil>().mergeObjects(cube12,cube13,true);
 
     }
     if (Input.GetKeyDown("g")){
@@ -32,6 +32,13 @@ public class KeyPressTrigger : MonoBehaviour {
       groupUtil.GetComponent<GroupUtil>().groupObjects(objects);
     }
     if (Input.GetKeyDown("u")){
+      GameObject groupUtil = GameObject.Find("groupUtil");
+      GameObject grp1 = GameObject.Find("grp1");
+      GameObject sp1 = GameObject.Find("sp1");
+      print("u was pressed");
+      groupUtil.GetComponent<GroupUtil>().unGroupObject(sp1);
+    }
+    if (Input.GetKeyDown("m")){
       GameObject groupUtil = GameObject.Find("groupUtil");
       GameObject grp1 = GameObject.Find("grp1");
       GameObject sp1 = GameObject.Find("sp1");
