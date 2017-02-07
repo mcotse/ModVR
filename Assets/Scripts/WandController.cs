@@ -64,6 +64,7 @@ public class WandController : MonoBehaviour {
 		if (controllerMain.GetPressDown (triggerButton) && selected != null) {
 			if (selected.transform.parent != null && (selected.transform.parent.name).StartsWith ("Menu")) {
 				GameObject newGameObj = Instantiate (selected, selected.transform.position, selected.transform.rotation);
+                SetupInteractableObject(newGameObj);
 				grabbed = newGameObj;
 			} else {
 				grabbed = selected;
@@ -79,26 +80,16 @@ public class WandController : MonoBehaviour {
 
 
         //single axis scaling
-        if (controllerSecondary.GetPressDown(Valve.VR.EVRButtonId.k_EButton_Grip))
+        if (controllerSecondary.GetPressDown(gripButton))
         {
             gripIsPressed = true;
         }
-        if (controllerSecondary.GetPressUp(Valve.VR.EVRButtonId.k_EButton_Grip))
+        if (controllerSecondary.GetPressUp(gripButton))
         {
             gripIsPressed = false;
         }
 
-        if (gripIsPressed && selected != null)
-        {
-            scaleSelected(selected);
-        }
 
-
-        //Destroy objects
-        if (selected != null && controllerMain.GetPressDown(gripButton))
-        {
-            Object.Destroy(selected.gameObject);
-        }
 
 
 
@@ -110,11 +101,6 @@ public class WandController : MonoBehaviour {
         if (controllerSecondary.GetPressUp(triggerButton))
         {
             bothTriggersPressed = false;
-        }
-
-        if (bothTriggersPressed && selected != null)
-        {
-            enlargeSelected(selected);
         }
 
 
@@ -139,6 +125,25 @@ public class WandController : MonoBehaviour {
 
     }
 
+    private void FixedUpdate()
+    { 
+        if (bothTriggersPressed && selected != null)
+        {
+            enlargeSelected(selected);
+        }
+
+        if (gripIsPressed && selected != null)
+        {
+            scaleSelected(selected);
+        }
+
+        //Destroy objects
+        if (selected != null && controllerMain.GetPressDown(gripButton))
+        {
+            Object.Destroy(selected.gameObject);
+        }
+    }
+
     void OnTriggerEnter(Collider collider) {
 		selected = collider.gameObject;
 		setupControllers ();
@@ -155,6 +160,8 @@ public class WandController : MonoBehaviour {
 			oldSphereTransform.SetParent (null);
 		}
 	}
+    
+    
 
     void scaleSelected(GameObject selected)
     {
@@ -212,39 +219,12 @@ public class WandController : MonoBehaviour {
         }
     }
 
-    void OnCollisionStayEvent(List<string> names)
+
+    private void SetupInteractableObject(GameObject obj)
     {
-        if (isSelectMode)
-        {
-            collisions.Add(names);
-        }
-    }
-
-    void clearSelection()
-    {
-        ObjectEvents[] oe = FindObjectsOfType<ObjectEvents>();
-        foreach (ObjectEvents obj in oe)
-        {
-            if (obj.isSelected)
-            {
-                obj.isSelected = false;
-            }
-        }
-    }
-
-    List<string> getSelection()
-    {
-        List<string> goList = new List<string>();
-
-        ObjectEvents[] oe = FindObjectsOfType<ObjectEvents>();
-        foreach (ObjectEvents obj in oe)
-        {
-            if (obj.isSelected)
-            {
-                goList.Add(obj.name);
-            }
-        }
-
-        return goList;
+        VRTK_InteractableObject io = obj.AddComponent<VRTK_InteractableObject>();
+        io.isUsable = true;
+        io.touchHighlightColor = Color.red;
+        io.pointerActivatesUseAction = true;
     }
 }
