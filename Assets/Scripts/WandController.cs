@@ -62,11 +62,16 @@ public class WandController : MonoBehaviour {
 
         //grabbing 
 		if (controllerMain.GetPressDown (triggerButton) && selected != null) {
-			grabbed = selected;
+			if (selected.transform.parent != null && (selected.transform.parent.name).StartsWith ("Menu")) {
+				GameObject newGameObj = Instantiate (selected, selected.transform.position, selected.transform.rotation);
+				grabbed = newGameObj;
+			} else {
+				grabbed = selected;
+			}
 			grabbed.transform.SetParent (this.transform);
 			grabbed.GetComponent<Rigidbody> ().isKinematic = true;
 		}
-		if (controllerMain.GetPressUp (triggerButton) && selected != null) {
+		if (controllerMain.GetPressUp (triggerButton) && grabbed != null) {
 			grabbed.transform.SetParent (null);
 			grabbed.GetComponent<Rigidbody> ().isKinematic = false;
 			grabbed = null;
@@ -136,7 +141,7 @@ public class WandController : MonoBehaviour {
 
     void OnTriggerEnter(Collider collider) {
 		selected = collider.gameObject;
-        setupControllers();
+		setupControllers ();
 	}
 
 	void OnTriggerExit(Collider collider) {
