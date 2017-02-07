@@ -65,7 +65,7 @@ public class GroupUtil : MonoBehaviour {
 				objects.RemoveAt(i);
 			}
 		}
-		foreach (obj in objects){
+		foreach (GameObject obj in objects){
 			obj.transform.parent = newObj.transform;
 		}
     return newObj;
