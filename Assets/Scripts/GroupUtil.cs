@@ -11,8 +11,12 @@ public class GroupUtil : MonoBehaviour {
 		List<GameObject> meshObjectList = new List<GameObject>();
     meshObjectList.Add(obj1);
     meshObjectList.Add(obj2);
-    GameObject newObj = new GameObject();
-    newObj.name = "mergedObj";
+    GameObject newObj = new GameObject("Empty");
+		newObj.AddComponent<MeshFilter>();
+		newObj.AddComponent<MeshRenderer>();
+		string tstamp = System.DateTime.Now.ToString("hhss", System.Globalization.CultureInfo.InvariantCulture);
+    newObj.name = "mergedObj" + tstamp;
+		newObj.tag = "mergedObj";
     CombineInstance[] combine = new CombineInstance[meshObjectList.Count];
     int i = 0;
     while (i < meshObjectList.Count) {
@@ -55,6 +59,9 @@ public class GroupUtil : MonoBehaviour {
 
   public GameObject groupObjects(List<GameObject> objects){
 		GameObject newObj = new GameObject();
+		string tstamp = System.DateTime.Now.ToString("hhss", System.Globalization.CultureInfo.InvariantCulture);
+		newObj.name = "groupObj" + tstamp;
+		newObj.tag = "groupObj";
     // List<GameObject> allChild = extractAllObjects(objects);
     foreach (GameObject obj in objects){
 	    obj.transform.parent = newObj.transform;
