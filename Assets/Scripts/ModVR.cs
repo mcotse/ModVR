@@ -9,7 +9,6 @@ namespace ModVR
 
     public struct ObjectEventCollisionArgs
     {
-        public Collision collision;
         public Collider collider;
     }
 }

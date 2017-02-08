@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -78,17 +79,15 @@ public class ModVR_WandController : MonoBehaviour {
 
     private void OnTriggerClicked(object sender, ControllerInteractionEventArgs e)
     {
-        
         if (isInteractMode)
         {
-            ObjectEvents iObj = (from io in GameObject.FindObjectsOfType<ObjectEvents>()
+            ObjectEvents selectedObj = (from io in GameObject.FindObjectsOfType<ObjectEvents>()
                                             where io.IsTouched() && io.GetTouchingObjects().Contains(this.gameObject)
                                             select io).SingleOrDefault();
-            if (iObj && (iObj.transform.parent.name.Equals("MenuRight") || iObj.transform.parent.name.Equals("MenuLeft")))
+
+            if (selectedObj && (selectedObj.transform.parent.name.Equals("MenuRight") || selectedObj.transform.parent.name.Equals("MenuLeft")))
             {
-                GameObject selected = iObj.gameObject;
-                GameObject newGameObj = Instantiate(selected, selected.transform.position, selected.transform.rotation);
-                SetupInteractableObject(newGameObj);
+                CreateSelectedObject(selectedObj);
             }
 
         }
@@ -99,7 +98,6 @@ public class ModVR_WandController : MonoBehaviour {
     {
         showMenu = !showMenu;
         menu.SetActive(showMenu);
-
     }
 
     private void SetupInteractableObject(GameObject obj)
@@ -111,10 +109,12 @@ public class ModVR_WandController : MonoBehaviour {
         io.enabled = true;
         io.isGrabbable = true;
         io.holdButtonToGrab = true;
-        io.grabAttachMechanicScript = obj.AddComponent<VRTK_ChildOfControllerGrabAttach>();
+
+        VRTK_ChildOfControllerGrabAttach grabAttach = obj.AddComponent<VRTK_ChildOfControllerGrabAttach>();
+        grabAttach.precisionGrab = true;
+        io.grabAttachMechanicScript = grabAttach;
+
         io.secondaryGrabActionScript = obj.AddComponent<VRTK_AxisScaleGrabAction>();
-        
-        
 
         Rigidbody rigidObj = obj.GetComponent<Rigidbody>();
         rigidObj.constraints = RigidbodyConstraints.None;
@@ -123,5 +123,14 @@ public class ModVR_WandController : MonoBehaviour {
 
         GameManager.instance.AddInteractableObject(io);
         obj.AddComponent<VRTK_FixedJointGrabAttach>();
+    }
+
+    void CreateSelectedObject(ObjectEvents selectedObj)
+    {
+        GameObject selected = selectedObj.gameObject;
+        GameObject newGameObj = Instantiate(selected, selected.transform.position, selected.transform.rotation);
+        Guid gameObjName = Guid.NewGuid();
+        newGameObj.name = gameObjName.ToString() + "_" + newGameObj.name;
+        SetupInteractableObject(newGameObj);
     }
 }

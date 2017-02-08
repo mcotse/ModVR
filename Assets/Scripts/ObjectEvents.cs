@@ -25,25 +25,15 @@ public class ObjectEvents : VRTK_InteractableObject {
         interactableRigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if(controllerActions && IsGrabbed())
-        {
-            ObjectEventCollisionArgs e = new ObjectEventCollisionArgs();
-            e.collision = collision;
-            InteractableObjectCollisionEnter(this, e);
-        }
-    }
-
-    private void OnControllerColliderHit(ControllerColliderHit hit)
-    {
-        //if (controllerActions && IsGrabbed())
-        //{
-        //    ObjectEventCollisionArgs e = new ObjectEventCollisionArgs();
-        //    e.colliderHit = hit;
-        //    InteractableObjectCollisionEnter(this, e);
-        //}
-    }
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    if (controllerActions && IsGrabbed())
+    //    {
+    //        ObjectEventCollisionArgs e = new ObjectEventCollisionArgs();
+    //        e.collision = collision;
+    //        InteractableObjectCollisionEnter(this, e);
+    //    }
+    //}
 
     private void OnTriggerEnter(Collider other)
     {
@@ -57,10 +47,5 @@ public class ObjectEvents : VRTK_InteractableObject {
         ObjectEventCollisionArgs e = new ObjectEventCollisionArgs();
         e.collider = other;
         InteractableObjectCollisionExit(this, e);
-    }
-
-    private void OnTriggerStay(Collider other)
-    {
-        //if(other.transform.tag == )
     }
 }
