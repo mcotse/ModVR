@@ -43,7 +43,7 @@ public class MenuController : MonoBehaviour {
 
     private void SetupInteractableObject(GameObject obj)
     {
-        VRTK_InteractableObject io = obj.AddComponent<VRTK_InteractableObject>();
+        ObjectEvents io = obj.AddComponent<ObjectEvents>();
         io.isUsable = true;
         io.touchHighlightColor = Color.red;
         io.pointerActivatesUseAction = true;

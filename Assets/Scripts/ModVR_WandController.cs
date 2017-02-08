@@ -5,10 +5,13 @@ using UnityEngine;
 using VRTK;
 using VRTK.SecondaryControllerGrabActions;
 using VRTK.GrabAttachMechanics;
+using VRTK.Highlighters;
 
 public class ModVR_WandController : MonoBehaviour {
 
     public GameObject menu;
+
+    private GameObject otherController;
     private VRTK_ControllerActions actions;
     private VRTK_ControllerEvents events;
 
@@ -78,7 +81,7 @@ public class ModVR_WandController : MonoBehaviour {
         
         if (isInteractMode)
         {
-            VRTK_InteractableObject iObj = (from io in GameObject.FindObjectsOfType<VRTK_InteractableObject>()
+            ObjectEvents iObj = (from io in GameObject.FindObjectsOfType<ObjectEvents>()
                                             where io.IsTouched() && io.GetTouchingObjects().Contains(this.gameObject)
                                             select io).SingleOrDefault();
             if (iObj && (iObj.transform.parent.name.Equals("MenuRight") || iObj.transform.parent.name.Equals("MenuLeft")))
@@ -101,8 +104,7 @@ public class ModVR_WandController : MonoBehaviour {
 
     private void SetupInteractableObject(GameObject obj)
     {
-        
-        VRTK_InteractableObject io = obj.GetComponent<VRTK_InteractableObject>();
+        ObjectEvents io = obj.GetComponent<ObjectEvents>();
         io.isUsable = true;
         io.touchHighlightColor = Color.red;
         io.pointerActivatesUseAction = true;
@@ -111,12 +113,15 @@ public class ModVR_WandController : MonoBehaviour {
         io.holdButtonToGrab = true;
         io.grabAttachMechanicScript = obj.AddComponent<VRTK_ChildOfControllerGrabAttach>();
         io.secondaryGrabActionScript = obj.AddComponent<VRTK_AxisScaleGrabAction>();
+        
+        
 
         Rigidbody rigidObj = obj.GetComponent<Rigidbody>();
         rigidObj.constraints = RigidbodyConstraints.None;
         rigidObj.useGravity = false;
         rigidObj.isKinematic = true;
 
+        GameManager.instance.AddInteractableObject(io);
         obj.AddComponent<VRTK_FixedJointGrabAttach>();
     }
 }
