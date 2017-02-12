@@ -47,7 +47,7 @@ public class ModVR_WandController : MonoBehaviour {
         events.ButtonOnePressed += OnMenuButtonPressed;
         events.TouchpadPressed += OnTouchpadPressed;
         events.TriggerClicked += OnTriggerClicked;
-        events.ButtonTwoPressed += GroupOnPressed;
+        events.GripPressed += GroupOnPressed;
 	}
 
 
