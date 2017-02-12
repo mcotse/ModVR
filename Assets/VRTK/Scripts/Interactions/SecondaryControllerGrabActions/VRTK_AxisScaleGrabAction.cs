@@ -88,11 +88,43 @@ namespace VRTK.SecondaryControllerGrabActions
             Vector3 initialSecondGrabRotatedPosition = grabbedObject.transform.rotation * secondaryInitialGrabPoint.position;
             Vector3 currentSecondGrabRotatedPosition = grabbedObject.transform.rotation * secondaryGrabbingObject.transform.position;
 
+
+            //float max = Mathf.Max(Mathf.Max(Mathf.Abs(velocity.x), Mathf.Abs(velocity.y)), Mathf.Abs(velocity.z));
+
+            //if (max == Mathf.Abs(velocity.x))
+            //{
+            //    newScale = selected.transform.localScale + new Vector3(velocity.x * scalingFactor, 0, 0);
+            //}
+            //else if (max == Mathf.Abs(velocity.y))
+            //{
+            //    newScale = selected.transform.localScale + new Vector3(0, velocity.y * scalingFactor, 0);
+            //}
+            //else if (max == Mathf.Abs(velocity.z))
+            //{
+            //    newScale = selected.transform.localScale + new Vector3(0, 0, velocity.z * scalingFactor);
+            //}
+
             float newScaleX = CalculateAxisScale(initialRotatedPosition.x, initialSecondGrabRotatedPosition.x, currentSecondGrabRotatedPosition.x);
             float newScaleY = CalculateAxisScale(initialRotatedPosition.y, initialSecondGrabRotatedPosition.y, currentSecondGrabRotatedPosition.y);
             float newScaleZ = CalculateAxisScale(initialRotatedPosition.z, initialSecondGrabRotatedPosition.z, currentSecondGrabRotatedPosition.z);
 
-            var newScale = new Vector3(newScaleX, newScaleY, newScaleZ) + initialScale;
+            float max = Mathf.Max(Mathf.Max(newScaleX, newScaleY), newScaleZ);
+
+            var newScale = initialScale;
+
+            if (max == newScaleX)
+            {
+                newScale += new Vector3(newScaleX, 0, 0);
+            }
+            else if (max == newScaleY)
+            {
+                newScale += new Vector3(0, newScaleY, 0);
+            }
+            else if( max == newScaleZ)
+            {
+                newScale += new Vector3(0, 0, newScaleZ);
+            }
+            
             ApplyScale(newScale);
         }
 

@@ -117,18 +117,6 @@ public class WandController : MonoBehaviour {
             collisions = new HashSet<List<string>>();
         }
 
-        if (controllerSecondary.GetPressDown(touchPadLeft) && isSelectMode)
-        {
-            Debug.Log("Calling Matts code");
-            // call Matts code
-			GroupUtil = new GroupUtil();
-            List<GameObject> selectedObjs = getSelection();
-            Debug.Log("Num of selected objs = " + selectedObjs.Count);
-            // merge(selectedObjs, collisions);
-            Debug.Log("Num of collisions =" + collisions.Count);
-			GroupUtil.mergeGroups(selectedObjs,collisions);
-        }
-
     }
 
     private void FixedUpdate()

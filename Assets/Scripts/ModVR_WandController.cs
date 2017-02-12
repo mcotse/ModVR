@@ -70,7 +70,7 @@ public class ModVR_WandController : MonoBehaviour {
 
     private void GroupOnPressed(object sender, ControllerInteractionEventArgs e)
     {
-        return util.groupObjects(GameManger.interactableObjectList);
+        return util.groupObjects(GameManager.instance.interactableObjectList);
     }
 
     private void OnTouchpadPressed(object sender, ControllerInteractionEventArgs e)
