@@ -7,7 +7,7 @@ public class WandController : MonoBehaviour {
 	public GameObject menu;
 	public GameObject cube;
 	public float scaleFactor;
-
+	public GroupUtil GroupUtil;
 	private SteamVR_TrackedObject trackedObj;
 	private Valve.VR.EVRButtonId gripButton = Valve.VR.EVRButtonId.k_EButton_Grip;
 	private Valve.VR.EVRButtonId menuButton = Valve.VR.EVRButtonId.k_EButton_ApplicationMenu;
@@ -45,7 +45,7 @@ public class WandController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		//SteamVR_Controller.Device controller = SteamVR_Controller.Input ((int)trackedObj.index);
-        
+
 		if (controllerMain == null) {
 			Debug.Log ("Controller not initialized");
 			return;
@@ -61,7 +61,7 @@ public class WandController : MonoBehaviour {
 		}
 
 
-        //grabbing 
+        //grabbing
 		if (controllerMain.GetPressDown (triggerButton) && selected != null) {
 			if (selected.transform.parent != null && (selected.transform.parent.name).StartsWith ("Menu")) {
 				GameObject newGameObj = Instantiate (selected, selected.transform.position, selected.transform.rotation);
@@ -117,11 +117,16 @@ public class WandController : MonoBehaviour {
             collisions = new HashSet<List<string>>();
         }
 
-        if (controllerMain.GetPressDown(touchPadLeft) && isSelectMode)
+        if (controllerSecondary.GetPressDown(touchPadLeft) && isSelectMode)
         {
+            Debug.Log("Calling Matts code");
             // call Matts code
-            // List<GameObject> selectedObjs = getSelection(); 
-            // merge(selectedObjs, collisions); 
+			GroupUtil = new GroupUtil();
+            List<GameObject> selectedObjs = getSelection();
+            Debug.Log("Num of selected objs = " + selectedObjs.Count);
+            // merge(selectedObjs, collisions);
+            Debug.Log("Num of collisions =" + collisions.Count);
+			GroupUtil.mergeGroups(selectedObjs,collisions);
         }
 
     }
@@ -171,7 +176,7 @@ public class WandController : MonoBehaviour {
         float scalingFactor = 2.0f;
 
         float max = Mathf.Max(Mathf.Max(Mathf.Abs(velocity.x), Mathf.Abs(velocity.y)), Mathf.Abs(velocity.z));
-        
+
         if(max == Mathf.Abs(velocity.x))
         {
             newScale = selected.transform.localScale + new Vector3(velocity.x * scalingFactor, 0, 0);
@@ -198,7 +203,7 @@ public class WandController : MonoBehaviour {
             scale = -1 * scale;
         }
         Vector3 newScale = Vector3.zero;
-        
+
 
         newScale = selected.transform.localScale + new Vector3(velocity.x * scale, velocity.x * scale, velocity.x * scale);
 
@@ -219,7 +224,7 @@ public class WandController : MonoBehaviour {
 
         }
     }
-
+    
 
     private void SetupInteractableObject(GameObject obj)
     {
@@ -228,4 +233,17 @@ public class WandController : MonoBehaviour {
         io.touchHighlightColor = Color.red;
         io.pointerActivatesUseAction = true;
     }
+
+    void OnCollisionStayEvent(List<string> names)
+    {
+
+        Debug.Log("Send message rcvd");
+        if (isSelectMode)
+        {
+            Debug.Log("Send message added");
+            collisions.Add(names);
+        }
+    }
+    
+
 }

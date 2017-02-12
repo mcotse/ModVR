@@ -10,7 +10,7 @@ public class ObjectEvents : VRTK_InteractableObject {
 
     public event InteractableObjectEventHandler InteractableObjectCollisionEnter;
     public event InteractableObjectEventHandler InteractableObjectCollisionExit;
-
+    
     private VRTK_ControllerActions controllerActions;
 
     public override void Grabbed(GameObject grabbingObject)

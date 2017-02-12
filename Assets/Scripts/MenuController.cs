@@ -23,6 +23,7 @@ public class MenuController : MonoBehaviour {
 		Transform menuSphereTransform = this.transform.Find ("MenuSphere");
 		GameObject newCube;
 		GameObject newSphere;
+
         if (menuCubeTransform == null) {
             newCube = Instantiate(cube);
             newCube.transform.SetParent(this.transform);
