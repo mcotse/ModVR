@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using VRTK;
 
 public class GroupUtil : MonoBehaviour {
 	public GameObject mergeObjects(GameObject obj1, GameObject obj2, bool destoryOld){
@@ -71,12 +72,12 @@ public class GroupUtil : MonoBehaviour {
     return newObj;
   }
 
-  public GameObject groupObjects(List<GameObject> objects){
+  public GameObject groupObjects(List<VRTK_InteractableObject> objects){
 		GameObject newObj = new GameObject();
 		string tstamp = getTime();
 		newObj.name = "groupObj" + tstamp;
 		newObj.tag = "groupObj";
-    foreach (GameObject obj in objects){
+    foreach (VRTK_InteractableObject obj in objects){
 	    obj.transform.parent = newObj.transform;
     }
     return newObj;
