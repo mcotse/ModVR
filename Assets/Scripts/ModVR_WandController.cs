@@ -7,16 +7,16 @@ using VRTK;
 using VRTK.SecondaryControllerGrabActions;
 using VRTK.GrabAttachMechanics;
 using VRTK.Highlighters;
-using GroupUtil;
+using ModVR;
 
 public class ModVR_WandController : MonoBehaviour {
 
     public GameObject menu;
 
+    private GroupUtil util;
     private GameObject otherController;
     private VRTK_ControllerActions actions;
     private VRTK_ControllerEvents events;
-    private GroupUtil util;
 
     private uint indexMain;
     private uint indexSecondary;
@@ -39,6 +39,7 @@ public class ModVR_WandController : MonoBehaviour {
         showMenu = false;
         gripPressed = false;
         menu.SetActive(false);
+        util = new GroupUtil();
 
         actions = GetComponent<VRTK_ControllerActions>();
         events = GetComponent<VRTK_ControllerEvents>();
@@ -70,7 +71,7 @@ public class ModVR_WandController : MonoBehaviour {
 
     private void GroupOnPressed(object sender, ControllerInteractionEventArgs e)
     {
-        return util.groupObjects(GameManager.instance.interactableObjectList);
+        util.groupObjects(GameManager.instance.interactableObjectList);
     }
 
     private void OnTouchpadPressed(object sender, ControllerInteractionEventArgs e)

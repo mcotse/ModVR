@@ -8,30 +8,50 @@ using ModVR;
 
 public class GameManager : MonoBehaviour {
 
-    public static GameManager instance = null;
+    private static GameManager _instance;
 
     public List<VRTK_InteractableObject> interactableObjectList;
     public List<VRTK_InteractableObject> selectedObjectList;
     
     private List<List<string>> collisionSet;
-	// Use this for initialization
-	void Awake () {
+
+
+    public static GameManager instance {
+        get
+        {
+            return _instance;
+        }
+    }
+    // Use this for initialization
+    void Awake () {
         init();
 	}
 
     void init() {
-        if(instance == null)
-        {
-            instance = this;
-            selectedObjectList = new List<VRTK_InteractableObject>();
-            interactableObjectList = new List<VRTK_InteractableObject>();
-            
-            collisionSet = new List<List<string>>();
-        }
-        else if (instance != this)
+        
+        if (instance != _instance)
         {
             Destroy(gameObject);
         }
+        else
+        {
+            _instance = this;
+        }
+
+        selectedObjectList = new List<VRTK_InteractableObject>();
+        interactableObjectList = new List<VRTK_InteractableObject>();
+
+        List<VRTK_InteractableObject> d = FindObjectsOfType<VRTK_InteractableObject>().ToList();
+        foreach(VRTK_InteractableObject x in d)
+        {
+            ObjectEvents oe = x.gameObject.GetComponent<ObjectEvents>();
+            if (oe != null)
+            {
+                AddInteractableObject(oe);
+            }
+        }
+
+        collisionSet = new List<List<string>>();
     }
 	// Update is called once per frame
 	void Update () {
