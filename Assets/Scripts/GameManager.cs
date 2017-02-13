@@ -40,16 +40,7 @@ public class GameManager : MonoBehaviour {
 
         selectedObjectList = new List<VRTK_InteractableObject>();
         interactableObjectList = new List<VRTK_InteractableObject>();
-
-        List<VRTK_InteractableObject> d = FindObjectsOfType<VRTK_InteractableObject>().ToList();
-        foreach(VRTK_InteractableObject x in d)
-        {
-            ObjectEvents oe = x.gameObject.GetComponent<ObjectEvents>();
-            if (oe != null)
-            {
-                AddInteractableObject(oe);
-            }
-        }
+        
 
         collisionSet = new List<List<string>>();
     }
