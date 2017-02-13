@@ -39,7 +39,7 @@ public class GroupUtil : MonoBehaviour {
     return newObj;
   }
 
-  public GameObject mergeGroups(List<GameObject> objects, HashSet<List<string>> allCollisions){
+  public GameObject mergeGroups(List<VRTK_InteractableObject> objects, List<List<string>> allCollisions){
     GameObject newObj = new GameObject();
     // List<GameObject> allChild = extractAllObjects(objects);
     // HashSet<List<int>> collisionSet = HashSet<List<int>>();
@@ -53,11 +53,13 @@ public class GroupUtil : MonoBehaviour {
         List<string> pair = new List<string>();
         pair.Add(objects[i].name);
         pair.Add(objects[j].name);
-			if (allCollisions.Contains(pair)) {
-				mergeObjects (objects[i], objects[j],false);
-				toRemove.Add(i);
-				toRemove.Add(j);
-        }
+				for (int m = 0; m < allCollisions.Count; m++){
+					if (allCollisions[m] == pair) {
+						mergeObjects (objects[i], objects[j],false);
+						toRemove.Add(i);
+						toRemove.Add(j);
+					}
+				}
       }
     }
 		for (int i = objects.Count -1; i > -1; i--){
