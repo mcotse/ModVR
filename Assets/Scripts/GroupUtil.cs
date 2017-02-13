@@ -55,7 +55,7 @@ public class GroupUtil : MonoBehaviour {
         pair.Add(objects[j].name);
 				for (int m = 0; m < allCollisions.Count; m++){
 					if (allCollisions[m] == pair) {
-						mergeObjects (objects[i], objects[j],false);
+						mergeObjects (objects[i].gameObject, objects[j].gameObject,false);
 						toRemove.Add(i);
 						toRemove.Add(j);
 					}
@@ -68,7 +68,7 @@ public class GroupUtil : MonoBehaviour {
 				objects.RemoveAt(i);
 			}
 		}
-		foreach (GameObject obj in objects){
+		foreach (VRTK_InteractableObject obj in objects){
 			obj.transform.parent = newObj.transform;
 		}
     return newObj;

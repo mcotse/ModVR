@@ -47,7 +47,8 @@ public class ModVR_WandController : MonoBehaviour {
         events.ButtonOnePressed += OnMenuButtonPressed;
         events.TouchpadPressed += OnTouchpadPressed;
         events.TriggerClicked += OnTriggerClicked;
-        events.GripPressed += GroupOnPressed;
+        // events.GripPressed += GroupOnPressed;
+        events.GripPressed += MergeOnPressed;
 	}
 
 
@@ -72,6 +73,13 @@ public class ModVR_WandController : MonoBehaviour {
     private void GroupOnPressed(object sender, ControllerInteractionEventArgs e)
     {
         util.groupObjects(GameManager.instance.interactableObjectList);
+    }
+
+    private void MergeOnPressed(object sender, ControllerInteractionEventArgs e)
+    {
+        List<VRTK_InteractableObject> objList = GameManager.instance.interactableObjectList;
+        List<List<string>> collisionSet = GameManager.instance.collisionSet;
+        util.mergeGroups(objList, collisionSet);
     }
 
     private void OnTouchpadPressed(object sender, ControllerInteractionEventArgs e)

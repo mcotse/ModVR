@@ -12,8 +12,8 @@ public class GameManager : MonoBehaviour {
 
     public List<VRTK_InteractableObject> interactableObjectList;
     public List<VRTK_InteractableObject> selectedObjectList;
-    
-    private List<List<string>> collisionSet;
+
+    public List<List<string>> collisionSet;
 
 
     public static GameManager instance {
@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour {
 	}
 
     void init() {
-        
+
         if (instance != _instance)
         {
             Destroy(gameObject);
@@ -55,7 +55,7 @@ public class GameManager : MonoBehaviour {
     }
 	// Update is called once per frame
 	void Update () {
-		
+
 	}
 
     public void AddInteractableObject(ObjectEvents io)
@@ -64,7 +64,7 @@ public class GameManager : MonoBehaviour {
         //io.InteractableObjectTouched += OnInteractableObjectTouched;
         io.InteractableObjectCollisionEnter += OnInteractableObjectCollision;
         io.InteractableObjectCollisionExit += OnInteractableObjectCollisionExit;
-        
+
     }
 
     public void RemoveInteractableObject(VRTK_InteractableObject io)
@@ -111,7 +111,7 @@ public class GameManager : MonoBehaviour {
     //    VRTK_InteractableObject senderObj = sender as VRTK_InteractableObject;
     //    Debug.Log(senderObj.name);
     //    Debug.Log(e.interactingObject.name);
-        
+
     //}
 
     void OnInteractableObjectCollision(object sender, ObjectEventCollisionArgs e)
@@ -140,7 +140,7 @@ public class GameManager : MonoBehaviour {
     {
         VRTK_InteractableObject senderObj = sender as VRTK_InteractableObject;
         GameObject c = e.collider.gameObject;
-        
+
         if (c.name == "Controller (right)" || c.name == "Controller (left)")
         {
             Debug.Log("Controller Object type" + c.GetType() + ". Controller name: " + c.name);
@@ -162,5 +162,5 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    
+
 }
