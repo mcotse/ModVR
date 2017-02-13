@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using VRTK;
+using System.Linq;
 
 public class GroupUtil : MonoBehaviour {
 	public GameObject mergeObjects(GameObject obj1, GameObject obj2, bool destoryOld){
@@ -39,40 +40,51 @@ public class GroupUtil : MonoBehaviour {
     return newObj;
   }
 
-  public GameObject mergeGroups(List<VRTK_InteractableObject> objects, List<List<string>> allCollisions){
-    GameObject newObj = new GameObject();
-    // List<GameObject> allChild = extractAllObjects(objects);
-    // HashSet<List<int>> collisionSet = HashSet<List<int>>();
-		// for (int i = 0; i < allCollisions.Count; i++) {
-		// 	collisionSet.Add(Tuple.Create<int>(allCollisions[i].gameObject.GetInstanceID(), collisionObjects[i].GetInstanceID()));
-    // }
-		HashSet<int> toRemove = new HashSet<int>();
-		Debug.Log("in mergeGroups");
-    for (int i = 0; i < objects.Count; i++) {
-      for (int j = i+1; i < objects.Count; j++) {
-        List<string> pair = new List<string>();
-        pair.Add(objects[i].name);
-        pair.Add(objects[j].name);
-				for (int m = 0; m < allCollisions.Count; m++){
-					if (allCollisions[m] == pair) {
-						mergeObjects (objects[i].gameObject, objects[j].gameObject,false);
-						toRemove.Add(i);
-						toRemove.Add(j);
-					}
-				}
-      }
+    public GameObject mergeGroups(List<VRTK_InteractableObject> objects, List<List<string>> allCollisions)
+    {
+        GameObject newObj = new GameObject();
+        // List<GameObject> allChild = extractAllObjects(objects);
+        // HashSet<List<int>> collisionSet = HashSet<List<int>>();
+        // for (int i = 0; i < allCollisions.Count; i++) {
+        // 	collisionSet.Add(Tuple.Create<int>(allCollisions[i].gameObject.GetInstanceID(), collisionObjects[i].GetInstanceID()));
+        // }
+
+        HashSet<int> toRemove = new HashSet<int>();
+        Debug.Log("in mergeGroups");
+        for (int i = 0; i < objects.Count; i++)
+        {
+            for (int j = i + 1; j < objects.Count; j++)
+            {
+                List<string> pair = new List<string>();
+                pair.Add(objects[i].name);
+                pair.Add(objects[j].name);
+                pair.Sort();
+                for (int m = 0; m < allCollisions.Count; m++)
+                {
+                    allCollisions[m].Sort();
+                    if (Enumerable.SequenceEqual(allCollisions[m], pair))
+                    {
+                        mergeObjects(objects[i].gameObject, objects[j].gameObject, false);
+                        toRemove.Add(i);
+                        toRemove.Add(j);
+                    }
+                }
+            }
+        }
+        for (int i = objects.Count - 1; i > -1; i--)
+        {
+            if (toRemove.Contains(i))
+            {
+                Destroy(objects[i]);
+                objects.RemoveAt(i);
+            }
+        }
+        foreach (VRTK_InteractableObject obj in objects)
+        {
+            obj.transform.parent = newObj.transform;
+        }
+        return newObj;
     }
-		for (int i = objects.Count -1; i > -1; i--){
-			if (toRemove.Contains(i)){
-				Destroy(objects[i]);
-				objects.RemoveAt(i);
-			}
-		}
-		foreach (VRTK_InteractableObject obj in objects){
-			obj.transform.parent = newObj.transform;
-		}
-    return newObj;
-  }
 
   public GameObject groupObjects(List<VRTK_InteractableObject> objects){
 		GameObject newObj = new GameObject();
