@@ -48,7 +48,7 @@ public class GroupUtil : MonoBehaviour {
         // for (int i = 0; i < allCollisions.Count; i++) {
         // 	collisionSet.Add(Tuple.Create<int>(allCollisions[i].gameObject.GetInstanceID(), collisionObjects[i].GetInstanceID()));
         // }
-
+				List<GameObject> mergedObjs = new List<GameObject>();
         HashSet<int> toRemove = new HashSet<int>();
         Debug.Log("in mergeGroups");
         for (int i = 0; i < objects.Count; i++)
@@ -64,25 +64,27 @@ public class GroupUtil : MonoBehaviour {
                     allCollisions[m].Sort();
                     if (Enumerable.SequenceEqual(allCollisions[m], pair))
                     {
-                        mergeObjects(objects[i].gameObject, objects[j].gameObject, false);
-                        toRemove.Add(i);
+                        merged = mergeObjects(objects[i].gameObject, objects[j].gameObject, false);
+												mergedObjs.Add(merged);
+												toRemove.Add(i);
                         toRemove.Add(j);
                     }
                 }
             }
         }
-        for (int i = objects.Count - 1; i > -1; i--)
-        {
+        for (int i = objects.Count - 1; i > -1; i--){
             if (toRemove.Contains(i))
             {
                 Destroy(objects[i]);
                 objects.RemoveAt(i);
             }
         }
-        foreach (VRTK_InteractableObject obj in objects)
-        {
+        foreach (VRTK_InteractableObject obj in objects){
             obj.transform.parent = newObj.transform;
         }
+				foreach (GameObject obj in mergedObjs){
+						obj.transform.parent = newObj.transform;
+				}
         return newObj;
     }
 
