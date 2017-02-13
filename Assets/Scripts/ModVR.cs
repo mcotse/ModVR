@@ -58,7 +58,7 @@ namespace ModVR
             return newObj;
         }
 
-        public GameObject mergeGroups(List<GameObject> objects, HashSet<List<string>> allCollisions)
+        public GameObject mergeGroups(List<VRTK_InteractableObject> objects, List<List<string>> allCollisions)
         {
             GameObject newObj = new GameObject();
             // List<GameObject> allChild = extractAllObjects(objects);
@@ -75,11 +75,14 @@ namespace ModVR
                     List<string> pair = new List<string>();
                     pair.Add(objects[i].name);
                     pair.Add(objects[j].name);
-                    if (allCollisions.Contains(pair))
+                    for (int m = 0; m < allCollisions.Count; m++)
                     {
-                        mergeObjects(objects[i], objects[j], false);
-                        toRemove.Add(i);
-                        toRemove.Add(j);
+                        if (allCollisions[m] == pair)
+                        {
+                            mergeObjects(objects[i].gameObject, objects[j].gameObject, false);
+                            toRemove.Add(i);
+                            toRemove.Add(j);
+                        }
                     }
                 }
             }
@@ -91,7 +94,7 @@ namespace ModVR
                     objects.RemoveAt(i);
                 }
             }
-            foreach (GameObject obj in objects)
+            foreach (VRTK_InteractableObject obj in objects)
             {
                 obj.transform.parent = newObj.transform;
             }
@@ -147,5 +150,7 @@ namespace ModVR
         {
             return System.DateTime.Now.ToString("hhss", System.Globalization.CultureInfo.InvariantCulture);
         }
+
+
     }
 }

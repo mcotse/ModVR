@@ -79,7 +79,8 @@ public class ModVR_WandController : MonoBehaviour {
     {
         List<VRTK_InteractableObject> objList = GameManager.instance.interactableObjectList;
         List<List<string>> collisionSet = GameManager.instance.collisionSet;
-        util.mergeGroups(objList, collisionSet);
+        GameObject merged = util.mergeGroups(objList, collisionSet);
+        SetupInteractableObject(merged);
     }
 
     private void OnTouchpadPressed(object sender, ControllerInteractionEventArgs e)
@@ -118,6 +119,22 @@ public class ModVR_WandController : MonoBehaviour {
 
     private void SetupInteractableObject(GameObject obj)
     {
+        if (obj.GetComponent<Rigidbody>() == null)
+        {
+            Rigidbody rb = obj.AddComponent<Rigidbody>();
+            rb.freezeRotation = false;
+            rb.detectCollisions = true;
+            rb.collisionDetectionMode = CollisionDetectionMode.Discrete;
+            rb.isKinematic = true;
+            rb.useGravity = false;
+        }
+
+        if(obj.GetComponent<BoxCollider>() == null && obj.name.StartsWith("merged"))
+        {
+            BoxCollider bc = obj.AddComponent<BoxCollider>();
+            bc.isTrigger = true;
+        }
+
         ObjectEvents io = obj.GetComponent<ObjectEvents>();
         io.isUsable = true;
         io.touchHighlightColor = Color.red;
