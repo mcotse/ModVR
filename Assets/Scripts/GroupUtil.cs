@@ -64,7 +64,7 @@ public class GroupUtil : MonoBehaviour {
                     allCollisions[m].Sort();
                     if (Enumerable.SequenceEqual(allCollisions[m], pair))
                     {
-                        merged = mergeObjects(objects[i].gameObject, objects[j].gameObject, false);
+                        GameObject merged = mergeObjects(objects[i].gameObject, objects[j].gameObject, false);
 												mergedObjs.Add(merged);
 												toRemove.Add(i);
                         toRemove.Add(j);
