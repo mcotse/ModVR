@@ -57,6 +57,18 @@ public class GameManager : MonoBehaviour {
         io.InteractableObjectCollisionExit += OnInteractableObjectCollisionExit;
 
     }
+    public void handleSelectedObject(GameObject obj){
+        VRTK_InteractableObject temp = (from o in selectedObjectList
+                            where o.name == obj.name 
+                            select o).FirstOrDefault();
+
+        if(temp != null){
+            selectedObjectList = selectedObjectList.Where(o => o.name != temp.name).ToList();
+        }
+        else{
+            selectedObjectList.Add(obj.GetComponentInChildren<VRTK_InteractableObject>());
+        }
+    }
 
     public void RemoveInteractableObject(VRTK_InteractableObject io)
     {

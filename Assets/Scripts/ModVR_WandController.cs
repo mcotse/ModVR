@@ -106,7 +106,9 @@ public class ModVR_WandController : MonoBehaviour {
             {
                 CreateSelectedObject(selectedObj);
             }
-
+        }
+        if (isSelectMode){
+            //GameManager.instance.AddInteractableObject
         }
     }
 
@@ -152,7 +154,7 @@ public class ModVR_WandController : MonoBehaviour {
         Rigidbody rigidObj = obj.GetComponent<Rigidbody>();
         rigidObj.constraints = RigidbodyConstraints.None;
         rigidObj.useGravity = false;
-        rigidObj.isKinematic = true;
+        rigidObj.isKinematic = false;
 
         GameManager.instance.AddInteractableObject(io);
         obj.AddComponent<VRTK_FixedJointGrabAttach>();
