@@ -108,6 +108,14 @@ public class ModVR_WandController : MonoBehaviour {
             }
         }
         if (isSelectMode){
+            if (GameManager.instance.laserColliding)
+            {
+                GameManager.instance.selectedObjectList.Add(GameManager.instance.lastLaserSelectedObj.GetComponent<VRTK_InteractableObject>());
+            }
+            foreach (VRTK_InteractableObject o in GameManager.instance.selectedObjectList){
+                Debug.Log(o.name);
+            }
+            // obj.name.contains(BasePointer_ObjectInteractor_Collider)
             //GameManager.instance.AddInteractableObject
         }
     }

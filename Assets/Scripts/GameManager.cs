@@ -14,7 +14,8 @@ public class GameManager : MonoBehaviour {
     public List<VRTK_InteractableObject> selectedObjectList;
 
     public List<List<string>> collisionSet;
-
+    public bool laserColliding = false;
+    public GameObject lastLaserSelectedObj = null;
 
     public static GameManager instance {
         get
@@ -77,6 +78,7 @@ public class GameManager : MonoBehaviour {
 
     public void AddCollision(List<string> collision)
     {
+        
         collision.Sort();
 
         foreach(List<string> col in collisionSet)

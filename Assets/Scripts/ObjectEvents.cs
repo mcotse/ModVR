@@ -25,15 +25,25 @@ public class ObjectEvents : VRTK_InteractableObject {
         interactableRigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
     }
 
-    //private void OnCollisionEnter(Collision collision)
-    //{
+    private void OnCollisionEnter(Collision collision)
+    {
     //    if (controllerActions && IsGrabbed())
     //    {
     //        ObjectEventCollisionArgs e = new ObjectEventCollisionArgs();
     //        e.collision = collision;
     //        InteractableObjectCollisionEnter(this, e);
     //    }
-    //}
+        if (collision.gameObject.name.Contains("BasePointer_ObjectInteractor_Collider")){
+            GameManager.instance.laserColliding = true;
+            GameManager.instance.lastLaserSelectedObj = this.gameObject;
+        }
+    }
+    
+    private void OnCollisionExit(Collision collision)
+    {
+        GameManager.instance.laserColliding = false;
+
+    }
 
     private void OnTriggerEnter(Collider other)
     {
