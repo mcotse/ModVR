@@ -166,6 +166,11 @@ public class ModVR_WandController : MonoBehaviour {
 
         GameManager.instance.AddInteractableObject(io);
         obj.AddComponent<VRTK_FixedJointGrabAttach>();
+
+        ModVR_OutlineObjectSelectHighlighter selectHighlighter = obj.AddComponent<ModVR_OutlineObjectSelectHighlighter>();
+        selectHighlighter.Initialise(Color.blue);
+
+        obj.AddComponent<VRTK_OutlineObjectCopyHighlighter>();
     }
 
     void CreateSelectedObject(ObjectEvents selectedObj)

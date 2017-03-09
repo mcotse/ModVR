@@ -27,12 +27,13 @@ public class ObjectEvents : VRTK_InteractableObject {
 
     private void OnCollisionEnter(Collision collision)
     {
-    //    if (controllerActions && IsGrabbed())
-    //    {
-    //        ObjectEventCollisionArgs e = new ObjectEventCollisionArgs();
-    //        e.collision = collision;
-    //        InteractableObjectCollisionEnter(this, e);
-    //    }
+        //    if (controllerActions && IsGrabbed())
+        //    {
+        //        ObjectEventCollisionArgs e = new ObjectEventCollisionArgs();
+        //        e.collision = collision;
+        //        InteractableObjectCollisionEnter(this, e);
+        //    }
+        Debug.Log(collision.gameObject.name);
         if (collision.gameObject.name.Contains("BasePointer_ObjectInteractor_Collider")){
             GameManager.instance.laserColliding = true;
             GameManager.instance.lastLaserSelectedObj = this.gameObject;
@@ -47,15 +48,25 @@ public class ObjectEvents : VRTK_InteractableObject {
 
     private void OnTriggerEnter(Collider other)
     {
-        ObjectEventCollisionArgs e = new ObjectEventCollisionArgs();
-        e.collider = other;
-        InteractableObjectCollisionEnter(this, e);
+
+        Debug.Log(other.gameObject.name);
+        if (InteractableObjectCollisionEnter != null)
+        {
+            ObjectEventCollisionArgs e = new ObjectEventCollisionArgs();
+            e.collider = other;
+            InteractableObjectCollisionEnter(this, e);
+        }
+
+        
     }
 
     private void OnTriggerExit(Collider other)
     {
-        ObjectEventCollisionArgs e = new ObjectEventCollisionArgs();
-        e.collider = other;
-        InteractableObjectCollisionExit(this, e);
+        if (InteractableObjectCollisionExit != null)
+        {
+            ObjectEventCollisionArgs e = new ObjectEventCollisionArgs();
+            e.collider = other;
+            InteractableObjectCollisionExit(this, e);
+        }
     }
 }
