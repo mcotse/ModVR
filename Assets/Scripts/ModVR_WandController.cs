@@ -77,7 +77,7 @@ public class ModVR_WandController : MonoBehaviour {
 
     private void MergeOnPressed(object sender, ControllerInteractionEventArgs e)
     {
-        List<VRTK_InteractableObject> objList = GameManager.instance.interactableObjectList;
+        List<ModVR_InteractableObject> objList = GameManager.instance.interactableObjectList;
         List<List<string>> collisionSet = GameManager.instance.collisionSet;
         GameObject merged = util.mergeGroups(objList, collisionSet);
         SetupInteractableObject(merged);
@@ -98,7 +98,7 @@ public class ModVR_WandController : MonoBehaviour {
     {
         if (isInteractMode)
         {
-            ObjectEvents selectedObj = (from io in GameObject.FindObjectsOfType<ObjectEvents>()
+            ModVR_InteractableObject selectedObj = (from io in GameObject.FindObjectsOfType<ModVR_InteractableObject>()
                                             where io.IsTouched() && io.GetTouchingObjects().Contains(this.gameObject)
                                             select io).SingleOrDefault();
 
@@ -110,11 +110,26 @@ public class ModVR_WandController : MonoBehaviour {
         if (isSelectMode){
             if (GameManager.instance.laserColliding)
             {
-                GameManager.instance.selectedObjectList.Add(GameManager.instance.lastLaserSelectedObj.GetComponent<VRTK_InteractableObject>());
+                ModVR_OutlineObjectSelectHighlighter selector = GameManager.instance.lastLaserSelectedObj.GetComponent<ModVR_OutlineObjectSelectHighlighter>();
+                ModVR_InteractableObject interactableObj = GameManager.instance.lastLaserSelectedObj.GetComponent<ModVR_InteractableObject>();
+                //bool isSelected = 
+                List<ModVR_InteractableObject> selectedObjList = GameManager.instance.selectedObjectList;
+
+                bool isSelected = GameManager.instance.handleSelectedObject(GameManager.instance.lastLaserSelectedObj);
+
+                if(isSelected == true)
+                {
+                    selector.ResetHighlighter();
+                }
+                else
+                {
+                    selector.Highlight(Color.blue);
+                }
+
             }
-            foreach (VRTK_InteractableObject o in GameManager.instance.selectedObjectList){
-                Debug.Log(o.name);
-            }
+            //foreach (VRTK_InteractableObject o in GameManager.instance.selectedObjectList){
+            //    Debug.Log(o.name);
+            //}
             // obj.name.contains(BasePointer_ObjectInteractor_Collider)
             //GameManager.instance.AddInteractableObject
         }
@@ -135,7 +150,7 @@ public class ModVR_WandController : MonoBehaviour {
             rb.freezeRotation = false;
             rb.detectCollisions = true;
             rb.collisionDetectionMode = CollisionDetectionMode.Discrete;
-            rb.isKinematic = true;
+            rb.isKinematic = false;
             rb.useGravity = false;
         }
 
@@ -145,10 +160,10 @@ public class ModVR_WandController : MonoBehaviour {
             bc.isTrigger = true;
         }
 
-        ObjectEvents io = obj.GetComponent<ObjectEvents>();
+        ModVR_InteractableObject io = obj.GetComponent<ModVR_InteractableObject>();
         io.isUsable = true;
         io.touchHighlightColor = Color.red;
-        io.pointerActivatesUseAction = true;
+        io.pointerActivatesUseAction = false;
         io.enabled = true;
         io.isGrabbable = true;
         io.holdButtonToGrab = true;
@@ -173,7 +188,7 @@ public class ModVR_WandController : MonoBehaviour {
         obj.AddComponent<VRTK_OutlineObjectCopyHighlighter>();
     }
 
-    void CreateSelectedObject(ObjectEvents selectedObj)
+    void CreateSelectedObject(ModVR_InteractableObject selectedObj)
     {
         GameObject selected = selectedObj.gameObject;
         GameObject newGameObj = Instantiate(selected, selected.transform.position, selected.transform.rotation);

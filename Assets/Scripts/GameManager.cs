@@ -10,8 +10,8 @@ public class GameManager : MonoBehaviour {
 
     private static GameManager _instance;
 
-    public List<VRTK_InteractableObject> interactableObjectList;
-    public List<VRTK_InteractableObject> selectedObjectList;
+    public List<ModVR_InteractableObject> interactableObjectList;
+    public List<ModVR_InteractableObject> selectedObjectList;
 
     public List<List<string>> collisionSet;
     public bool laserColliding = false;
@@ -39,8 +39,8 @@ public class GameManager : MonoBehaviour {
             _instance = this;
         }
 
-        selectedObjectList = new List<VRTK_InteractableObject>();
-        interactableObjectList = new List<VRTK_InteractableObject>();
+        selectedObjectList = new List<ModVR_InteractableObject>();
+        interactableObjectList = new List<ModVR_InteractableObject>();
         
 
         collisionSet = new List<List<string>>();
@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour {
 
 	}
 
-    public void AddInteractableObject(ObjectEvents io)
+    public void AddInteractableObject(ModVR_InteractableObject io)
     {
         interactableObjectList.Add(io);
         //io.InteractableObjectTouched += OnInteractableObjectTouched;
@@ -58,7 +58,8 @@ public class GameManager : MonoBehaviour {
         io.InteractableObjectCollisionExit += OnInteractableObjectCollisionExit;
 
     }
-    public void handleSelectedObject(GameObject obj){
+
+    public bool handleSelectedObject(GameObject obj){
         VRTK_InteractableObject temp = (from o in selectedObjectList
                             where o.name == obj.name 
                             select o).FirstOrDefault();
@@ -67,13 +68,17 @@ public class GameManager : MonoBehaviour {
             selectedObjectList = selectedObjectList.Where(o => o.name != temp.name).ToList();
         }
         else{
-            selectedObjectList.Add(obj.GetComponentInChildren<VRTK_InteractableObject>());
+            selectedObjectList.Add(obj.GetComponentInChildren<ModVR_InteractableObject>());
         }
+
+        bool selected = (temp == null);
+
+        return selected;
     }
 
-    public void RemoveInteractableObject(VRTK_InteractableObject io)
+    public void RemoveInteractableObject(ModVR_InteractableObject io)
     {
-        interactableObjectList.Remove(io);
+        interactableObjectList = interactableObjectList.Where(obj => obj.name != io.name).ToList();
     }
 
     public void AddCollision(List<string> collision)

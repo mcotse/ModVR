@@ -40,7 +40,7 @@ public class GroupUtil : MonoBehaviour {
     return newObj;
   }
 
-    public GameObject mergeGroups(List<VRTK_InteractableObject> objects, List<List<string>> allCollisions)
+    public GameObject mergeGroups(List<ModVR_InteractableObject> objects, List<List<string>> allCollisions)
     {
         GameObject newObj = new GameObject();
         // List<GameObject> allChild = extractAllObjects(objects);
@@ -79,7 +79,7 @@ public class GroupUtil : MonoBehaviour {
                 objects.RemoveAt(i);
             }
         }
-        foreach (VRTK_InteractableObject obj in objects){
+        foreach (ModVR_InteractableObject obj in objects){
             obj.transform.parent = newObj.transform;
         }
 				foreach (GameObject obj in mergedObjs){
@@ -88,12 +88,12 @@ public class GroupUtil : MonoBehaviour {
         return newObj;
     }
 
-  public GameObject groupObjects(List<VRTK_InteractableObject> objects){
+  public GameObject groupObjects(List<ModVR_InteractableObject> objects){
 		GameObject newObj = new GameObject();
 		string tstamp = Guid.NewGuid().ToString();
 		newObj.name = "groupObj" + tstamp;
 		newObj.tag = "groupObj";
-    foreach (VRTK_InteractableObject obj in objects){
+    foreach (ModVR_InteractableObject obj in objects){
 	    obj.transform.parent = newObj.transform;
     }
     return newObj;

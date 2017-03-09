@@ -4,7 +4,7 @@ using UnityEngine;
 using VRTK;
 using ModVR;
 
-public class ObjectEvents : VRTK_InteractableObject {
+public class ModVR_InteractableObject : VRTK_InteractableObject {
     
     public delegate void InteractableObjectEventHandler(object sender, ObjectEventCollisionArgs e);
 
@@ -48,19 +48,22 @@ public class ObjectEvents : VRTK_InteractableObject {
 
     private void OnTriggerEnter(Collider other)
     {
-
-        Debug.Log(other.gameObject.name);
-		if (other.gameObject.name.Contains("BasePointer_ObjectInteractor_Collider")){
-			GameManager.instance.laserColliding = true;
-			GameManager.instance.lastLaserSelectedObj = gameObject;
-		}
-        if (InteractableObjectCollisionEnter != null)
+        
+        if (other.gameObject.name.Contains("BasePointer_ObjectInteractor_Collider"))
         {
-            ObjectEventCollisionArgs e = new ObjectEventCollisionArgs();
-            e.collider = other;
-            InteractableObjectCollisionEnter(this, e);
+            GameManager.instance.laserColliding = true;
+            GameManager.instance.lastLaserSelectedObj = gameObject;
         }
+        else
+        {
+            if (InteractableObjectCollisionEnter != null)
+            {
+                ObjectEventCollisionArgs e = new ObjectEventCollisionArgs();
+                e.collider = other;
+                InteractableObjectCollisionEnter(this, e);
+            }
 
+        }
         
     }
 

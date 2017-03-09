@@ -43,10 +43,10 @@ namespace ModVR
         /// </summary>
         public override void ResetHighlighter()
         {
-            DeleteExistingHighlightModels(false);
+            DeleteExistingHighlightModels();
             CreateHighlightModel();
         }
-
+        
         /// <summary>
         /// The Highlight method initiates the outline object to be enabled and display the outline colour.
         /// </summary>
@@ -103,17 +103,13 @@ namespace ModVR
             }
         }
 
-        private void DeleteExistingHighlightModels(bool deleteSelected)
+        private void DeleteExistingHighlightModels()
         {
             var existingHighlighterObjects = GetComponentsInChildren<ModVR_PlayerObject>(true);
             for (int i = 0; i < existingHighlighterObjects.Length; i++)
             {
-                if (existingHighlighterObjects[i].objectType == ModVR_PlayerObject.ObjectTypes.Highlighter)
-                {
-                    Destroy(existingHighlighterObjects[i].gameObject);
-                }
 
-                if(deleteSelected && existingHighlighterObjects[i].objectType == ModVR_PlayerObject.ObjectTypes.Selector)
+                if(existingHighlighterObjects[i].objectType == ModVR_PlayerObject.ObjectTypes.Selector)
                 {
                     Destroy(existingHighlighterObjects[i].gameObject);
                 }
