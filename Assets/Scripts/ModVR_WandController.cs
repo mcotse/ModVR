@@ -166,4 +166,25 @@ public class ModVR_WandController : MonoBehaviour {
         newGameObj.name = gameObjName.ToString() + "_" + newGameObj.name;
         SetupInteractableObject(newGameObj);
     }
+
+	public void GetNewRadialMenuOptions()
+	{
+		GameObject radialMenu = GameObject.Find ("RadialMenu");
+		if (radialMenu != null) {
+			radialMenu.SetActive (false);
+			//GameObject optionsMenu = gameObject.FindObject ("Options");
+			GameObject optionsMenu = null;
+			Component[] components = transform.GetComponentsInChildren(typeof(Transform), true);
+			foreach(Component c in components){
+				if(c.gameObject.name == "Options"){
+					optionsMenu = c.gameObject;
+				}
+			}
+			if (optionsMenu != null) {
+				optionsMenu.SetActive (true);
+			} else {
+				Debug.Log ("optionsMenu is null");
+			}
+		}
+	}
 }
