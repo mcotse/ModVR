@@ -42,7 +42,7 @@ public class ObjectEvents : VRTK_InteractableObject {
     
     private void OnCollisionExit(Collision collision)
     {
-        GameManager.instance.laserColliding = false;
+       
 
     }
 
@@ -50,6 +50,10 @@ public class ObjectEvents : VRTK_InteractableObject {
     {
 
         Debug.Log(other.gameObject.name);
+		if (other.gameObject.name.Contains("BasePointer_ObjectInteractor_Collider")){
+			GameManager.instance.laserColliding = true;
+			GameManager.instance.lastLaserSelectedObj = gameObject;
+		}
         if (InteractableObjectCollisionEnter != null)
         {
             ObjectEventCollisionArgs e = new ObjectEventCollisionArgs();
@@ -62,11 +66,13 @@ public class ObjectEvents : VRTK_InteractableObject {
 
     private void OnTriggerExit(Collider other)
     {
+		
         if (InteractableObjectCollisionExit != null)
         {
             ObjectEventCollisionArgs e = new ObjectEventCollisionArgs();
             e.collider = other;
             InteractableObjectCollisionExit(this, e);
         }
+		GameManager.instance.laserColliding = false;
     }
 }
