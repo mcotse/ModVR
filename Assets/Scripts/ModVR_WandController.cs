@@ -102,7 +102,8 @@ public class ModVR_WandController : MonoBehaviour {
                                             where io.IsTouched() && io.GetTouchingObjects().Contains(this.gameObject)
                                             select io).SingleOrDefault();
 
-            if (selectedObj && (selectedObj.transform.parent.name.Equals("MenuRight") || selectedObj.transform.parent.name.Equals("MenuLeft")))
+            string parentName = selectedObj.transform.parent.name;
+            if (selectedObj && (parentName.Equals("MenuRight") || parentName.Equals("MenuLeft")))
             {
                 CreateSelectedObject(selectedObj);
             }
@@ -111,27 +112,20 @@ public class ModVR_WandController : MonoBehaviour {
             if (GameManager.instance.laserColliding)
             {
                 ModVR_OutlineObjectSelectHighlighter selector = GameManager.instance.lastLaserSelectedObj.GetComponent<ModVR_OutlineObjectSelectHighlighter>();
-                ModVR_InteractableObject interactableObj = GameManager.instance.lastLaserSelectedObj.GetComponent<ModVR_InteractableObject>();
-                //bool isSelected = 
-                List<ModVR_InteractableObject> selectedObjList = GameManager.instance.selectedObjectList;
 
                 bool isSelected = GameManager.instance.handleSelectedObject(GameManager.instance.lastLaserSelectedObj);
 
+                
                 if(isSelected == true)
-                {
-                    selector.ResetHighlighter();
-                }
-                else
                 {
                     selector.Highlight(Color.blue);
                 }
+                else
+                {
+                    selector.ResetHighlighter();
+                }
 
             }
-            //foreach (VRTK_InteractableObject o in GameManager.instance.selectedObjectList){
-            //    Debug.Log(o.name);
-            //}
-            // obj.name.contains(BasePointer_ObjectInteractor_Collider)
-            //GameManager.instance.AddInteractableObject
         }
     }
 

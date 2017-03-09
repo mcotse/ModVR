@@ -25,26 +25,26 @@ public class ModVR_InteractableObject : VRTK_InteractableObject {
         interactableRigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        //    if (controllerActions && IsGrabbed())
-        //    {
-        //        ObjectEventCollisionArgs e = new ObjectEventCollisionArgs();
-        //        e.collision = collision;
-        //        InteractableObjectCollisionEnter(this, e);
-        //    }
-        Debug.Log(collision.gameObject.name);
-        if (collision.gameObject.name.Contains("BasePointer_ObjectInteractor_Collider")){
-            GameManager.instance.laserColliding = true;
-            GameManager.instance.lastLaserSelectedObj = this.gameObject;
-        }
-    }
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    //    if (controllerActions && IsGrabbed())
+    //    //    {
+    //    //        ObjectEventCollisionArgs e = new ObjectEventCollisionArgs();
+    //    //        e.collision = collision;
+    //    //        InteractableObjectCollisionEnter(this, e);
+    //    //    }
+    //    Debug.Log(collision.gameObject.name);
+    //    if (collision.gameObject.name.Contains("BasePointer_ObjectInteractor_Collider")){
+    //        GameManager.instance.laserColliding = true;
+    //        GameManager.instance.lastLaserSelectedObj = this.gameObject;
+    //    }
+    //}
     
-    private void OnCollisionExit(Collision collision)
-    {
+    //private void OnCollisionExit(Collision collision)
+    //{
        
 
-    }
+    //}
 
     private void OnTriggerEnter(Collider other)
     {
@@ -54,16 +54,14 @@ public class ModVR_InteractableObject : VRTK_InteractableObject {
             GameManager.instance.laserColliding = true;
             GameManager.instance.lastLaserSelectedObj = gameObject;
         }
-        else
-        {
-            if (InteractableObjectCollisionEnter != null)
-            {
-                ObjectEventCollisionArgs e = new ObjectEventCollisionArgs();
-                e.collider = other;
-                InteractableObjectCollisionEnter(this, e);
-            }
 
+        if (InteractableObjectCollisionEnter != null)
+        {
+            ObjectEventCollisionArgs e = new ObjectEventCollisionArgs();
+            e.collider = other;
+            InteractableObjectCollisionEnter(this, e);
         }
+
         
     }
 
