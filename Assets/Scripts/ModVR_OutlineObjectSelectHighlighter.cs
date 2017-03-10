@@ -161,7 +161,7 @@ namespace ModVR
             }
             highlightModel.SetActive(false);
 
-            ModVR_PlayerObject.SetPlayerObject(highlightModel, ModVR_PlayerObject.ObjectTypes.Highlighter);
+            ModVR_PlayerObject.SetPlayerObject(highlightModel, ModVR_PlayerObject.ObjectTypes.Selector);
         }
     }
 }

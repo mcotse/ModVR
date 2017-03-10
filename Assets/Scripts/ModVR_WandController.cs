@@ -100,18 +100,9 @@ public class ModVR_WandController : MonoBehaviour {
         if (isInteractMode)
         {
             ModVR_InteractableObject selectedObj = (from io in GameObject.FindObjectsOfType<ModVR_InteractableObject>()
-                                            where io.IsTouched() && io.GetTouchingObjects().Contains(triggeredObj)
+                                            where io.IsTouched() && io.GetTouchingObjects().Contains(this.gameObject)
                                             select io).SingleOrDefault();
-            //GameObject ioObj = null;
-
-            //ModVR_InteractableObject[] objects = FindObjectsOfType<ModVR_InteractableObject>();
-            //foreach(ModVR_InteractableObject obj in objects)
-            //{
-            //    bool touched = obj.IsTouched();
-            //    List<GameObject> touchingObjs = obj.GetTouchingObjects();
-            //    ioObj = touchingObjs.Where(go => go.name == triggeredObj.transform.name).SingleOrDefault();
-            //}
-
+            
             string parentName = selectedObj.transform.parent.name;
             if (selectedObj && (parentName.Equals("MenuRight") || parentName.Equals("MenuLeft")))
             {
@@ -132,7 +123,7 @@ public class ModVR_WandController : MonoBehaviour {
                 }
                 else
                 {
-                    selector.ResetHighlighter();
+                    selector.Unhighlight(Color.clear);
                 }
 
             }
@@ -154,7 +145,7 @@ public class ModVR_WandController : MonoBehaviour {
             rb.freezeRotation = false;
             rb.detectCollisions = true;
             rb.collisionDetectionMode = CollisionDetectionMode.Discrete;
-            rb.isKinematic = false;
+            rb.isKinematic = true;
             rb.useGravity = false;
         }
 
@@ -178,18 +169,13 @@ public class ModVR_WandController : MonoBehaviour {
 
         io.secondaryGrabActionScript = obj.AddComponent<VRTK_AxisScaleGrabAction>();
 
-        Rigidbody rigidObj = obj.GetComponent<Rigidbody>();
-        rigidObj.constraints = RigidbodyConstraints.None;
-        rigidObj.useGravity = false;
-        rigidObj.isKinematic = false;
-
         GameManager.instance.AddInteractableObject(io);
-        obj.AddComponent<VRTK_FixedJointGrabAttach>();
+        //obj.AddComponent<VRTK_FixedJointGrabAttach>();
 
         ModVR_OutlineObjectSelectHighlighter selectHighlighter = obj.AddComponent<ModVR_OutlineObjectSelectHighlighter>();
         selectHighlighter.Initialise(Color.blue);
 
-        obj.AddComponent<VRTK_OutlineObjectCopyHighlighter>();
+        //obj.AddComponent<VRTK_OutlineObjectCopyHighlighter>();
     }
 
     void CreateSelectedObject(ModVR_InteractableObject selectedObj)
