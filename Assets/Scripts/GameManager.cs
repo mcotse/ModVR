@@ -60,7 +60,7 @@ public class GameManager : MonoBehaviour {
     }
 
     public bool handleSelectedObject(GameObject obj){
-        VRTK_InteractableObject temp = (from o in selectedObjectList
+        ModVR_InteractableObject temp = (from o in selectedObjectList
                             where o.name == obj.name 
                             select o).FirstOrDefault();
 
@@ -126,7 +126,7 @@ public class GameManager : MonoBehaviour {
 
     void OnInteractableObjectCollision(object sender, ObjectEventCollisionArgs e)
     {
-        VRTK_InteractableObject senderObj = sender as VRTK_InteractableObject;
+        ModVR_InteractableObject senderObj = sender as ModVR_InteractableObject;
         GameObject c = e.collider.gameObject;
         if (c.name == "Controller (right)" || c.name == "Controller (left)")
         {
@@ -148,7 +148,7 @@ public class GameManager : MonoBehaviour {
 
     void OnInteractableObjectCollisionExit(object sender, ObjectEventCollisionArgs e)
     {
-        VRTK_InteractableObject senderObj = sender as VRTK_InteractableObject;
+        ModVR_InteractableObject senderObj = sender as ModVR_InteractableObject;
         GameObject c = e.collider.gameObject;
 
         if (c.name == "Controller (right)" || c.name == "Controller (left)")

@@ -96,11 +96,21 @@ public class ModVR_WandController : MonoBehaviour {
 
     private void OnTriggerClicked(object sender, ControllerInteractionEventArgs e)
     {
+        GameObject triggeredObj = sender as GameObject;
         if (isInteractMode)
         {
             ModVR_InteractableObject selectedObj = (from io in GameObject.FindObjectsOfType<ModVR_InteractableObject>()
-                                            where io.IsTouched() && io.GetTouchingObjects().Contains(this.gameObject)
+                                            where io.IsTouched() && io.GetTouchingObjects().Contains(triggeredObj)
                                             select io).SingleOrDefault();
+            //GameObject ioObj = null;
+
+            //ModVR_InteractableObject[] objects = FindObjectsOfType<ModVR_InteractableObject>();
+            //foreach(ModVR_InteractableObject obj in objects)
+            //{
+            //    bool touched = obj.IsTouched();
+            //    List<GameObject> touchingObjs = obj.GetTouchingObjects();
+            //    ioObj = touchingObjs.Where(go => go.name == triggeredObj.transform.name).SingleOrDefault();
+            //}
 
             string parentName = selectedObj.transform.parent.name;
             if (selectedObj && (parentName.Equals("MenuRight") || parentName.Equals("MenuLeft")))
