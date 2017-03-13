@@ -44,6 +44,8 @@ public class GameManager : MonoBehaviour {
         
 
         collisionSet = new List<List<string>>();
+        GameObject cube = FindObjectsOfType<ModVR_InteractableObject>().Where(o => o.name == "Cube").First().gameObject;
+        cube.GetComponent<ModVR_OutlineObjectSelectHighlighter>().Initialise(Color.blue);
     }
 	// Update is called once per frame
 	void Update () {
@@ -126,7 +128,7 @@ public class GameManager : MonoBehaviour {
 
     void OnInteractableObjectCollision(object sender, ObjectEventCollisionArgs e)
     {
-        ModVR_InteractableObject senderObj = sender as ModVR_InteractableObject;
+        GameObject senderObj = sender as GameObject;
         GameObject c = e.collider.gameObject;
         if (c.name == "Controller (right)" || c.name == "Controller (left)")
         {

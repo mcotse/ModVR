@@ -25,6 +25,15 @@ public class ModVR_InteractableObject : VRTK_InteractableObject {
         interactableRigidbody.collisionDetectionMode = CollisionDetectionMode.Continuous;
     }
 
+    public override void OnInteractableObjectTouched(InteractableObjectEventArgs e)
+    {
+        base.OnInteractableObjectTouched(e);
+
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+    }
     //private void OnCollisionEnter(Collision collision)
     //{
     //    //    if (controllerActions && IsGrabbed())
@@ -39,30 +48,32 @@ public class ModVR_InteractableObject : VRTK_InteractableObject {
     //        GameManager.instance.lastLaserSelectedObj = this.gameObject;
     //    }
     //}
-    
+
     //private void OnCollisionExit(Collision collision)
     //{
-       
+
 
     //}
 
     private void OnTriggerEnter(Collider other)
     {
-        
-        if (other.gameObject.name.Contains("BasePointer_ObjectInteractor_Collider"))
+        bool isPointer = other.gameObject.name.Contains("BasePointer_ObjectInteractor_Collider");
+        if (isPointer)
         {
             GameManager.instance.laserColliding = true;
             GameManager.instance.lastLaserSelectedObj = gameObject;
         }
 
-        if (InteractableObjectCollisionEnter != null)
+
+
+        if (InteractableObjectCollisionEnter != null && !isPointer)
         {
             ObjectEventCollisionArgs e = new ObjectEventCollisionArgs();
             e.collider = other;
-            InteractableObjectCollisionEnter(this, e);
+            InteractableObjectCollisionEnter(gameObject, e);
         }
 
-        
+
     }
 
     private void OnTriggerExit(Collider other)
@@ -72,7 +83,7 @@ public class ModVR_InteractableObject : VRTK_InteractableObject {
         {
             ObjectEventCollisionArgs e = new ObjectEventCollisionArgs();
             e.collider = other;
-            InteractableObjectCollisionExit(this, e);
+            InteractableObjectCollisionExit(gameObject, e);
         }
 		GameManager.instance.laserColliding = false;
     }

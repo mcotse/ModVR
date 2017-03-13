@@ -4,41 +4,46 @@ using System.Collections.Generic;
 using System;
 using VRTK;
 using System.Linq;
+using ModVR;
 
 public class GroupUtil : MonoBehaviour {
-	public GameObject mergeObjects(GameObject obj1, GameObject obj2, bool destoryOld){
-		Debug.Log("in mergeObjects");
-		Debug.Log(obj1.name);
-		Debug.Log(obj2.name);
-		List<GameObject> meshObjectList = new List<GameObject>();
-    meshObjectList.Add(obj1);
-    meshObjectList.Add(obj2);
-    GameObject newObj = new GameObject("Empty");
-		newObj.AddComponent<MeshFilter>();
-		newObj.AddComponent<MeshRenderer>();
-		string tstamp = getTime();
-    newObj.name = "mergedObj" + tstamp;
-		newObj.tag = "mergedObj";
-    CombineInstance[] combine = new CombineInstance[meshObjectList.Count];
-    int i = 0;
-    while (i < meshObjectList.Count) {
-      MeshFilter meshFilter = meshObjectList[i].gameObject.GetComponent<MeshFilter>();
-      combine[i].mesh = meshFilter.sharedMesh;
-      combine[i].transform = meshFilter.transform.localToWorldMatrix;
-      i++;
+    public GameObject mergeObjects(GameObject obj1, GameObject obj2, bool destoryOld)
+    {
+        Debug.Log("in mergeObjects");
+        Debug.Log(obj1.name);
+        Debug.Log(obj2.name);
+        List<GameObject> meshObjectList = new List<GameObject>();
+        meshObjectList.Add(obj1);
+        meshObjectList.Add(obj2);
+        GameObject newObj = new GameObject("Empty");
+        newObj.AddComponent<MeshFilter>();
+        newObj.AddComponent<MeshRenderer>();
+        string tstamp = getTime();
+        newObj.name = "mergedObj" + tstamp;
+        newObj.tag = "mergedObj";
+        CombineInstance[] combine = new CombineInstance[meshObjectList.Count];
+        int i = 0;
+        while (i < meshObjectList.Count)
+        {
+            MeshFilter meshFilter = meshObjectList[i].gameObject.GetComponent<MeshFilter>();
+            combine[i].mesh = meshFilter.sharedMesh;
+            combine[i].transform = meshFilter.transform.localToWorldMatrix;
+            i++;
+        }
+        Mesh combinedMesh = new Mesh();
+        combinedMesh.CombineMeshes(combine);
+        newObj.GetComponent<MeshFilter>().mesh = combinedMesh;
+        //cleanup old object
+        if (destoryOld)
+        {
+            foreach (GameObject obj in meshObjectList)
+            {
+                Destroy(obj);
+            }
+        }
+        Debug.Log(newObj.name);
+        return newObj;
     }
-    Mesh combinedMesh= new Mesh();
-    combinedMesh.CombineMeshes(combine);
-    newObj.GetComponent<MeshFilter>().mesh = combinedMesh;
-    //cleanup old object
-		if (destoryOld){
-			foreach (GameObject obj in meshObjectList){
-				Destroy(obj);
-			}
-		}
-		Debug.Log(newObj.name);
-    return newObj;
-  }
 
     public GameObject mergeGroups(List<ModVR_InteractableObject> objects, List<List<string>> allCollisions)
     {
@@ -48,7 +53,7 @@ public class GroupUtil : MonoBehaviour {
         // for (int i = 0; i < allCollisions.Count; i++) {
         // 	collisionSet.Add(Tuple.Create<int>(allCollisions[i].gameObject.GetInstanceID(), collisionObjects[i].GetInstanceID()));
         // }
-				List<GameObject> mergedObjs = new List<GameObject>();
+        List<GameObject> mergedObjs = new List<GameObject>();
         HashSet<int> toRemove = new HashSet<int>();
         Debug.Log("in mergeGroups");
         for (int i = 0; i < objects.Count; i++)
@@ -65,66 +70,88 @@ public class GroupUtil : MonoBehaviour {
                     if (Enumerable.SequenceEqual(allCollisions[m], pair))
                     {
                         GameObject merged = mergeObjects(objects[i].gameObject, objects[j].gameObject, false);
-												mergedObjs.Add(merged);
-												toRemove.Add(i);
+                        mergedObjs.Add(merged);
+                        toRemove.Add(i);
                         toRemove.Add(j);
                     }
                 }
             }
         }
-        for (int i = objects.Count - 1; i > -1; i--){
+        for (int i = objects.Count - 1; i > -1; i--)
+        {
             if (toRemove.Contains(i))
             {
-                Destroy(objects[i]);
+                CleanupSelectedObject(objects[i].gameObject);
+
+                Destroy(objects[i].gameObject);
                 objects.RemoveAt(i);
             }
         }
-        foreach (ModVR_InteractableObject obj in objects){
+        foreach (ModVR_InteractableObject obj in objects)
+        {
             obj.transform.parent = newObj.transform;
         }
-				foreach (GameObject obj in mergedObjs){
-						obj.transform.parent = newObj.transform;
-				}
+        foreach (GameObject obj in mergedObjs)
+        {
+            obj.transform.parent = newObj.transform;
+        }
         return newObj;
     }
 
-  public GameObject groupObjects(List<ModVR_InteractableObject> objects){
-		GameObject newObj = new GameObject();
-		string tstamp = Guid.NewGuid().ToString();
-		newObj.name = "groupObj" + tstamp;
-		newObj.tag = "groupObj";
-    foreach (ModVR_InteractableObject obj in objects){
-	    obj.transform.parent = newObj.transform;
+    public GameObject groupObjects(List<ModVR_InteractableObject> objects)
+    {
+        GameObject newObj = new GameObject();
+        string tstamp = Guid.NewGuid().ToString();
+        newObj.name = "groupObj" + tstamp;
+        newObj.tag = "groupObj";
+        foreach (ModVR_InteractableObject obj in objects)
+        {
+            obj.transform.parent = newObj.transform;
+        }
+        return newObj;
     }
-    return newObj;
-  }
 
-  public GameObject unGroupObject(GameObject child){
-		child.transform.parent = null;
-		return child;
-  }
-
-  public List<GameObject> extractAllObjects(List<GameObject> parents){
-    List<GameObject> allChild = new List<GameObject>();
-    foreach (GameObject obj in parents){
-      foreach(Transform child in obj.transform){
-				// allChild.Add(findObjByID(child.getInsanceID()));
-        allChild.Add(child.gameObject);
-      }
+    public GameObject unGroupObject(GameObject child)
+    {
+        child.transform.parent = null;
+        return child;
     }
-    return allChild;
-  }
 
-  public GameObject findObjByID(int id){
-    GameObject[] all = GameObject.FindGameObjectsWithTag("Untagged");
-    for (int i = 0; i < all.Length; i++){
-      if (all[i].GetInstanceID() == id){
-        return all[i];
-      }
+    public List<GameObject> extractAllObjects(List<GameObject> parents)
+    {
+        List<GameObject> allChild = new List<GameObject>();
+        foreach (GameObject obj in parents)
+        {
+            foreach (Transform child in obj.transform)
+            {
+                // allChild.Add(findObjByID(child.getInsanceID()));
+                allChild.Add(child.gameObject);
+            }
+        }
+        return allChild;
     }
-    return null;
-  }
-	public string getTime(){
-		return System.DateTime.Now.ToString("hhss", System.Globalization.CultureInfo.InvariantCulture);
-	}
+
+    public GameObject findObjByID(int id)
+    {
+        GameObject[] all = GameObject.FindGameObjectsWithTag("Untagged");
+        for (int i = 0; i < all.Length; i++)
+        {
+            if (all[i].GetInstanceID() == id)
+            {
+                return all[i];
+            }
+        }
+        return null;
+    }
+
+    public string getTime()
+    {
+        return System.DateTime.Now.ToString("hhss", System.Globalization.CultureInfo.InvariantCulture);
+    }
+
+    private void CleanupSelectedObject(GameObject interactableObj)
+    {
+        GameManager.instance.selectedObjectList = GameManager.instance.selectedObjectList.Where(o => o.name != interactableObj.name).ToList();
+        interactableObj.GetComponent<ModVR_OutlineObjectSelectHighlighter>().Unhighlight();
+    }
 }
