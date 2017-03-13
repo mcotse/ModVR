@@ -1,0 +1,232 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+using VRTK;
+using VRTK.SecondaryControllerGrabActions;
+using VRTK.GrabAttachMechanics;
+using VRTK.Highlighters;
+using ModVR;
+
+public class ModVR_WandController : MonoBehaviour {
+
+    public GameObject menu;
+
+    private GroupUtil util;
+    private GameObject otherController;
+    private VRTK_ControllerActions actions;
+    private VRTK_ControllerEvents events;
+
+    private uint indexMain;
+    private uint indexSecondary;
+
+    private bool isSelectMode;
+    private bool isInteractMode;
+    private bool menuButtonDown;
+    private bool showMenu;
+    private bool triggerPressed;
+    private bool gripPressed;
+
+    private GameObject selected;
+    private GameObject grabbed;
+
+    // Use this for initialization
+    void Start () {
+        menuButtonDown = false;
+        isSelectMode = false;
+        isInteractMode = true;
+        showMenu = false;
+        gripPressed = false;
+        menu.SetActive(false);
+        util = new GroupUtil();
+
+        actions = GetComponent<VRTK_ControllerActions>();
+        events = GetComponent<VRTK_ControllerEvents>();
+
+        events.ButtonOnePressed += OnMenuButtonPressed;
+        events.TouchpadPressed += OnTouchpadPressed;
+        events.GripClicked += OnGripClicked;
+        events.TriggerPressed += OnTriggerPressed;
+        // events.GripPressed += GroupOnPressed;
+        //events.GripPressed += MergeOnPressed;
+	}
+
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
+
+
+    private void OnMenuButtonPressed(object sender, ControllerInteractionEventArgs e)
+    {
+        indexMain = e.controllerIndex;
+        menuButtonDown = !menuButtonDown;
+
+        if (isInteractMode)
+        {
+            ToggleMenu();
+        }
+    }
+
+    private void GroupOnPressed(object sender, ControllerInteractionEventArgs e)
+    {
+        util.groupObjects(GameManager.instance.interactableObjectList);
+    }
+
+    private void MergeOnPressed(object sender, ControllerInteractionEventArgs e)
+    {
+        //List<ModVR_InteractableObject> objList = GameManager.instance.selectedObjectList;
+        //List<List<string>> collisionSet = GameManager.instance.collisionSet;
+
+        //if (collisionSet.Count > 0)
+        //{
+        //    GameObject merged = util.mergeGroups(objList, collisionSet);
+        //    SetupInteractableObject(merged);
+        //}
+        /*List<ModVR_InteractableObject> objList = GameManager.instance.interactableObjectList;
+        List<List<string>> collisionSet = GameManager.instance.collisionSet;
+        GameObject merged = util.mergeGroups(objList, collisionSet);
+        SetupInteractableObject(merged);*/
+    }
+
+    private void OnTouchpadPressed(object sender, ControllerInteractionEventArgs e)
+    {
+        isSelectMode = !isSelectMode;
+        isInteractMode = !isInteractMode;
+
+        if(isSelectMode && showMenu)
+        {
+            ToggleMenu();
+        }
+    }
+
+    private void OnTriggerPressed(object sender, ControllerInteractionEventArgs e)
+    {
+
+        if (isSelectMode)
+        {
+            if (GameManager.instance.laserColliding)
+            {
+                ModVR_OutlineObjectSelectHighlighter selector = GameManager.instance.lastLaserSelectedObj.GetComponent<ModVR_OutlineObjectSelectHighlighter>();
+
+                bool isSelected = GameManager.instance.handleSelectedObject(GameManager.instance.lastLaserSelectedObj);
+
+
+                if (isSelected == true)
+                {
+                    selector.Highlight(Color.blue);
+                }
+                else
+                {
+                    selector.Unhighlight(Color.clear);
+                }
+
+            }
+        }
+    }
+
+    private void OnGripClicked(object sender, ControllerInteractionEventArgs e)
+    {
+        if (isInteractMode)
+        {
+            ModVR_InteractableObject selectedObj = (from io in GameObject.FindObjectsOfType<ModVR_InteractableObject>()
+                                                    where io.IsTouched() && io.GetTouchingObjects().Contains(this.gameObject)
+                                                    select io).SingleOrDefault();
+            if (selectedObj != null)
+            {
+                string parentName = selectedObj.transform.parent.name;
+                if (selectedObj && (parentName.Equals("MenuRight") || parentName.Equals("MenuLeft")))
+                {
+                    CreateSelectedObject(selectedObj);
+                }
+            }
+        }
+        
+    }
+
+    private void ToggleMenu()
+    {
+        showMenu = !showMenu;
+        menu.SetActive(showMenu);
+    }
+
+    private void SetupInteractableObject(GameObject obj)
+    {
+        Rigidbody rb = obj.GetComponent<Rigidbody>();
+        if (rb == null)
+        {
+            rb = obj.AddComponent<Rigidbody>();
+        }
+
+        
+
+
+        rb.freezeRotation = false;
+        rb.detectCollisions = true;
+        rb.collisionDetectionMode = CollisionDetectionMode.Discrete;
+        rb.isKinematic = true;
+        rb.useGravity = false;
+
+        BoxCollider bc = obj.GetComponent<BoxCollider>();
+        if (bc == null && obj.name.StartsWith("merged"))
+        {
+            bc = obj.AddComponent<BoxCollider>();
+        }
+        bc.isTrigger = true;
+
+        ModVR_InteractableObject io = obj.GetComponent<ModVR_InteractableObject>();
+        io.isUsable = true;
+        io.touchHighlightColor = Color.red;
+        io.pointerActivatesUseAction = false;
+        io.enabled = true;
+        io.isGrabbable = true;
+        io.holdButtonToGrab = true;
+
+        VRTK_ChildOfControllerGrabAttach grabAttach = obj.AddComponent<VRTK_ChildOfControllerGrabAttach>();
+        grabAttach.precisionGrab = true;
+        io.grabAttachMechanicScript = grabAttach;
+
+        io.secondaryGrabActionScript = obj.AddComponent<VRTK_AxisScaleGrabAction>();
+
+        GameManager.instance.AddInteractableObject(io);
+
+        ModVR_OutlineObjectSelectHighlighter selectHighlighter = obj.AddComponent<ModVR_OutlineObjectSelectHighlighter>();
+        selectHighlighter.Initialise(Color.blue);
+
+
+        GameManager.instance.AddInteractableObject(io);
+    }
+
+    void CreateSelectedObject(ModVR_InteractableObject selectedObj)
+    {
+        GameObject selected = selectedObj.gameObject;
+        GameObject newGameObj = Instantiate(selected, selected.transform.position, selected.transform.rotation);
+        Guid gameObjName = Guid.NewGuid();
+        newGameObj.name = gameObjName.ToString() + "_" + newGameObj.name;
+        SetupInteractableObject(newGameObj);
+    }
+
+	public void GetNewRadialMenuOptions()
+	{
+		GameObject radialMenu = GameObject.Find ("RadialMenu");
+		if (radialMenu != null) {
+			radialMenu.SetActive (false);
+			//GameObject optionsMenu = gameObject.FindObject ("Options");
+			GameObject optionsMenu = null;
+			Component[] components = transform.GetComponentsInChildren(typeof(Transform), true);
+			foreach(Component c in components){
+				if(c.gameObject.name == "Options"){
+					optionsMenu = c.gameObject;
+				}
+			}
+			if (optionsMenu != null) {
+				optionsMenu.SetActive (true);
+			} else {
+				Debug.Log ("optionsMenu is null");
+			}
+		}
+	}
+}
