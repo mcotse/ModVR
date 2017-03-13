@@ -46,10 +46,10 @@ public class ModVR_WandController : MonoBehaviour {
 
         events.ButtonOnePressed += OnMenuButtonPressed;
         events.TouchpadPressed += OnTouchpadPressed;
-        events.TriggerClicked += OnTriggerClicked;
+        events.GripClicked += OnGripClicked;
         events.TriggerPressed += OnTriggerPressed;
         // events.GripPressed += GroupOnPressed;
-        events.GripPressed += MergeOnPressed;
+        //events.GripPressed += MergeOnPressed;
 	}
 
 
@@ -78,14 +78,18 @@ public class ModVR_WandController : MonoBehaviour {
 
     private void MergeOnPressed(object sender, ControllerInteractionEventArgs e)
     {
-        List<ModVR_InteractableObject> objList = GameManager.instance.selectedObjectList;
-        List<List<string>> collisionSet = GameManager.instance.collisionSet;
+        //List<ModVR_InteractableObject> objList = GameManager.instance.selectedObjectList;
+        //List<List<string>> collisionSet = GameManager.instance.collisionSet;
 
-        if (collisionSet.Count > 0)
-        {
-            GameObject merged = util.mergeGroups(objList, collisionSet);
-            SetupInteractableObject(merged);
-        }
+        //if (collisionSet.Count > 0)
+        //{
+        //    GameObject merged = util.mergeGroups(objList, collisionSet);
+        //    SetupInteractableObject(merged);
+        //}
+        /*List<ModVR_InteractableObject> objList = GameManager.instance.interactableObjectList;
+        List<List<string>> collisionSet = GameManager.instance.collisionSet;
+        GameObject merged = util.mergeGroups(objList, collisionSet);
+        SetupInteractableObject(merged);*/
     }
 
     private void OnTouchpadPressed(object sender, ControllerInteractionEventArgs e)
@@ -99,7 +103,7 @@ public class ModVR_WandController : MonoBehaviour {
         }
     }
 
-    private void OnTriggerClicked(object sender, ControllerInteractionEventArgs e)
+    private void OnTriggerPressed(object sender, ControllerInteractionEventArgs e)
     {
 
         if (isSelectMode)
@@ -124,7 +128,7 @@ public class ModVR_WandController : MonoBehaviour {
         }
     }
 
-    private void OnTriggerPressed(object sender, ControllerInteractionEventArgs e)
+    private void OnGripClicked(object sender, ControllerInteractionEventArgs e)
     {
         if (isInteractMode)
         {
@@ -204,4 +208,25 @@ public class ModVR_WandController : MonoBehaviour {
         newGameObj.name = gameObjName.ToString() + "_" + newGameObj.name;
         SetupInteractableObject(newGameObj);
     }
+
+	public void GetNewRadialMenuOptions()
+	{
+		GameObject radialMenu = GameObject.Find ("RadialMenu");
+		if (radialMenu != null) {
+			radialMenu.SetActive (false);
+			//GameObject optionsMenu = gameObject.FindObject ("Options");
+			GameObject optionsMenu = null;
+			Component[] components = transform.GetComponentsInChildren(typeof(Transform), true);
+			foreach(Component c in components){
+				if(c.gameObject.name == "Options"){
+					optionsMenu = c.gameObject;
+				}
+			}
+			if (optionsMenu != null) {
+				optionsMenu.SetActive (true);
+			} else {
+				Debug.Log ("optionsMenu is null");
+			}
+		}
+	}
 }
