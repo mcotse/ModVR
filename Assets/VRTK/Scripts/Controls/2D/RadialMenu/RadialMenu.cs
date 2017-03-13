@@ -355,6 +355,12 @@ namespace VRTK
         }
 
         #endregion
+
+		public void showOptionsMenu()
+		{
+			RemoveAllButtons();
+		}
+
     }
 
     [System.Serializable]
