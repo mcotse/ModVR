@@ -216,4 +216,62 @@ public class ModVR_WandController : MonoBehaviour {
 			}
 		}
 	}
+
+
+    //Object Options Radial Menu
+    public void OnMergeClick()
+    {
+        List<ModVR_InteractableObject> objList = GameManager.instance.interactableObjectList;
+        List<List<string>> collisionSet = GameManager.instance.collisionSet;
+        GameObject merged = util.mergeGroups(objList, collisionSet);
+        SetupInteractableObject(merged);
+    }
+
+    public void OnUnmergeClicked()
+    {
+
+    }
+
+    public void OnDeleteClicked()
+    {
+        List<ModVR_InteractableObject> selectedObjs = GameManager.instance.selectedObjectList;
+        List<ModVR_InteractableObject> itemsToRemove = GameManager.instance.interactableObjectList.Union(selectedObjs).ToList();
+        List<string> objNames = selectedObjs.Select(d => d.name).ToList();
+
+        foreach(ModVR_InteractableObject io in itemsToRemove)
+        {
+            GameManager.instance.RemoveInteractableObject(io);
+        }
+
+        foreach (string name in objNames)
+        {
+            GameManager.instance.RemoveCollisionByName(name);
+        }
+
+        foreach (ModVR_InteractableObject io in selectedObjs)
+        {
+            Destroy(io.gameObject);
+        }
+
+        
+        GameManager.instance.selectedObjectList = new List<ModVR_InteractableObject>();
+        
+    }
+    
+
+    public void OnUngroupClicked()
+    {
+       
+    }
+
+    public void OnGroupClicked()
+    {
+        GameObject grouped = util.groupObjects(GameManager.instance.selectedObjectList);
+        SetupInteractableObject(grouped);
+    }
+
+    public void OnExportClicked()
+    {
+
+    }
 }

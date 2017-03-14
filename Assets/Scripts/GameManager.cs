@@ -81,6 +81,9 @@ public class GameManager : MonoBehaviour {
     public void RemoveInteractableObject(ModVR_InteractableObject io)
     {
         interactableObjectList = interactableObjectList.Where(obj => obj.name != io.name).ToList();
+
+        io.InteractableObjectCollisionEnter -= OnInteractableObjectCollision;
+        io.InteractableObjectCollisionExit -= OnInteractableObjectCollisionExit;
     }
 
     public void AddCollision(List<string> collision)
@@ -116,6 +119,16 @@ public class GameManager : MonoBehaviour {
         {
             collisionSet.Remove(temp);
         }
+    }
+
+    public void RemoveCollisionByName(string name)
+    {
+        List<List<string>> collisionsToRemove = (from collision in collisionSet
+                                                 where collision.Contains(name)
+                                                 select collision).ToList();
+
+
+        collisionSet = collisionSet.Except(collisionsToRemove).ToList();
     }
 
     //void OnInteractableObjectTouched(object sender, InteractableObjectEventArgs e)
