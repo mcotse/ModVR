@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 
 public class KeyPressTrigger : MonoBehaviour {
   void Update() {
@@ -42,11 +43,21 @@ public class KeyPressTrigger : MonoBehaviour {
       groupUtil.GetComponent<GroupUtil>().unGroupObject(sp1);
     }
     if (Input.GetKeyDown("m")){
-      GameObject groupUtil = GameObject.Find("groupUtil");
-      GameObject grp1 = GameObject.Find("grp1");
-      GameObject sp1 = GameObject.Find("sp1");
-      print("u was pressed");
-      groupUtil.GetComponent<GroupUtil>().unGroupObject(sp1);
+      print("m was pressed");
+      print("object being imported..."+Directory.GetCurrentDirectory()+"/testexport1.obj");
+      ObjImporter ObjImporter1 = new ObjImporter();
+      ObjImporter1.ImportFile(Directory.GetCurrentDirectory()+"/testexport1.obj");
+    }
+    if (Input.GetKeyDown("s")){
+      print("s was pressed");
+      print("object being saved...");
+      // GameObject objExporter = GameObject.Find("groupUtil");
+      // ObjExporter objExporter = new ObjExporter();
+      GameObject cube1 = GameObject.Find("cube1");
+      MeshFilter cube1Mesh = (MeshFilter)cube1.GetComponent("MeshFilter");
+      // objExporter.GetComponent<ObjectExporter>().MeshToFile(cube1Mesh,"testexport1");
+      ObjExporter.MeshToFile(cube1Mesh,"testexport1.obj");
+      print("object saved to: " + Directory.GetCurrentDirectory());
     }
   }
 }
