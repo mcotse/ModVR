@@ -47,6 +47,7 @@ public class ModVR_WandController : MonoBehaviour {
         events.ButtonOnePressed += OnMenuButtonPressed;
         events.TouchpadPressed += OnTouchpadPressed;
         events.TriggerPressed += OnTriggerPressed;
+		events.GripPressed += OnGripPressed;
         // events.GripPressed += GroupOnPressed;
         //events.GripPressed += MergeOnPressed;
 	}
@@ -94,21 +95,29 @@ public class ModVR_WandController : MonoBehaviour {
         }
     }
 
-    private void OnTriggerPressed(object sender, ControllerInteractionEventArgs e)
+	private void OnGripPressed(object sender, ControllerInteractionEventArgs e)
+	{
+		if (isInteractMode)
+		{
+			ModVR_InteractableObject selectedObj = (from io in GameObject.FindObjectsOfType<ModVR_InteractableObject>()
+				where io.IsTouched() && io.GetTouchingObjects().Contains(this.gameObject)
+				select io).SingleOrDefault();
+
+			Debug.Log (selectedObj.gameObject.name);
+			Debug.Log (selectedObj.transform.parent == null);
+
+			if (selectedObj != null && selectedObj.transform.parent != null) {
+				string parentName = selectedObj.transform.parent.name;
+				if (parentName.Equals ("MenuRight") || parentName.Equals ("MenuLeft")) {
+					CreateSelectedObject (selectedObj);
+				}
+			}
+		}
+	}
+
+	private void OnTriggerPressed(object sender, ControllerInteractionEventArgs e)
     {
         GameObject triggeredObj = sender as GameObject;
-        if (isInteractMode)
-        {
-            ModVR_InteractableObject selectedObj = (from io in GameObject.FindObjectsOfType<ModVR_InteractableObject>()
-                                            where io.IsTouched() && io.GetTouchingObjects().Contains(this.gameObject)
-                                            select io).SingleOrDefault();
-            
-            string parentName = selectedObj.transform.parent.name;
-            if (selectedObj && (parentName.Equals("MenuRight") || parentName.Equals("MenuLeft")))
-            {
-                CreateSelectedObject(selectedObj);
-            }
-        }
         if (isSelectMode){
             if (GameManager.instance.laserColliding)
             {
