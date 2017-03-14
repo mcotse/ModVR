@@ -48,6 +48,7 @@ public class ModVR_WandController : MonoBehaviour {
         events.TouchpadPressed += OnTouchpadPressed;
         events.TriggerPressed += OnTriggerPressed;
 		events.GripPressed += OnGripPressed;
+		events.GripReleased += OnGripReleased;
         // events.GripPressed += GroupOnPressed;
         //events.GripPressed += MergeOnPressed;
 	}
@@ -109,10 +110,22 @@ public class ModVR_WandController : MonoBehaviour {
 			if (selectedObj != null && selectedObj.transform.parent != null) {
 				string parentName = selectedObj.transform.parent.name;
 				if (parentName.Equals ("MenuRight") || parentName.Equals ("MenuLeft")) {
-					CreateSelectedObject (selectedObj);
+					CreateSelectedObject(selectedObj);
+					//gameObject.GetComponent<VRTK_InteractGrab>().ForceRelease();
+//					gameObject.GetComponent<VRTK_InteractTouch>().ForceTouch(newObj);
+//					gameObject.GetComponent<VRTK_InteractGrab>().AttemptGrab();
 				}
 			}
 		}
+	}
+
+	private void OnGripReleased(object sender, ControllerInteractionEventArgs e)
+	{
+		var modelController = VRTK_DeviceFinder.GetModelAliasController(gameObject);
+		var defaultAttachPoint = modelController.transform.Find(VRTK_SDK_Bridge.GetControllerElementPath(SDK_BaseController.ControllerElements.AttachPoint, VRTK_DeviceFinder.GetControllerHand(gameObject)));
+		defaultAttachPoint.GetComponentInChildren<VRTK_ChildOfControllerGrabAttach> ().StopGrab (false);
+		//gameObject.GetComponent<VRTK_ChildOfControllerGrabAttach> ().StopGrab (false);
+		//gameObject.GetComponent<VRTK_InteractGrab>().ForceRelease();
 	}
 
 	private void OnTriggerPressed(object sender, ControllerInteractionEventArgs e)
@@ -148,15 +161,17 @@ public class ModVR_WandController : MonoBehaviour {
 
     private void SetupInteractableObject(GameObject obj)
     {
-        if (obj.GetComponent<Rigidbody>() == null)
+		Rigidbody rb = obj.GetComponent<Rigidbody> ();
+		if (rb == null)
         {
-            Rigidbody rb = obj.AddComponent<Rigidbody>();
-            rb.freezeRotation = false;
-            rb.detectCollisions = true;
-            rb.collisionDetectionMode = CollisionDetectionMode.Discrete;
-            rb.isKinematic = true;
-            rb.useGravity = false;
+            rb = obj.AddComponent<Rigidbody>();
         }
+
+		rb.freezeRotation = false;
+		rb.detectCollisions = true;
+		rb.collisionDetectionMode = CollisionDetectionMode.Discrete;
+		rb.isKinematic = true;
+		rb.useGravity = false;
 
         if(obj.GetComponent<BoxCollider>() == null && obj.name.StartsWith("merged"))
         {
@@ -187,13 +202,22 @@ public class ModVR_WandController : MonoBehaviour {
         //obj.AddComponent<VRTK_OutlineObjectCopyHighlighter>();
     }
 
-    void CreateSelectedObject(ModVR_InteractableObject selectedObj)
+	private void CreateSelectedObject(ModVR_InteractableObject selectedObj)
     {
         GameObject selected = selectedObj.gameObject;
         GameObject newGameObj = Instantiate(selected, selected.transform.position, selected.transform.rotation);
         Guid gameObjName = Guid.NewGuid();
         newGameObj.name = gameObjName.ToString() + "_" + newGameObj.name;
         SetupInteractableObject(newGameObj);
+		var modelController = VRTK_DeviceFinder.GetModelAliasController(gameObject);
+		var defaultAttachPoint = modelController.transform.Find(VRTK_SDK_Bridge.GetControllerElementPath(SDK_BaseController.ControllerElements.AttachPoint, VRTK_DeviceFinder.GetControllerHand(gameObject)));
+		Debug.Log (defaultAttachPoint == null);
+		gameObject.GetComponent<VRTK_InteractGrab>().ForceRelease();
+
+		newGameObj.GetComponent<VRTK_ChildOfControllerGrabAttach>().StartGrab(gameObject, newGameObj, defaultAttachPoint.GetComponent<Rigidbody>());
+//		gameObject.GetComponent<VRTK_InteractTouch>().ForceTouch(newGameObj);
+		//gameObject.GetComponent<VRTK_InteractGrab>().AttemptGrab();
+//		return newGameObj;
     }
 
 	public void GetNewRadialMenuOptions()

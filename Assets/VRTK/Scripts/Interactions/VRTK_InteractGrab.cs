@@ -343,6 +343,7 @@ namespace VRTK
         private void AttemptGrabObject()
         {
             var objectToGrab = GetGrabbableObject();
+			Debug.Log ("In AttemptGrabObject: " + objectToGrab.name);
             if (objectToGrab != null)
             {
                 PerformGrabAttempt(objectToGrab);
@@ -355,7 +356,8 @@ namespace VRTK
 
         private void PerformGrabAttempt(GameObject objectToGrab)
         {
-            IncrementGrabState();
+			IncrementGrabState();
+			Debug.Log (IsValidGrabAttempt(objectToGrab));
             var initialGrabAttempt = IsValidGrabAttempt(objectToGrab);
             undroppableGrabbedObject = GetUndroppableObject();
             AttemptHaptics(initialGrabAttempt);
@@ -371,7 +373,8 @@ namespace VRTK
                 InitGrabbedObject();
                 if (!influencingGrabbedObject)
                 {
-                    initialGrabAttempt = objectToGrabScript.grabAttachMechanicScript.StartGrab(grabbingObject, grabbedObject, controllerAttachPoint);
+					Debug.Log ("in start grab");
+					initialGrabAttempt = objectToGrabScript.grabAttachMechanicScript.StartGrab(grabbingObject, grabbedObject, controllerAttachPoint);
                 }
             }
             return initialGrabAttempt;

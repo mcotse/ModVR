@@ -27,6 +27,7 @@ namespace VRTK.GrabAttachMechanics
         {
             if (base.StartGrab(grabbingObject, givenGrabbedObject, givenControllerAttachPoint))
             {
+				Debug.Log ("Grabbed: " + givenGrabbedObject.name);
                 SnapObjectToGrabToController(givenGrabbedObject);
                 grabbedObjectScript.isKinematic = true;
                 return true;
@@ -40,7 +41,7 @@ namespace VRTK.GrabAttachMechanics
         /// <param name="applyGrabbingObjectVelocity">If true will apply the current velocity of the grabbing object to the grabbed object on release.</param>
         public override void StopGrab(bool applyGrabbingObjectVelocity)
         {
-            ReleaseObject(applyGrabbingObjectVelocity);
+            //ReleaseObject(applyGrabbingObjectVelocity);
             base.StopGrab(applyGrabbingObjectVelocity);
         }
 
