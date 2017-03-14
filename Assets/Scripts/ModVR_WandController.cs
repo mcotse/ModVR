@@ -46,8 +46,8 @@ public class ModVR_WandController : MonoBehaviour {
 
         events.ButtonOnePressed += OnMenuButtonPressed;
         events.TouchpadPressed += OnTouchpadPressed;
-        events.GripClicked += OnGripClicked;
         events.TriggerPressed += OnTriggerPressed;
+		events.GripPressed += OnGripPressed;
         // events.GripPressed += GroupOnPressed;
         //events.GripPressed += MergeOnPressed;
 	}
@@ -78,14 +78,6 @@ public class ModVR_WandController : MonoBehaviour {
 
     private void MergeOnPressed(object sender, ControllerInteractionEventArgs e)
     {
-        //List<ModVR_InteractableObject> objList = GameManager.instance.selectedObjectList;
-        //List<List<string>> collisionSet = GameManager.instance.collisionSet;
-
-        //if (collisionSet.Count > 0)
-        //{
-        //    GameObject merged = util.mergeGroups(objList, collisionSet);
-        //    SetupInteractableObject(merged);
-        //}
         /*List<ModVR_InteractableObject> objList = GameManager.instance.interactableObjectList;
         List<List<string>> collisionSet = GameManager.instance.collisionSet;
         GameObject merged = util.mergeGroups(objList, collisionSet);
@@ -103,19 +95,38 @@ public class ModVR_WandController : MonoBehaviour {
         }
     }
 
-    private void OnTriggerPressed(object sender, ControllerInteractionEventArgs e)
-    {
+	private void OnGripPressed(object sender, ControllerInteractionEventArgs e)
+	{
+		if (isInteractMode)
+		{
+			ModVR_InteractableObject selectedObj = (from io in GameObject.FindObjectsOfType<ModVR_InteractableObject>()
+				where io.IsTouched() && io.GetTouchingObjects().Contains(this.gameObject)
+				select io).SingleOrDefault();
 
-        if (isSelectMode)
-        {
+			Debug.Log (selectedObj.gameObject.name);
+			Debug.Log (selectedObj.transform.parent == null);
+
+			if (selectedObj != null && selectedObj.transform.parent != null) {
+				string parentName = selectedObj.transform.parent.name;
+				if (parentName.Equals ("MenuRight") || parentName.Equals ("MenuLeft")) {
+					CreateSelectedObject (selectedObj);
+				}
+			}
+		}
+	}
+
+	private void OnTriggerPressed(object sender, ControllerInteractionEventArgs e)
+    {
+        GameObject triggeredObj = sender as GameObject;
+        if (isSelectMode){
             if (GameManager.instance.laserColliding)
             {
                 ModVR_OutlineObjectSelectHighlighter selector = GameManager.instance.lastLaserSelectedObj.GetComponent<ModVR_OutlineObjectSelectHighlighter>();
 
                 bool isSelected = GameManager.instance.handleSelectedObject(GameManager.instance.lastLaserSelectedObj);
 
-
-                if (isSelected == true)
+                
+                if(isSelected == true)
                 {
                     selector.Highlight(Color.blue);
                 }
@@ -128,24 +139,6 @@ public class ModVR_WandController : MonoBehaviour {
         }
     }
 
-    private void OnGripClicked(object sender, ControllerInteractionEventArgs e)
-    {
-        if (isInteractMode)
-        {
-            ModVR_InteractableObject selectedObj = (from io in GameObject.FindObjectsOfType<ModVR_InteractableObject>()
-                                                    where io.IsTouched() && io.GetTouchingObjects().Contains(this.gameObject)
-                                                    select io).SingleOrDefault();
-            if (selectedObj != null)
-            {
-                string parentName = selectedObj.transform.parent.name;
-                if (selectedObj && (parentName.Equals("MenuRight") || parentName.Equals("MenuLeft")))
-                {
-                    CreateSelectedObject(selectedObj);
-                }
-            }
-        }
-        
-    }
 
     private void ToggleMenu()
     {
@@ -155,27 +148,21 @@ public class ModVR_WandController : MonoBehaviour {
 
     private void SetupInteractableObject(GameObject obj)
     {
-        Rigidbody rb = obj.GetComponent<Rigidbody>();
-        if (rb == null)
+        if (obj.GetComponent<Rigidbody>() == null)
         {
-            rb = obj.AddComponent<Rigidbody>();
+            Rigidbody rb = obj.AddComponent<Rigidbody>();
+            rb.freezeRotation = false;
+            rb.detectCollisions = true;
+            rb.collisionDetectionMode = CollisionDetectionMode.Discrete;
+            rb.isKinematic = true;
+            rb.useGravity = false;
         }
 
-        
-
-
-        rb.freezeRotation = false;
-        rb.detectCollisions = true;
-        rb.collisionDetectionMode = CollisionDetectionMode.Discrete;
-        rb.isKinematic = true;
-        rb.useGravity = false;
-
-        BoxCollider bc = obj.GetComponent<BoxCollider>();
-        if (bc == null && obj.name.StartsWith("merged"))
+        if(obj.GetComponent<BoxCollider>() == null && obj.name.StartsWith("merged"))
         {
-            bc = obj.AddComponent<BoxCollider>();
+            BoxCollider bc = obj.AddComponent<BoxCollider>();
+            bc.isTrigger = true;
         }
-        bc.isTrigger = true;
 
         ModVR_InteractableObject io = obj.GetComponent<ModVR_InteractableObject>();
         io.isUsable = true;
@@ -192,12 +179,12 @@ public class ModVR_WandController : MonoBehaviour {
         io.secondaryGrabActionScript = obj.AddComponent<VRTK_AxisScaleGrabAction>();
 
         GameManager.instance.AddInteractableObject(io);
+        //obj.AddComponent<VRTK_FixedJointGrabAttach>();
 
         ModVR_OutlineObjectSelectHighlighter selectHighlighter = obj.AddComponent<ModVR_OutlineObjectSelectHighlighter>();
         selectHighlighter.Initialise(Color.blue);
 
-
-        GameManager.instance.AddInteractableObject(io);
+        //obj.AddComponent<VRTK_OutlineObjectCopyHighlighter>();
     }
 
     void CreateSelectedObject(ModVR_InteractableObject selectedObj)
