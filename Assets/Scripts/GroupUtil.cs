@@ -149,6 +149,37 @@ public class GroupUtil : MonoBehaviour {
         return System.DateTime.Now.ToString("hhss", System.Globalization.CultureInfo.InvariantCulture);
     }
 
+    public List<GameObject> GetAllChildren(GameObject parent)
+    {
+        List<GameObject> children = new List<GameObject>();
+
+        Transform transform = parent.transform;
+        if (!(parent.name.Contains("group") || parent.name.Contains("merged")))
+        {
+            children.Add(parent);
+        }
+
+        foreach(Transform t in transform)
+        {
+            List<GameObject> groupMergedObjs = new List<GameObject>();
+            string name = t.name;
+
+            if (!name.Contains("Highlight"))
+            {
+                if (name.Contains("group") || name.Contains("merged"))
+                {
+                    children = children.Union(GetAllChildren(t.gameObject)).ToList();
+                }
+                else
+                {
+                    children.Add(t.gameObject);
+                }
+            }
+        }
+
+        return children;
+    }
+
     private void CleanupSelectedObject(GameObject interactableObj)
     {
         GameManager.instance.selectedObjectList = GameManager.instance.selectedObjectList.Where(o => o.name != interactableObj.name).ToList();

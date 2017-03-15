@@ -17,6 +17,9 @@ public class GameManager : MonoBehaviour {
     public bool laserColliding = false;
     public GameObject lastLaserSelectedObj = null;
 
+    public GameObject radialMenu;
+    public GameObject objectOptions;
+
     public static GameManager instance {
         get
         {
@@ -168,7 +171,6 @@ public class GameManager : MonoBehaviour {
 
         if (c.name == "Controller (right)" || c.name == "Controller (left)")
         {
-            Debug.Log("Controller Object type" + c.GetType() + ". Controller name: " + c.name);
             GameObject go = c.GetComponentInChildren<VRTK_InteractGrab>().GetGrabbedObject();
             if(go != null)
             {
