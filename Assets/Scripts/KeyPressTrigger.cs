@@ -54,9 +54,10 @@ public class KeyPressTrigger : MonoBehaviour {
       // GameObject objExporter = GameObject.Find("groupUtil");
       // ObjExporter objExporter = new ObjExporter();
       GameObject cube1 = GameObject.Find("cube1");
-      MeshFilter cube1Mesh = (MeshFilter)cube1.GetComponent("MeshFilter");
+      ObjExporter.GameObjectToFile(cube1);
+      // MeshFilter cube1Mesh = (MeshFilter)cube1.GetComponent("MeshFilter");
       // objExporter.GetComponent<ObjectExporter>().MeshToFile(cube1Mesh,"testexport1");
-      ObjExporter.MeshToFile(cube1Mesh,"testexport1.obj");
+      // ObjExporter.MeshToFile(cube1Mesh);
       print("object saved to: " + Directory.GetCurrentDirectory());
     }
   }
