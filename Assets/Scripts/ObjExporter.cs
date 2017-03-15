@@ -69,7 +69,7 @@ public class ObjExporter {
     public static void GameObjectToFile(GameObject obj) {
         MeshFilter mf = (MeshFilter)obj.GetComponent("MeshFilter");
         Transform t = obj.transform;
-        using (StreamWriter sw = new StreamWriter(obj.name+".obj"))
+        using (StreamWriter sw = new StreamWriter(Directory.GetCurrentDirectory() + "/saved/"+obj.name+".obj"))
         {
             sw.Write(MeshToString(mf,t));
         }

@@ -43,10 +43,9 @@ public class KeyPressTrigger : MonoBehaviour {
       groupUtil.GetComponent<GroupUtil>().unGroupObject(sp1);
     }
     if (Input.GetKeyDown("m")){
-      print("m was pressed");
-      print("object being imported..."+Directory.GetCurrentDirectory()+"/testexport1.obj");
+      print("object being imported...");
       ObjImporter ObjImporter1 = new ObjImporter();
-      ObjImporter1.ImportFile(Directory.GetCurrentDirectory()+"/testexport1.obj");
+      ObjImporter1.ImportGameObjectFile("cube1");
     }
     if (Input.GetKeyDown("s")){
       print("s was pressed");

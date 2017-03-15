@@ -1,12 +1,20 @@
+/* This version of ObjImporter first reads through the entire file, getting a count of how large
+ * the final arrays will be, and then uses standard arrays for everything (as opposed to ArrayLists
+ * or any other fancy things). 
+ */
+ 
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using UnityEditor;
- 
+using System;
+using VRTK;
+using System.Linq;
+using ModVR;
+
 public class ObjImporter {
- 
+    
     private struct meshStruct
     {
         public Vector3[] vertices;
@@ -21,7 +29,22 @@ public class ObjImporter {
         public string name;
         public string fileName;
     }
- 
+    public GameObject ImportGameObjectFile(string fileName){
+        string filePath = Directory.GetCurrentDirectory() + "/saved/" + fileName + ".obj";
+        GameObject newObj = new GameObject("Empty");
+        // string tstamp = getTime();
+        // newObj.name = "importedObj" + tstamp;
+        Mesh newMesh = ImportFile(filePath);
+        newObj.AddComponent<MeshFilter>().mesh = newMesh;
+        newObj.AddComponent<MeshRenderer>();
+        // MeshRenderer mr = go.GetComponent<MeshRenderer>();
+        // mr.material = new Material(Shader.Find("Diffuse"));
+        var texture = new Texture2D(2, 2, TextureFormat.ARGB32, false);
+        texture.Apply();
+        newObj.GetComponent<Renderer>().material = new Material(Shader.Find("Diffuse"));
+
+        return newObj;
+    }
     // Use this for initialization
 	public Mesh ImportFile (string filePath) {
         meshStruct newMesh = createMeshStruct(filePath);
@@ -53,7 +76,7 @@ public class ObjImporter {
         mesh.triangles = newMesh.triangles;
  
         mesh.RecalculateBounds();
-        UnityEditor.MeshUtility.Optimize(mesh);
+        ;
  
 		return mesh;
 	}
