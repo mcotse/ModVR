@@ -44,16 +44,15 @@ public class KeyPressTrigger : MonoBehaviour {
     }
     if (Input.GetKeyDown("m")){
       print("object being imported...");
-      ObjImporter ObjImporter1 = new ObjImporter();
-      ObjImporter1.ImportGameObjectFile("cube1");
+      ModVR_ObjImporter.ImportGameObjectFile("cube1");
     }
     if (Input.GetKeyDown("s")){
       print("s was pressed");
       print("object being saved...");
       // GameObject objExporter = GameObject.Find("groupUtil");
-      // ObjExporter objExporter = new ObjExporter();
+      // ModVR_ObjExporter ObjExporter = new ModVR_ObjExporter();
       GameObject cube1 = GameObject.Find("cube1");
-      ObjExporter.GameObjectToFile(cube1);
+      ModVR_ObjExporter.GameObjectToFile(cube1);
       // MeshFilter cube1Mesh = (MeshFilter)cube1.GetComponent("MeshFilter");
       // objExporter.GetComponent<ObjectExporter>().MeshToFile(cube1Mesh,"testexport1");
       // ObjExporter.MeshToFile(cube1Mesh);

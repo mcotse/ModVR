@@ -9,7 +9,7 @@ using ModVR;
 public class GameManager : MonoBehaviour {
 
     private static GameManager _instance;
-
+    public static int importCounter = 0;
     public List<ModVR_InteractableObject> interactableObjectList;
     public List<ModVR_InteractableObject> selectedObjectList;
 
@@ -19,7 +19,9 @@ public class GameManager : MonoBehaviour {
 
     public GameObject radialMenu;
     public GameObject objectOptions;
-
+    public static void IncrementImportCounter() {
+        importCounter ++;
+    }
     public static GameManager instance {
         get
         {

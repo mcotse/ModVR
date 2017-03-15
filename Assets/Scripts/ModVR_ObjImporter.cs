@@ -13,7 +13,7 @@ using VRTK;
 using System.Linq;
 using ModVR;
 
-public class ObjImporter {
+public class ModVR_ObjImporter{
     
     private struct meshStruct
     {
@@ -29,11 +29,11 @@ public class ObjImporter {
         public string name;
         public string fileName;
     }
-    public GameObject ImportGameObjectFile(string fileName){
+    public static GameObject ImportGameObjectFile(string fileName){
         string filePath = Directory.GetCurrentDirectory() + "/saved/" + fileName + ".obj";
-        GameObject newObj = new GameObject("Empty");
         // string tstamp = getTime();
-        // newObj.name = "importedObj" + tstamp;
+        GameObject newObj = new GameObject("importedObj" + GameManager.importCounter.ToString());
+        GameManager.IncrementImportCounter();
         Mesh newMesh = ImportFile(filePath);
         newObj.AddComponent<MeshFilter>().mesh = newMesh;
         newObj.AddComponent<MeshRenderer>();
@@ -46,7 +46,7 @@ public class ObjImporter {
         return newObj;
     }
     // Use this for initialization
-	public Mesh ImportFile (string filePath) {
+	public static Mesh ImportFile (string filePath) {
         meshStruct newMesh = createMeshStruct(filePath);
         populateMeshStruct(ref newMesh);
  
