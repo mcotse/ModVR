@@ -3,7 +3,7 @@ using System.Collections;
 using System.IO;
 using System.Text;
 
-public class ObjExporter {
+public class ModVR_ObjExporter {
 
     private static int StartIndex = 0;
  
