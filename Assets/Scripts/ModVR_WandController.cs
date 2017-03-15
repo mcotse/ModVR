@@ -257,6 +257,8 @@ public class ModVR_WandController : MonoBehaviour {
         {
             highligher = obj.AddComponent<VRTK_OutlineObjectCopyHighlighter>();
         }
+
+        
     }
 
     void CreateSelectedObject(ModVR_InteractableObject selectedObj)
@@ -295,13 +297,16 @@ public class ModVR_WandController : MonoBehaviour {
     {
         List<ModVR_InteractableObject> objList = GameManager.instance.interactableObjectList;
         List<List<string>> collisionSet = GameManager.instance.collisionSet;
+        
         GameObject merged = util.mergeGroups(objList, collisionSet);
-        SetupInteractableObject(merged);
-    }
 
-    public void OnUnmergeClicked()
-    {
+        foreach(Transform t in merged.transform)
+        {
 
+            SetupInteractableObject(t.gameObject);
+            t.GetComponent<BoxCollider>().size = Vector3.one;
+        }
+        //SetupInteractableObject(merged);
     }
 
     public void OnDeleteClicked()

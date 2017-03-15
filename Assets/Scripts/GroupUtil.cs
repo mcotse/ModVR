@@ -48,11 +48,6 @@ public class GroupUtil : MonoBehaviour {
     public GameObject mergeGroups(List<ModVR_InteractableObject> objects, List<List<string>> allCollisions)
     {
         GameObject newObj = new GameObject();
-        // List<GameObject> allChild = extractAllObjects(objects);
-        // HashSet<List<int>> collisionSet = HashSet<List<int>>();
-        // for (int i = 0; i < allCollisions.Count; i++) {
-        // 	collisionSet.Add(Tuple.Create<int>(allCollisions[i].gameObject.GetInstanceID(), collisionObjects[i].GetInstanceID()));
-        // }
         List<GameObject> mergedObjs = new List<GameObject>();
         HashSet<int> toRemove = new HashSet<int>();
         Debug.Log("in mergeGroups");
@@ -95,6 +90,7 @@ public class GroupUtil : MonoBehaviour {
         {
             obj.transform.parent = newObj.transform;
         }
+        newObj.name = "mergeGroup";
         return newObj;
     }
 
