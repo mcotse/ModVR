@@ -136,14 +136,14 @@ public class ModVR_WandController : MonoBehaviour {
             if (GameManager.instance.laserColliding)
             {
                 GameObject go = GameManager.instance.lastLaserSelectedObj;
-                Transform parent = go.transform.root;
-                List<GameObject> children = util.GetAllChildren(parent.gameObject);
+                //Transform parent = go.transform.root;
+                //List<GameObject> children = util.GetAllChildren(parent.gameObject);
 
-                foreach(GameObject child in children)
-                {
-                    ModVR_OutlineObjectSelectHighlighter selector = child.GetComponent<ModVR_OutlineObjectSelectHighlighter>();
+                //foreach(GameObject child in children)
+                //{
+                    ModVR_OutlineObjectSelectHighlighter selector = go.GetComponent<ModVR_OutlineObjectSelectHighlighter>();
 
-                    bool isSelected = GameManager.instance.handleSelectedObject(child);
+                    bool isSelected = GameManager.instance.handleSelectedObject(go);
 
 
                     if (isSelected == true)
@@ -154,7 +154,7 @@ public class ModVR_WandController : MonoBehaviour {
                     {
                         selector.Unhighlight(Color.clear);
                     }
-                }
+                //}
                 
 
             }
@@ -252,7 +252,11 @@ public class ModVR_WandController : MonoBehaviour {
         ModVR_OutlineObjectSelectHighlighter selectHighlighter = obj.AddComponent<ModVR_OutlineObjectSelectHighlighter>();
         selectHighlighter.Initialise(Color.blue);
 
-        obj.AddComponent<VRTK_OutlineObjectCopyHighlighter>();
+        VRTK_OutlineObjectCopyHighlighter highligher = obj.GetComponent<VRTK_OutlineObjectCopyHighlighter>();
+        if(highligher == null)
+        {
+            highligher = obj.AddComponent<VRTK_OutlineObjectCopyHighlighter>();
+        }
     }
 
     void CreateSelectedObject(ModVR_InteractableObject selectedObj)
@@ -321,7 +325,6 @@ public class ModVR_WandController : MonoBehaviour {
             Destroy(io.gameObject);
         }
 
-        
         GameManager.instance.selectedObjectList = new List<ModVR_InteractableObject>();
         
     }
@@ -329,14 +332,43 @@ public class ModVR_WandController : MonoBehaviour {
 
     public void OnUngroupClicked()
     {
-       
+        List<ModVR_InteractableObject> grouped = GameManager.instance.selectedObjectList;
+        
+        List<GameObject> objsToRemove = new List<GameObject>();
+        foreach(ModVR_InteractableObject io in grouped)
+        {
+            foreach (Transform t in io.transform)
+            {
+                util.unGroupObject(t.gameObject);
+                ModVR_OutlineObjectSelectHighlighter highlighter = t.gameObject.GetComponent<ModVR_OutlineObjectSelectHighlighter>();
+                if (highlighter == null)
+                {
+                    highlighter = t.gameObject.AddComponent<ModVR_OutlineObjectSelectHighlighter>();
+                    
+                }
+                highlighter.Initialise(Color.blue);
+            }
+            io.transform.DetachChildren();
+            objsToRemove.Add(io.gameObject);
+            GameManager.instance.RemoveInteractableObject(io);
+        }
+
+        foreach(GameObject go in objsToRemove)
+        {
+            Destroy(go);
+        }
+
+        GameManager.instance.selectedObjectList = new List<ModVR_InteractableObject>();
     }
 
     public void OnGroupClicked(string message)
-    { 
-        GameObject grouped = util.groupObjects(GameManager.instance.selectedObjectList);
-        SetupInteractableObject(grouped);
-        GameManager.instance.selectedObjectList = new List<ModVR_InteractableObject>();
+    {
+        if (GameManager.instance.selectedObjectList.Count > 1)
+        {
+            GameObject grouped = util.groupObjects(GameManager.instance.selectedObjectList);
+            SetupInteractableObject(grouped);
+            GameManager.instance.selectedObjectList = new List<ModVR_InteractableObject>();
+        }
     }
 
     public void OnExportClicked()

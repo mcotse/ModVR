@@ -182,9 +182,6 @@ public class GameManager : MonoBehaviour {
                 collision.Add(collider);
 
                 RemoveCollision(collision);
-
-                Debug.Log("Exit Collision with: " + senderName);
-                Debug.Log("Exit Collider: " + collider);
             }
         }
     }
