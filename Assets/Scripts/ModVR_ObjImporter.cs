@@ -29,6 +29,10 @@ public class ModVR_ObjImporter{
         public string name;
         public string fileName;
     }
+    public static GameObject ImportLastSavedObject(){
+        // GameObject lastSavedObj = GameObject.Find(GameManager.lastSaved);
+        return ImportGameObjectFile(GameManager.lastSaved);
+    }
     public static GameObject ImportGameObjectFile(string fileName){
         string filePath = Directory.GetCurrentDirectory() + "/saved/" + fileName + ".obj";
         // string tstamp = getTime();

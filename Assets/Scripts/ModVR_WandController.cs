@@ -224,7 +224,6 @@ public class ModVR_WandController : MonoBehaviour {
             }
         }
     }
-
     private void OnTriggerPressed(object sender, ControllerInteractionEventArgs e)
     {
         GameObject triggeredObj = sender as GameObject;
@@ -373,6 +372,11 @@ public class ModVR_WandController : MonoBehaviour {
 
 
         GameManager.instance.selectedObjectList = new List<ModVR_InteractableObject>();
+    }
+    public void OnImportClicked()
+    {
+        ModVR_ObjImporter.ImportLastSavedObject();
+
     }
 
     #endregion
