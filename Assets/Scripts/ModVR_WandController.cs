@@ -302,9 +302,7 @@ public class ModVR_WandController : MonoBehaviour {
 
         foreach(Transform t in merged.transform)
         {
-
             SetupInteractableObject(t.gameObject);
-            t.GetComponent<BoxCollider>().size = Vector3.one;
         }
         //SetupInteractableObject(merged);
     }
