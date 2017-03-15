@@ -56,7 +56,9 @@ public class GroupUtil : MonoBehaviour {
         // connect texture to material of GameObject this script is attached to
         // GetComponent<Renderer>().material.mainTexture = texture;
         newObj.GetComponent<Renderer>().material.mainTexture = texture;
-        
+    
+        newObj.AddComponent<BoxCollider>();
+
         Debug.Log(newObj.name);
         return newObj;
     }
