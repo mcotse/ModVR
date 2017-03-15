@@ -368,14 +368,19 @@ public class ModVR_WandController : MonoBehaviour {
         {
             ModVR_ObjExporter.GameObjectToFile(io.gameObject);
             io.GetComponent<ModVR_OutlineObjectSelectHighlighter>().Unhighlight();
+
+            GameManager.instance.UpdateLastSaved(io.name);
         }
+
 
 
         GameManager.instance.selectedObjectList = new List<ModVR_InteractableObject>();
     }
     public void OnImportClicked()
     {
-        ModVR_ObjImporter.ImportLastSavedObject();
+        GameObject go = ModVR_ObjImporter.ImportLastSavedObject(GameManager.instance.lastSaved);
+        go.AddComponent<BoxCollider>();
+        SetupInteractableObject(go);
 
     }
 

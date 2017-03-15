@@ -73,6 +73,5 @@ public class ModVR_ObjExporter {
         {
             sw.Write(MeshToString(mf,t));
         }
-		GameManager.UpdateLastSaved(obj.name);
     }
 }
