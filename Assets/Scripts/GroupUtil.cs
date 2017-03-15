@@ -34,6 +34,7 @@ public class GroupUtil : MonoBehaviour {
         combinedMesh.CombineMeshes(combine);
         newObj.GetComponent<MeshFilter>().mesh = combinedMesh;
         //cleanup old object
+
         if (destoryOld)
         {
             foreach (GameObject obj in meshObjectList)
@@ -41,6 +42,24 @@ public class GroupUtil : MonoBehaviour {
                 Destroy(obj);
             }
         }
+        //setting the texture
+        var texture = new Texture2D(2, 2, TextureFormat.ARGB32, false);
+        texture.Apply();
+        
+        // connect texture to material of GameObject this script is attached to
+        // GetComponent<Renderer>().material.mainTexture = texture;
+        newObj.GetComponent<Renderer>().material.mainTexture = texture;
+
+
+        //Bounds bcBounds = new Bounds();
+        //bcBounds = obj1.GetComponent<Collider>().bounds;
+        //bcBounds.Encapsulate(obj1.GetComponent<Collider>().bounds);
+        //bcBounds.Encapsulate(obj2.GetComponent<Collider>().bounds);
+
+        BoxCollider bc = newObj.AddComponent<BoxCollider>();
+        //bc.size = bcBounds.size;
+        //bc.center = bcBounds.center;
+
         Debug.Log(newObj.name);
         return newObj;
     }
@@ -48,11 +67,6 @@ public class GroupUtil : MonoBehaviour {
     public GameObject mergeGroups(List<ModVR_InteractableObject> objects, List<List<string>> allCollisions)
     {
         GameObject newObj = new GameObject();
-        // List<GameObject> allChild = extractAllObjects(objects);
-        // HashSet<List<int>> collisionSet = HashSet<List<int>>();
-        // for (int i = 0; i < allCollisions.Count; i++) {
-        // 	collisionSet.Add(Tuple.Create<int>(allCollisions[i].gameObject.GetInstanceID(), collisionObjects[i].GetInstanceID()));
-        // }
         List<GameObject> mergedObjs = new List<GameObject>();
         HashSet<int> toRemove = new HashSet<int>();
         Debug.Log("in mergeGroups");
@@ -95,6 +109,7 @@ public class GroupUtil : MonoBehaviour {
         {
             obj.transform.parent = newObj.transform;
         }
+        newObj.name = "mergeGroup";
         return newObj;
     }
 
@@ -147,6 +162,37 @@ public class GroupUtil : MonoBehaviour {
     public string getTime()
     {
         return System.DateTime.Now.ToString("hhss", System.Globalization.CultureInfo.InvariantCulture);
+    }
+
+    public List<GameObject> GetAllChildren(GameObject parent)
+    {
+        List<GameObject> children = new List<GameObject>();
+
+        Transform transform = parent.transform;
+        if (!(parent.name.Contains("group") || parent.name.Contains("merged")))
+        {
+            children.Add(parent);
+        }
+
+        foreach(Transform t in transform)
+        {
+            List<GameObject> groupMergedObjs = new List<GameObject>();
+            string name = t.name;
+
+            if (!name.Contains("Highlight"))
+            {
+                if (name.Contains("group") || name.Contains("merged"))
+                {
+                    children = children.Union(GetAllChildren(t.gameObject)).ToList();
+                }
+                else
+                {
+                    children.Add(t.gameObject);
+                }
+            }
+        }
+
+        return children;
     }
 
     private void CleanupSelectedObject(GameObject interactableObj)

@@ -17,6 +17,9 @@ public class GameManager : MonoBehaviour {
     public bool laserColliding = false;
     public GameObject lastLaserSelectedObj = null;
 
+    public GameObject radialMenu;
+    public GameObject objectOptions;
+
     public static GameManager instance {
         get
         {
@@ -81,6 +84,9 @@ public class GameManager : MonoBehaviour {
     public void RemoveInteractableObject(ModVR_InteractableObject io)
     {
         interactableObjectList = interactableObjectList.Where(obj => obj.name != io.name).ToList();
+
+        io.InteractableObjectCollisionEnter -= OnInteractableObjectCollision;
+        io.InteractableObjectCollisionExit -= OnInteractableObjectCollisionExit;
     }
 
     public void AddCollision(List<string> collision)
@@ -116,6 +122,16 @@ public class GameManager : MonoBehaviour {
         {
             collisionSet.Remove(temp);
         }
+    }
+
+    public void RemoveCollisionByName(string name)
+    {
+        List<List<string>> collisionsToRemove = (from collision in collisionSet
+                                                 where collision.Contains(name)
+                                                 select collision).ToList();
+
+
+        collisionSet = collisionSet.Except(collisionsToRemove).ToList();
     }
 
     //void OnInteractableObjectTouched(object sender, InteractableObjectEventArgs e)
@@ -155,7 +171,6 @@ public class GameManager : MonoBehaviour {
 
         if (c.name == "Controller (right)" || c.name == "Controller (left)")
         {
-            Debug.Log("Controller Object type" + c.GetType() + ". Controller name: " + c.name);
             GameObject go = c.GetComponentInChildren<VRTK_InteractGrab>().GetGrabbedObject();
             if(go != null)
             {
@@ -167,9 +182,6 @@ public class GameManager : MonoBehaviour {
                 collision.Add(collider);
 
                 RemoveCollision(collision);
-
-                Debug.Log("Exit Collision with: " + senderName);
-                Debug.Log("Exit Collider: " + collider);
             }
         }
     }
