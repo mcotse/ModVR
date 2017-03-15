@@ -72,120 +72,6 @@ public class ModVR_WandController : MonoBehaviour {
     }
 
 
-    private void OnMenuButtonPressed(object sender, ControllerInteractionEventArgs e)
-    {
-        indexMain = e.controllerIndex;
-        menuButtonDown = !menuButtonDown;
-
-        if (isInteractMode)
-        {
-            ToggleMenu();
-        }
-    }
-
-    private void GroupOnPressed(object sender, ControllerInteractionEventArgs e)
-    {
-        util.groupObjects(GameManager.instance.interactableObjectList);
-    }
-
-    private void MergeOnPressed(object sender, ControllerInteractionEventArgs e)
-    {
-        /*List<ModVR_InteractableObject> objList = GameManager.instance.interactableObjectList;
-        List<List<string>> collisionSet = GameManager.instance.collisionSet;
-        GameObject merged = util.mergeGroups(objList, collisionSet);
-        SetupInteractableObject(merged);*/
-    }
-
-    private void OnTouchpadPressed(object sender, ControllerInteractionEventArgs e)
-    {
-        isSelectMode = !isSelectMode;
-        isInteractMode = !isInteractMode;
-
-        if (isSelectMode)
-        {
-
-            if (showMenu)
-            {
-                ToggleMenu();
-            }
-        }
-    }
-
-	private void OnGripPressed(object sender, ControllerInteractionEventArgs e)
-	{
-		if (isInteractMode)
-		{
-			ModVR_InteractableObject selectedObj = (from io in GameObject.FindObjectsOfType<ModVR_InteractableObject>()
-				where io.IsTouched() && io.GetTouchingObjects().Contains(this.gameObject)
-				select io).SingleOrDefault();
-            
-
-			if (selectedObj != null && selectedObj.transform.parent != null) {
-				string parentName = selectedObj.transform.parent.name;
-				if (parentName.Equals ("MenuRight") || parentName.Equals ("MenuLeft")) {
-					CreateSelectedObject (selectedObj);
-				}
-			}
-		}
-	}
-
-	private void OnTriggerPressed(object sender, ControllerInteractionEventArgs e)
-    {
-        GameObject triggeredObj = sender as GameObject;
-        if (isSelectMode){
-            if (GameManager.instance.laserColliding)
-            {
-                GameObject go = GameManager.instance.lastLaserSelectedObj;
-                //Transform parent = go.transform.root;
-                //List<GameObject> children = util.GetAllChildren(parent.gameObject);
-
-                //foreach(GameObject child in children)
-                //{
-                    ModVR_OutlineObjectSelectHighlighter selector = go.GetComponent<ModVR_OutlineObjectSelectHighlighter>();
-
-                    bool isSelected = GameManager.instance.handleSelectedObject(go);
-
-
-                    if (isSelected == true)
-                    {
-                        selector.Highlight(Color.blue);
-                    }
-                    else
-                    {
-                        selector.Unhighlight(Color.clear);
-                    }
-                //}
-                
-
-            }
-            
-            //if (GameManager.instance.selectedObjectList.Count > 0)
-            //{
-            //    GameManager.instance.objectOptions.SetActive(true);
-            //    GameManager.instance.radialMenu.SetActive(false);
-            //}
-            //else
-            //{
-            //    GameManager.instance.objectOptions.SetActive(false);
-            //    GameManager.instance.radialMenu.SetActive(true);
-            //}
-        }
-    }
-
-    private void OnTouchpadTouched(object sender, ControllerInteractionEventArgs e)
-    {
-        if(GameManager.instance.selectedObjectList.Count > 0)
-        {
-            GameManager.instance.objectOptions.SetActive(true);
-            GameManager.instance.radialMenu.SetActive(false);
-        }
-        else
-        {
-            GameManager.instance.objectOptions.SetActive(false);
-            GameManager.instance.radialMenu.SetActive(true);
-        }
-    }
-
     private void ToggleMenu()
     {
         showMenu = !showMenu;
@@ -292,19 +178,121 @@ public class ModVR_WandController : MonoBehaviour {
 	}
 
 
+    #region Controller Events
+    private void OnMenuButtonPressed(object sender, ControllerInteractionEventArgs e)
+    {
+        indexMain = e.controllerIndex;
+        menuButtonDown = !menuButtonDown;
+
+        if (isInteractMode)
+        {
+            ToggleMenu();
+        }
+    }
+
+    private void OnTouchpadPressed(object sender, ControllerInteractionEventArgs e)
+    {
+        isSelectMode = !isSelectMode;
+        isInteractMode = !isInteractMode;
+
+        if (isSelectMode)
+        {
+
+            if (showMenu)
+            {
+                ToggleMenu();
+            }
+        }
+    }
+
+    private void OnGripPressed(object sender, ControllerInteractionEventArgs e)
+    {
+        if (isInteractMode)
+        {
+            ModVR_InteractableObject selectedObj = (from io in GameObject.FindObjectsOfType<ModVR_InteractableObject>()
+                                                    where io.IsTouched() && io.GetTouchingObjects().Contains(this.gameObject)
+                                                    select io).SingleOrDefault();
+
+
+            if (selectedObj != null && selectedObj.transform.parent != null)
+            {
+                string parentName = selectedObj.transform.parent.name;
+                if (parentName.Equals("MenuRight") || parentName.Equals("MenuLeft"))
+                {
+                    CreateSelectedObject(selectedObj);
+                }
+            }
+        }
+    }
+
+    private void OnTriggerPressed(object sender, ControllerInteractionEventArgs e)
+    {
+        GameObject triggeredObj = sender as GameObject;
+        if (isSelectMode)
+        {
+            if (GameManager.instance.laserColliding)
+            {
+                GameObject go = GameManager.instance.lastLaserSelectedObj;
+                ModVR_OutlineObjectSelectHighlighter selector = go.GetComponent<ModVR_OutlineObjectSelectHighlighter>();
+
+                bool isSelected = GameManager.instance.handleSelectedObject(go);
+
+
+                if (isSelected == true)
+                {
+                    selector.Highlight(Color.blue);
+                }
+                else
+                {
+                    selector.Unhighlight(Color.clear);
+                }
+
+
+            }
+        }
+    }
+
+    private void OnTouchpadTouched(object sender, ControllerInteractionEventArgs e)
+    {
+        if (GameManager.instance.selectedObjectList.Count > 0)
+        {
+            GameManager.instance.objectOptions.SetActive(true);
+            GameManager.instance.radialMenu.SetActive(false);
+        }
+        else
+        {
+            GameManager.instance.objectOptions.SetActive(false);
+            GameManager.instance.radialMenu.SetActive(true);
+        }
+    }
+
+    #endregion
+
+
+    #region Radial Menu Events
+
     //Object Options Radial Menu
     public void OnMergeClick()
     {
         List<ModVR_InteractableObject> objList = GameManager.instance.interactableObjectList;
         List<List<string>> collisionSet = GameManager.instance.collisionSet;
         
-        GameObject merged = util.mergeGroups(objList, collisionSet);
 
+        GameObject merged = util.mergeGroups(objList, collisionSet);
+        
         foreach(Transform t in merged.transform)
         {
             SetupInteractableObject(t.gameObject);
         }
-        //SetupInteractableObject(merged);
+
+        GameManager.instance.selectedObjectList = new List<ModVR_InteractableObject>();
+        GameManager.instance.collisionSet = new List<List<string>>();
+
+        foreach(List<string> collision in collisionSet)
+        {
+            GameManager.instance.interactableObjectList = GameManager.instance.interactableObjectList.Where(o => o.name != collision[0]).ToList();
+            GameManager.instance.interactableObjectList = GameManager.instance.interactableObjectList.Where(o => o.name != collision[1]).ToList();
+        }
     }
 
     public void OnDeleteClicked()
@@ -376,6 +364,16 @@ public class ModVR_WandController : MonoBehaviour {
 
     public void OnExportClicked()
     {
+        List<ModVR_InteractableObject> selected = GameManager.instance.selectedObjectList;
+        foreach(ModVR_InteractableObject io in selected)
+        {
+            ModVR_ObjExporter.GameObjectToFile(io.gameObject);
+            io.GetComponent<ModVR_OutlineObjectSelectHighlighter>().Unhighlight();
+        }
 
+
+        GameManager.instance.selectedObjectList = new List<ModVR_InteractableObject>();
     }
+
+    #endregion
 }
