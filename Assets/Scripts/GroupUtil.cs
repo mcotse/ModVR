@@ -41,6 +41,22 @@ public class GroupUtil : MonoBehaviour {
                 Destroy(obj);
             }
         }
+        //setting the texture
+        var texture = new Texture2D(2, 2, TextureFormat.ARGB32, false);
+        
+        // set the pixel values
+        // texture.SetPixel(0, 0, new Color(1.0f, 1.0f, 1.0f, 0.5f));
+        // texture.SetPixel(1, 0, Color.clear);
+        // texture.SetPixel(0, 1, Color.white);
+        // texture.SetPixel(1, 1, Color.black);
+        
+        // Apply all SetPixel calls
+        texture.Apply();
+        
+        // connect texture to material of GameObject this script is attached to
+        // GetComponent<Renderer>().material.mainTexture = texture;
+        newObj.GetComponent<Renderer>().material.mainTexture = texture;
+        
         Debug.Log(newObj.name);
         return newObj;
     }
