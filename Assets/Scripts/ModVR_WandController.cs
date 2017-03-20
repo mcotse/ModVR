@@ -202,10 +202,10 @@ public class ModVR_WandController : MonoBehaviour {
     {
         isSelectMode = !isSelectMode;
         isInteractMode = !isInteractMode;
+        string name = gameObject.name;
 
-        if (isSelectMode)
+        if (isSelectMode && String.Equals(name, "RightController"))
         {
-
             if (showMenu)
             {
                 ToggleMenu();
