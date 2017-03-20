@@ -55,7 +55,7 @@ public class GameManager : MonoBehaviour {
 
         collisionSet = new List<List<string>>();
         GameObject cube = FindObjectsOfType<ModVR_InteractableObject>().Where(o => o.name == "Cube").First().gameObject;
-        cube.GetComponent<ModVR_OutlineObjectSelectHighlighter>().Initialise(Color.blue);
+        cube.GetComponent<ModVR_SelectHighlighter>().Initialise(Color.blue);
     }
 	// Update is called once per frame
 	void Update () {
@@ -176,7 +176,7 @@ public class GameManager : MonoBehaviour {
         ModVR_InteractableObject senderObj = sender as ModVR_InteractableObject;
         GameObject c = e.collider.gameObject;
 
-        if (c.name == "Controller (right)" || c.name == "Controller (left)")
+        if ((c.name == "Controller (right)" || c.name == "Controller (left)") && senderObj != null)
         {
             GameObject go = c.GetComponentInChildren<VRTK_InteractGrab>().GetGrabbedObject();
             if(go != null)

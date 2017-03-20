@@ -34,7 +34,7 @@ public class GroupUtil : MonoBehaviour {
         // }
         // Mesh combinedMesh = new Mesh();
         // combinedMesh.CombineMeshes(combine);
-        Mesh combinedMesh = combineMeshes(objectList);
+        Mesh combinedMesh = combineMeshes(meshObjectList);
         newObj.GetComponent<MeshFilter>().mesh = combinedMesh;
         //cleanup old object
 
@@ -235,6 +235,6 @@ public class GroupUtil : MonoBehaviour {
     private void CleanupSelectedObject(GameObject interactableObj)
     {
         GameManager.instance.selectedObjectList = GameManager.instance.selectedObjectList.Where(o => o.name != interactableObj.name).ToList();
-        interactableObj.GetComponent<ModVR_OutlineObjectSelectHighlighter>().Unhighlight();
+        interactableObj.GetComponent<ModVR_SelectHighlighter>().Unhighlight();
     }
 }
