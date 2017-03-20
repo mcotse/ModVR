@@ -277,7 +277,8 @@ namespace VRTK
 		private void ResetTriggerTooltip()
 		{
 			VRTK_ControllerTooltips tooltips = controllerTooltips.GetComponent<VRTK_ControllerTooltips>();
-			tooltips.ResetTooltip();
-		}
+            tooltips.ToggleTips(false, VRTK.VRTK_ControllerTooltips.TooltipButtons.TriggerTooltip);
+            tooltips.ResetTooltip();
+        }
     }
 }
