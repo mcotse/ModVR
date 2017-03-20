@@ -34,7 +34,8 @@ public class GroupUtil : MonoBehaviour {
         // }
         // Mesh combinedMesh = new Mesh();
         // combinedMesh.CombineMeshes(combine);
-        newObj.GetComponent<MeshFilter>().mesh = combineMeshes(meshObjectList);
+        Mesh combinedMesh = combineMeshes(objectList);
+        newObj.GetComponent<MeshFilter>().mesh = combinedMesh;
         //cleanup old object
 
         if (destoryOld)
@@ -58,7 +59,9 @@ public class GroupUtil : MonoBehaviour {
         //bcBounds.Encapsulate(obj1.GetComponent<Collider>().bounds);
         //bcBounds.Encapsulate(obj2.GetComponent<Collider>().bounds);
 
-        BoxCollider bc = newObj.AddComponent<BoxCollider>();
+        MeshCollider combinedMeshCollider = newObj.AddComponent<MeshCollider>();
+        combinedMeshCollider.sharedMesh = combinedMesh;
+        // BoxCollider bc = newObj.AddComponent<BoxCollider>();
         //bc.size = bcBounds.size;
         //bc.center = bcBounds.center;
 
