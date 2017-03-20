@@ -80,6 +80,15 @@ namespace VRTK.SecondaryControllerGrabActions
             {
                 grabbedObject.transform.localScale = new Vector3(finalScaleX, finalScaleY, finalScaleZ); ;
             }
+            if (grabbedObject.GetComponent<MeshCollider>() != null)
+            {
+                Destroy(grabbedObject.GetComponent(MeshCollider));
+            } 
+            if (grabbedObject.GetComponent<BoxCollider>() != null)
+            {
+                Destroy(grabbedObject.GetComponent(BoxCollider));
+            }
+            MeshCollider combinedMeshCollider = newObj.AddComponent<MeshCollider>();
         }
 
         private void NonUniformScale()
