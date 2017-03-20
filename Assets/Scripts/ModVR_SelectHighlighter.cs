@@ -6,7 +6,7 @@ using VRTK.Highlighters;
 
 namespace ModVR
 {
-    public class ModVR_OutlineObjectSelectHighlighter : VRTK_BaseHighlighter
+    public class ModVR_SelectHighlighter : VRTK_BaseHighlighter
     {
         [Tooltip("The thickness of the outline effect")]
         public float thickness = 0.3f;
