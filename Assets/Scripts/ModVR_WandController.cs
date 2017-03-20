@@ -110,7 +110,7 @@ public class ModVR_WandController : MonoBehaviour {
                     bcBounds.Encapsulate(colBounds);
 
                     ModVR_SelectHighlighter selectHighlighter = t.gameObject.AddComponent<ModVR_SelectHighlighter>();
-                    selectHighlighter.Initialise(Color.blue);
+                    selectHighlighter.Initialise(color);
                 }
 
             }
@@ -255,7 +255,7 @@ public class ModVR_WandController : MonoBehaviour {
                     if(selector == null)
                     {
                         selector = t.gameObject.AddComponent<ModVR_SelectHighlighter>();
-                        selector.Initialise(Color.blue);
+                        selector.Initialise(color);
                     }
 
                     ToggleSelection(t.gameObject, selector);
@@ -275,7 +275,7 @@ public class ModVR_WandController : MonoBehaviour {
 
         if (isSelected == true)
         {
-            selector.Highlight(Color.blue);
+            selector.Highlight(color);
         }
         else
         {
@@ -362,6 +362,7 @@ public class ModVR_WandController : MonoBehaviour {
             foreach (Transform t in io.transform)
             {
                 util.unGroupObject(t.gameObject);
+                t.gameObject.GetComponent<Collider>().enabled = true;
                 ModVR_SelectHighlighter highlighter = t.gameObject.GetComponent<ModVR_SelectHighlighter>();
                 if (highlighter == null)
                 {
@@ -391,7 +392,21 @@ public class ModVR_WandController : MonoBehaviour {
             GameObject grouped = util.groupObjects(GameManager.instance.selectedObjectList);
             SetupInteractableObject(grouped, false);
             GameManager.instance.selectedObjectList = new List<ModVR_InteractableObject>();
+
+            List<GameObject> children = (from Transform t in grouped.transform
+                                         where t.name.Contains("Highlight") == false
+                                         select t.gameObject).ToList();
+            foreach(GameObject go in children)
+            {
+                Collider coll = go.GetComponent<Collider>();
+                coll.enabled = false;
+
+                go.GetComponent<ModVR_SelectHighlighter>().Unhighlight(Color.clear);
+            }          
         }
+
+        GameManager.instance.selectedObjectList = new List<ModVR_InteractableObject>();
+
     }
 
     public void OnExportClicked()
