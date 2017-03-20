@@ -47,6 +47,7 @@ public class ModVR_ObjImporter{
         texture.Apply();
         newObj.GetComponent<Renderer>().material = new Material(Shader.Find("Diffuse"));
 
+
         return newObj;
     }
     // Use this for initialization

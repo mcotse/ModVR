@@ -9,7 +9,7 @@ namespace ModVR
     public class ModVR_OutlineObjectSelectHighlighter : VRTK_BaseHighlighter
     {
         [Tooltip("The thickness of the outline effect")]
-        public float thickness = 0.3f;
+        public float thickness = 0.4f;
         [Tooltip("The GameObject to use as the model to outline. If one isn't provided then the first GameObject with a valid Renderer in the current GameObject hierarchy will be used.")]
         public GameObject customOutlineModel;
         [Tooltip("A path to a GameObject to find at runtime, if the GameObject doesn't exist at edit time.")]
@@ -44,13 +44,14 @@ namespace ModVR
             DeleteExistingHighlightModels();
             CreateHighlightModel();
         }
-        
+
         /// <summary>
         /// The Highlight method initiates the outline object to be enabled and display the outline colour.
         /// </summary>
         /// <param name="color">The colour to outline with.</param>
         /// <param name="duration">Not used.</param>
-        public override void Highlight(Color? color, float duration = 0f)
+        Color color = new Color(237,241,39); 
+        public override void Highlight(Color? color , float duration = 0f)
         {
             if (highlightModel)
             {

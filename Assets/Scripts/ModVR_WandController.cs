@@ -30,6 +30,7 @@ public class ModVR_WandController : MonoBehaviour {
 
     private GameObject selected;
     private GameObject grabbed;
+    Color color = new Color(237, 241, 39);
 
     private UnityEngine.Events.UnityEvent OnGroup;
 
@@ -136,7 +137,8 @@ public class ModVR_WandController : MonoBehaviour {
         //obj.AddComponent<VRTK_FixedJointGrabAttach>();
 
         ModVR_OutlineObjectSelectHighlighter selectHighlighter = obj.AddComponent<ModVR_OutlineObjectSelectHighlighter>();
-        selectHighlighter.Initialise(Color.blue);
+        
+        selectHighlighter.Initialise(color);
 
         VRTK_OutlineObjectCopyHighlighter highligher = obj.GetComponent<VRTK_OutlineObjectCopyHighlighter>();
         if(highligher == null)
@@ -239,7 +241,7 @@ public class ModVR_WandController : MonoBehaviour {
 
                 if (isSelected == true)
                 {
-                    selector.Highlight(Color.blue);
+                    selector.Highlight(color);
                 }
                 else
                 {
@@ -336,7 +338,8 @@ public class ModVR_WandController : MonoBehaviour {
                     highlighter = t.gameObject.AddComponent<ModVR_OutlineObjectSelectHighlighter>();
                     
                 }
-                highlighter.Initialise(Color.blue);
+
+                highlighter.Initialise(color);
             }
             io.transform.DetachChildren();
             objsToRemove.Add(io.gameObject);
@@ -344,7 +347,7 @@ public class ModVR_WandController : MonoBehaviour {
         }
 
         foreach(GameObject go in objsToRemove)
-        {
+        { 
             Destroy(go);
         }
 
@@ -378,9 +381,12 @@ public class ModVR_WandController : MonoBehaviour {
     }
     public void OnImportClicked()
     {
+        
         GameObject go = ModVR_ObjImporter.ImportLastSavedObject(GameManager.instance.lastSaved);
+        
         go.AddComponent<BoxCollider>();
         SetupInteractableObject(go);
+        go.transform.position = gameObject.transform.position;
 
     }
 
