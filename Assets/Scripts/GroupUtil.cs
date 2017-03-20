@@ -21,18 +21,20 @@ public class GroupUtil : MonoBehaviour {
         string tstamp = getTime();
         newObj.name = "mergedObj" + tstamp;
         newObj.tag = "mergedObj";
-        CombineInstance[] combine = new CombineInstance[meshObjectList.Count];
-        int i = 0;
-        while (i < meshObjectList.Count)
-        {
-            MeshFilter meshFilter = meshObjectList[i].gameObject.GetComponent<MeshFilter>();
-            combine[i].mesh = meshFilter.sharedMesh;
-            combine[i].transform = meshFilter.transform.localToWorldMatrix;
-            i++;
-        }
-        Mesh combinedMesh = new Mesh();
-        combinedMesh.CombineMeshes(combine);
-        newObj.GetComponent<MeshFilter>().mesh = combinedMesh;
+
+
+        // CombineInstance[] combine = new CombineInstance[meshObjectList.Count];
+        // int i = 0;
+        // while (i < meshObjectList.Count)
+        // {
+        //     MeshFilter meshFilter = meshObjectList[i].gameObject.GetComponent<MeshFilter>();
+        //     combine[i].mesh = meshFilter.sharedMesh;
+        //     combine[i].transform = meshFilter.transform.localToWorldMatrix;
+        //     i++;
+        // }
+        // Mesh combinedMesh = new Mesh();
+        // combinedMesh.CombineMeshes(combine);
+        newObj.GetComponent<MeshFilter>().mesh = combineMeshes(meshObjectList);
         //cleanup old object
 
         if (destoryOld)
@@ -123,7 +125,39 @@ public class GroupUtil : MonoBehaviour {
         {
             obj.transform.parent = newObj.transform;
         }
+        List<GameObject> objectList = new List<GameObject>();
+        foreach (ModVR_InteractableObject obj in objects)
+        {
+            objectList.Add(obj.gameObject);
+        }
+        // Mesh combinedMesh = new Mesh();
+        Mesh combinedMesh = combineMeshes(objectList);
+        MeshCollider combinedMeshCollider = newObj.AddComponent<MeshCollider>();
+        combinedMeshCollider.sharedMesh = combinedMesh;
+        //MeshCollider combinedMeshCollider = new MeshCollider();
+        //combinedMeshCollider.sharedMesh = combinedMesh;
+        //newObj.AddComponent(combinedMeshCollider);
         return newObj;
+    }
+    private Mesh combineMeshes(List<GameObject> objects)
+    {
+        List<GameObject> meshObjectList = new List<GameObject>();
+        foreach (GameObject obj in objects)
+        {
+            meshObjectList.Add(obj);
+        }
+        CombineInstance[] combine = new CombineInstance[meshObjectList.Count];
+        int i = 0;
+        while (i < meshObjectList.Count)
+        {
+            MeshFilter meshFilter = meshObjectList[i].gameObject.GetComponent<MeshFilter>();
+            combine[i].mesh = meshFilter.sharedMesh;
+            combine[i].transform = meshFilter.transform.localToWorldMatrix;
+            i++;
+        }
+        Mesh combinedMesh = new Mesh();
+        combinedMesh.CombineMeshes(combine);
+        return combinedMesh;
     }
 
     public GameObject unGroupObject(GameObject child)
