@@ -82,13 +82,13 @@ namespace VRTK.SecondaryControllerGrabActions
             }
             if (grabbedObject.GetComponent<MeshCollider>() != null)
             {
-                Destroy(grabbedObject.GetComponent(MeshCollider));
+                Destroy(grabbedObject.GetComponent<MeshCollider>());
             } 
             if (grabbedObject.GetComponent<BoxCollider>() != null)
             {
-                Destroy(grabbedObject.GetComponent(BoxCollider));
+                Destroy(grabbedObject.GetComponent<BoxCollider>());
             }
-            MeshCollider combinedMeshCollider = newObj.AddComponent<MeshCollider>();
+            grabbedObject.gameObject.AddComponent<MeshCollider>();
         }
 
         private void NonUniformScale()
