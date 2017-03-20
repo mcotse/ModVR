@@ -200,11 +200,15 @@ public class ModVR_WandController : MonoBehaviour {
 
     private void OnTouchpadPressed(object sender, ControllerInteractionEventArgs e)
     {
-        isSelectMode = !isSelectMode;
-        isInteractMode = !isInteractMode;
-        string name = gameObject.name;
 
-        if (isSelectMode && String.Equals(name, "RightController"))
+        string name = gameObject.name;
+        if (String.Equals(name, "RightController"))
+        {
+            isSelectMode = !isSelectMode;
+            isInteractMode = !isInteractMode;
+        }
+
+        if (isSelectMode)
         {
             if (showMenu)
             {
