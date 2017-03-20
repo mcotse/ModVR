@@ -93,7 +93,7 @@ public class ModVR_WandController : MonoBehaviour {
         rb.isKinematic = true;
         rb.useGravity = false;
 
-        if (obj.GetComponent<BoxCollider>() == null && (obj.name.StartsWith("merged") || obj.name.StartsWith("groupObj")))
+        if (obj.GetComponent<MeshCollider>() == null && obj.GetComponent<BoxCollider>() == null && (obj.name.StartsWith("merged") || obj.name.StartsWith("groupObj")))
         {
             BoxCollider bc = obj.AddComponent<BoxCollider>();
             Bounds bcBounds = new Bounds();
