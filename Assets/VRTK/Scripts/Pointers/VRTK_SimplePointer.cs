@@ -270,7 +270,8 @@ namespace VRTK
 		private void ChangeTriggerTooltip()
 		{
 			VRTK_ControllerTooltips tooltips = controllerTooltips.GetComponent<VRTK_ControllerTooltips>();
-			tooltips.UpdateText (VRTK.VRTK_ControllerTooltips.TooltipButtons.TriggerTooltip, "Select Object");
+			tooltips.UpdateText(VRTK.VRTK_ControllerTooltips.TooltipButtons.TriggerTooltip, "Select Object");
+			tooltips.ToggleTips(true, VRTK.VRTK_ControllerTooltips.TooltipButtons.TriggerTooltip);
 		}
 
 		private void ResetTriggerTooltip()
