@@ -30,6 +30,7 @@ public class ModVR_WandController : MonoBehaviour {
 
     private GameObject selected;
     private GameObject grabbed;
+    Color color = new Color(237, 241, 39);
 
     private UnityEngine.Events.UnityEvent OnGroup;
 
@@ -138,11 +139,11 @@ public class ModVR_WandController : MonoBehaviour {
 
         GameManager.instance.AddInteractableObject(io);
         //obj.AddComponent<VRTK_FixedJointGrabAttach>();
-
+        
         if (hasSelectHighlighter)
         {
             ModVR_SelectHighlighter selectHighlighter = obj.AddComponent<ModVR_SelectHighlighter>();
-            selectHighlighter.Initialise(Color.blue);
+            selectHighlighter.Initialise(color);
         }
 
         VRTK_OutlineObjectCopyHighlighter highligher = obj.GetComponent<VRTK_OutlineObjectCopyHighlighter>();
@@ -363,7 +364,8 @@ public class ModVR_WandController : MonoBehaviour {
                     highlighter = t.gameObject.AddComponent<ModVR_SelectHighlighter>();
                     
                 }
-                highlighter.Initialise(Color.blue);
+
+                highlighter.Initialise(color);
             }
             io.transform.DetachChildren();
             objsToRemove.Add(io.gameObject);
@@ -371,7 +373,7 @@ public class ModVR_WandController : MonoBehaviour {
         }
 
         foreach(GameObject go in objsToRemove)
-        {
+        { 
             Destroy(go);
         }
 
@@ -405,9 +407,12 @@ public class ModVR_WandController : MonoBehaviour {
     }
     public void OnImportClicked()
     {
+        
         GameObject go = ModVR_ObjImporter.ImportLastSavedObject(GameManager.instance.lastSaved);
+        
         go.AddComponent<BoxCollider>();
         SetupInteractableObject(go, true);
+        go.transform.position = gameObject.transform.position;
 
     }
 

@@ -47,6 +47,7 @@ public class ModVR_ObjImporter{
         texture.Apply();
         newObj.GetComponent<Renderer>().material = new Material(Shader.Find("Diffuse"));
 
+
         return newObj;
     }
     // Use this for initialization
@@ -64,11 +65,11 @@ public class ModVR_ObjImporter{
         foreach (Vector3 v in newMesh.faceData)            
         {
             newVerts[i] = newMesh.vertices[(int)v.x - 1];
-            if (v.y >= 1)
-                newUVs[i] = newMesh.uv[(int)v.y - 1];
+            // if (v.y >= 1)
+            newUVs[i] = newMesh.uv[(int)v.y - 1];
  
-            if (v.z >= 1)
-                newNormals[i] = newMesh.normals[(int)v.z - 1];
+            // if (v.z >= 1)
+            newNormals[i] = newMesh.normals[(int)v.z - 1];
             i++;
         }
  
