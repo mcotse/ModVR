@@ -78,7 +78,7 @@ public class ModVR_WandController : MonoBehaviour {
         menu.SetActive(showMenu);
     }
 
-    private void SetupInteractableObject(GameObject obj)
+    private void SetupInteractableObject(GameObject obj, bool hasSelectHighlighter)
     {
         Rigidbody rb = obj.GetComponent<Rigidbody>();
         if (rb == null)
@@ -107,7 +107,11 @@ public class ModVR_WandController : MonoBehaviour {
                         bcBounds = colBounds;
                     }
                     bcBounds.Encapsulate(colBounds);
+
+                    ModVR_SelectHighlighter selectHighlighter = t.gameObject.AddComponent<ModVR_SelectHighlighter>();
+                    selectHighlighter.Initialise(Color.blue);
                 }
+
             }
             bc.center = bcBounds.center;
             bc.size = bcBounds.size;
@@ -135,8 +139,11 @@ public class ModVR_WandController : MonoBehaviour {
         GameManager.instance.AddInteractableObject(io);
         //obj.AddComponent<VRTK_FixedJointGrabAttach>();
 
-        ModVR_OutlineObjectSelectHighlighter selectHighlighter = obj.AddComponent<ModVR_OutlineObjectSelectHighlighter>();
-        selectHighlighter.Initialise(Color.blue);
+        if (hasSelectHighlighter)
+        {
+            ModVR_SelectHighlighter selectHighlighter = obj.AddComponent<ModVR_SelectHighlighter>();
+            selectHighlighter.Initialise(Color.blue);
+        }
 
         VRTK_OutlineObjectCopyHighlighter highligher = obj.GetComponent<VRTK_OutlineObjectCopyHighlighter>();
         if(highligher == null)
@@ -153,7 +160,7 @@ public class ModVR_WandController : MonoBehaviour {
         GameObject newGameObj = Instantiate(selected, selected.transform.position, selected.transform.rotation);
         Guid gameObjName = Guid.NewGuid();
         newGameObj.name = gameObjName.ToString() + "_" + newGameObj.name;
-        SetupInteractableObject(newGameObj);
+        SetupInteractableObject(newGameObj, true);
     }
 
 	public void GetNewRadialMenuOptions()
@@ -227,27 +234,47 @@ public class ModVR_WandController : MonoBehaviour {
     private void OnTriggerPressed(object sender, ControllerInteractionEventArgs e)
     {
         GameObject triggeredObj = sender as GameObject;
-        if (isSelectMode)
+        if (isSelectMode && GameManager.instance.laserColliding)
         {
-            if (GameManager.instance.laserColliding)
+            GameObject go = GameManager.instance.lastLaserSelectedObj;
+            ModVR_SelectHighlighter selector = go.GetComponent<ModVR_SelectHighlighter>();
+            
+            if(go.name.Contains("groupObj") || go.name.Contains("merged"))
             {
-                GameObject go = GameManager.instance.lastLaserSelectedObj;
-                ModVR_OutlineObjectSelectHighlighter selector = go.GetComponent<ModVR_OutlineObjectSelectHighlighter>();
-
-                bool isSelected = GameManager.instance.handleSelectedObject(go);
-
-
-                if (isSelected == true)
+                List<Transform> children = (from Transform t in go.transform
+                                            where t.name.Contains("Highlight") == false
+                                            select t).ToList();
+                foreach (Transform t in children)
                 {
-                    selector.Highlight(Color.blue);
-                }
-                else
-                {
-                    selector.Unhighlight(Color.clear);
-                }
+                    selector = t.gameObject.GetComponent<ModVR_SelectHighlighter>();
+                    if(selector == null)
+                    {
+                        selector = t.gameObject.AddComponent<ModVR_SelectHighlighter>();
+                        selector.Initialise(Color.blue);
+                    }
 
-
+                    ToggleSelection(t.gameObject, selector);
+                }
             }
+            else
+            {
+                ToggleSelection(go, selector);
+            }
+            
+        }
+    }
+
+    private void ToggleSelection(GameObject go, ModVR_SelectHighlighter selector)
+    {
+        bool isSelected = GameManager.instance.handleSelectedObject(go);
+
+        if (isSelected == true)
+        {
+            selector.Highlight(Color.blue);
+        }
+        else
+        {
+            selector.Unhighlight(Color.clear);
         }
     }
 
@@ -281,7 +308,7 @@ public class ModVR_WandController : MonoBehaviour {
         
         foreach(Transform t in merged.transform)
         {
-            SetupInteractableObject(t.gameObject);
+            SetupInteractableObject(t.gameObject, true);
         }
 
         GameManager.instance.selectedObjectList = new List<ModVR_InteractableObject>();
@@ -330,10 +357,10 @@ public class ModVR_WandController : MonoBehaviour {
             foreach (Transform t in io.transform)
             {
                 util.unGroupObject(t.gameObject);
-                ModVR_OutlineObjectSelectHighlighter highlighter = t.gameObject.GetComponent<ModVR_OutlineObjectSelectHighlighter>();
+                ModVR_SelectHighlighter highlighter = t.gameObject.GetComponent<ModVR_SelectHighlighter>();
                 if (highlighter == null)
                 {
-                    highlighter = t.gameObject.AddComponent<ModVR_OutlineObjectSelectHighlighter>();
+                    highlighter = t.gameObject.AddComponent<ModVR_SelectHighlighter>();
                     
                 }
                 highlighter.Initialise(Color.blue);
@@ -356,7 +383,7 @@ public class ModVR_WandController : MonoBehaviour {
         if (GameManager.instance.selectedObjectList.Count > 1)
         {
             GameObject grouped = util.groupObjects(GameManager.instance.selectedObjectList);
-            SetupInteractableObject(grouped);
+            SetupInteractableObject(grouped, false);
             GameManager.instance.selectedObjectList = new List<ModVR_InteractableObject>();
         }
     }
@@ -367,7 +394,7 @@ public class ModVR_WandController : MonoBehaviour {
         foreach(ModVR_InteractableObject io in selected)
         {
             ModVR_ObjExporter.GameObjectToFile(io.gameObject);
-            io.GetComponent<ModVR_OutlineObjectSelectHighlighter>().Unhighlight();
+            io.GetComponent<ModVR_SelectHighlighter>().Unhighlight();
 
             GameManager.instance.UpdateLastSaved(io.name);
         }
@@ -380,7 +407,7 @@ public class ModVR_WandController : MonoBehaviour {
     {
         GameObject go = ModVR_ObjImporter.ImportLastSavedObject(GameManager.instance.lastSaved);
         go.AddComponent<BoxCollider>();
-        SetupInteractableObject(go);
+        SetupInteractableObject(go, true);
 
     }
 
