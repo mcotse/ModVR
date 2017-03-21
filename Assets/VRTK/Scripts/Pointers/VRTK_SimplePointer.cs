@@ -32,6 +32,10 @@ namespace VRTK
         [Tooltip("Rescale the pointer cursor proportionally to the distance from this game object (useful when used as a gaze pointer).")]
         public bool pointerCursorRescaledAlongDistance = false;
 
+		[Header("Controller Tooltip Settings", order = 1)]
+		[Tooltip("The ControllerTooltips GameObject")]
+		public GameObject controllerTooltips;
+
         private GameObject pointerHolder;
         private GameObject pointerBeam;
         private GameObject pointerTip;
@@ -235,6 +239,8 @@ namespace VRTK
                 destinationPosition = Vector3.zero;
 
                 UpdatePointerMaterial(pointerMissColor);
+				// Reset trigger tooltip when no object is highlighted
+				ResetTriggerTooltip();
             }
 
             //check if beam has hit a new target
@@ -246,6 +252,8 @@ namespace VRTK
                 destinationPosition = pointerTip.transform.position;
 
                 UpdatePointerMaterial(pointerHitColor);
+				// Change trigger tooltip when object is highlighted
+				ChangeTriggerTooltip();
 
                 base.PointerIn();
             }
@@ -257,6 +265,20 @@ namespace VRTK
             }
 
             return OverrideBeamLength(actualLength);
+        }
+
+		private void ChangeTriggerTooltip()
+		{
+			VRTK_ControllerTooltips tooltips = controllerTooltips.GetComponent<VRTK_ControllerTooltips>();
+			tooltips.UpdateText(VRTK.VRTK_ControllerTooltips.TooltipButtons.TriggerTooltip, "Select Object");
+			tooltips.ToggleTips(true, VRTK.VRTK_ControllerTooltips.TooltipButtons.TriggerTooltip);
+		}
+
+		private void ResetTriggerTooltip()
+		{
+			VRTK_ControllerTooltips tooltips = controllerTooltips.GetComponent<VRTK_ControllerTooltips>();
+            tooltips.ToggleTips(false, VRTK.VRTK_ControllerTooltips.TooltipButtons.TriggerTooltip);
+            tooltips.ResetTooltip();
         }
     }
 }

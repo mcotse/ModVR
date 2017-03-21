@@ -56,6 +56,17 @@ namespace VRTK
         [Range(0, 1)]
         public float baseHapticStrength;
 
+		[Header("RadialMenu Tooltip Settings", order = 2)]
+		[Tooltip("The RadialMenu Tooltip GameObject")]
+		public GameObject radialMenuTooltip;
+		public string toggleScaleTooltip;
+		public string importObjectTooltip;
+		public string exportObjectTooltip;
+		public string deleteObjectTooltip;
+		public string groupObjectsTooltip;
+		public string ungroupObjectsTooltip;
+		public string mergeObjectsTooltip;
+
         public event HapticPulseEventHandler FireHapticPulse;
 
         //Has to be public to keep state from editor -> play mode?
@@ -112,6 +123,7 @@ namespace VRTK
                 ExecuteEvents.Execute(menuButtons[currentHover], pointer, ExecuteEvents.pointerUpHandler);
                 ExecuteEvents.Execute(menuButtons[currentHover], pointer, ExecuteEvents.pointerExitHandler);
                 buttons[currentHover].OnHoverExit.Invoke();
+				ResetButtonTooltip();
                 if (executeOnUnclick && currentPress != -1)
                 {
                     ExecuteEvents.Execute(menuButtons[buttonID], pointer, ExecuteEvents.pointerDownHandler);
@@ -147,6 +159,51 @@ namespace VRTK
             }
             currentHover = buttonID; //Set current hover ID, need this to un-hover if selected button changes
         }
+
+		public void OnHoverToggleScaling()
+		{
+			ChangeButtonTooltip(menuButtons[1], toggleScaleTooltip);
+		}
+		public void OnHoverImport()
+		{
+			ChangeButtonTooltip(menuButtons[0], importObjectTooltip);
+		}
+		public void OnHoverExport()
+		{
+			ChangeButtonTooltip(menuButtons[0], exportObjectTooltip);
+		}
+		public void OnHoverGroup()
+		{
+			ChangeButtonTooltip(menuButtons[1], groupObjectsTooltip);
+		}
+		public void OnHoverUngroup()
+		{
+			ChangeButtonTooltip(menuButtons[2], ungroupObjectsTooltip);
+		}
+		public void OnHoverDelete()
+		{
+			ChangeButtonTooltip(menuButtons[3], deleteObjectTooltip);
+		}
+		public void OnHoverMerge()
+		{
+			ChangeButtonTooltip(menuButtons[4], mergeObjectsTooltip);
+		}
+
+		public void ChangeButtonTooltip(GameObject button, string tooltipText)
+		{
+			radialMenuTooltip.SetActive(true);
+			VRTK_ObjectTooltip tooltip = radialMenuTooltip.GetComponent<VRTK_ObjectTooltip>();
+			tooltip.drawLineTo = button.GetComponentInChildren<RadialButtonIcon>().transform;
+			tooltip.UpdateText(tooltipText);
+		}
+
+		public void ResetButtonTooltip()
+		{
+			VRTK_ObjectTooltip tooltip = radialMenuTooltip.GetComponent<VRTK_ObjectTooltip>();
+			tooltip.drawLineTo = null;
+			tooltip.ResetTooltip();
+			radialMenuTooltip.SetActive(false);
+		}
 
         /*
         * Public methods to call Interact
