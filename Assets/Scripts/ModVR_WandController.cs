@@ -32,6 +32,7 @@ public class ModVR_WandController : MonoBehaviour {
     private GameObject grabbed;
     private int fpsModifier;
     private List<GameObject> dragObjects;
+    // private bool triggerReleased;
 
     Color color = new Color(237, 241, 39);
 
@@ -48,6 +49,8 @@ public class ModVR_WandController : MonoBehaviour {
         util = new GroupUtil();
         prevPosition = gameObject.transform.position;
         fpsModifier = 1;
+        // triggerReleased = true;
+        triggerPressed = false;
 
         actions = GetComponent<VRTK_ControllerActions>();
         events = GetComponent<VRTK_ControllerEvents>();
@@ -57,6 +60,7 @@ public class ModVR_WandController : MonoBehaviour {
         events.TriggerPressed += OnTriggerPressed;
 		events.GripPressed += OnGripPressed;
         events.TouchpadTouchStart += OnTouchpadTouched;
+        events.TriggerReleased += OnTriggerReleased;
         // events.GripPressed += GroupOnPressed;
         //events.GripPressed += MergeOnPressed;
 
@@ -74,7 +78,14 @@ public class ModVR_WandController : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-
+        if(triggerPressed)
+        {
+            OnDragHold();            
+        }
+        else
+        {
+            onDragRelease();
+        }
     }
 
 
@@ -247,8 +258,12 @@ public class ModVR_WandController : MonoBehaviour {
             }
         }
     }
-    private void OnTriggerPressed(object sender, ControllerInteractionEventArgs e)
+    private void OnTriggerReleased(object sender, ControllerInteractionEventArgs e)
     {
+        triggerPressed = false;
+    }
+    private void OnTriggerPressed(object sender, ControllerInteractionEventArgs e)
+    {   
         GameObject triggeredObj = sender as GameObject;
         if (isSelectMode && GameManager.instance.laserColliding)
         {
@@ -277,6 +292,10 @@ public class ModVR_WandController : MonoBehaviour {
                 ToggleSelection(go, selector);
             }
             
+        }
+        else if (!isSelectMode)
+        {
+            triggerPressed = true;
         }
     }
 
