@@ -59,6 +59,11 @@ namespace VRTK
 		[Tooltip("The RadialMenu Tooltip GameObject")]
 		public GameObject radialMenuTooltip;
 		public string importObjectTooltip;
+		public string exportObjectTooltip;
+		public string deleteObjectTooltip;
+		public string groupObjectsTooltip;
+		public string ungroupObjectsTooltip;
+		public string mergeObjectsTooltip;
 
         public event HapticPulseEventHandler FireHapticPulse;
 
