@@ -19,18 +19,6 @@ public class GroupUtil : MonoBehaviour {
         newObj.name = "mergedObj" + tstamp;
         newObj.tag = "mergedObj";
 
-
-        // CombineInstance[] combine = new CombineInstance[meshObjectList.Count];
-        // int i = 0;
-        // while (i < meshObjectList.Count)
-        // {
-        //     MeshFilter meshFilter = meshObjectList[i].gameObject.GetComponent<MeshFilter>();
-        //     combine[i].mesh = meshFilter.sharedMesh;
-        //     combine[i].transform = meshFilter.transform.localToWorldMatrix;
-        //     i++;
-        // }
-        // Mesh combinedMesh = new Mesh();
-        // combinedMesh.CombineMeshes(combine);
         Mesh combinedMesh = combineMeshes(meshObjectList);
         newObj.GetComponent<MeshFilter>().mesh = combinedMesh;
         //cleanup old object
@@ -132,16 +120,11 @@ public class GroupUtil : MonoBehaviour {
     }
     private Mesh combineMeshes(List<GameObject> objects)
     {
-        List<GameObject> meshObjectList = new List<GameObject>();
-        foreach (GameObject obj in objects)
-        {
-            meshObjectList.Add(obj);
-        }
-        CombineInstance[] combine = new CombineInstance[meshObjectList.Count];
+        CombineInstance[] combine = new CombineInstance[objects.Count];
         int i = 0;
-        while (i < meshObjectList.Count)
+        while (i < objects.Count)
         {
-            MeshFilter meshFilter = meshObjectList[i].gameObject.GetComponent<MeshFilter>();
+            MeshFilter meshFilter = objects[i].gameObject.GetComponent<MeshFilter>();
             combine[i].mesh = meshFilter.sharedMesh;
             combine[i].transform = meshFilter.transform.localToWorldMatrix;
             i++;
