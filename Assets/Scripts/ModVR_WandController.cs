@@ -51,6 +51,7 @@ public class ModVR_WandController : MonoBehaviour {
         fpsModifier = 1;
         // triggerReleased = true;
         triggerPressed = false;
+        dragObjects = new List<GameObject>();
 
         actions = GetComponent<VRTK_ControllerActions>();
         events = GetComponent<VRTK_ControllerEvents>();
@@ -485,7 +486,7 @@ public class ModVR_WandController : MonoBehaviour {
     {
         GameObject merged = util.mergeMultipleObjects(dragObjects);
         util.autoWeld(merged.GetComponent<MeshFilter>().sharedMesh,0.004f,0.008f);
-        SetupInteractableObject(merged);
+        SetupInteractableObject(merged,true,false);
         Debug.Log("v: " + merged.GetComponent<MeshFilter>().mesh.vertices.Length.ToString());
         dragObjects.Clear();
     }
