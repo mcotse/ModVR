@@ -153,15 +153,21 @@ public class ModVR_WandController : MonoBehaviour {
         
     }
 
-    void CreateSelectedObject(ModVR_InteractableObject selectedObj)
+    IEnumerable CreateSelectedObject(ModVR_InteractableObject selectedObj)
     {
         GameObject selected = selectedObj.gameObject;
         GameObject newGameObj = Instantiate(selected, selected.transform.position, selected.transform.rotation);
         Guid gameObjName = Guid.NewGuid();
         newGameObj.name = gameObjName.ToString() + "_" + newGameObj.name;
         VRTK_ObjectAutoGrab autoGrab = selectedObj.gameObject.AddComponent<VRTK_ObjectAutoGrab>();
-        
         SetupInteractableObject(newGameObj, true, false);
+        yield return new WaitForSeconds(0.2f);
+        gameObject.GetComponent<VRTK_InteractGrab>().AttemptGrab();
+    }
+
+    private void AutoGrab(object createdObj)
+    {
+
     }
 
 	public void GetNewRadialMenuOptions()
