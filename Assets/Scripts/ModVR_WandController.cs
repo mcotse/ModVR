@@ -473,10 +473,10 @@ public class ModVR_WandController : MonoBehaviour {
     }
     public void OnDragHold()
     {   
-        if (fpsModifier % 5 == 0)
+        if (fpsModifier % 3 == 0)
         {
             float dist = Vector3.Distance(prevPosition, gameObject.transform.position);
-            if (dist > 0.02)
+            if (dist > 0.005)
             {
                 GameObject newObj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
                 newObj.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
@@ -491,8 +491,9 @@ public class ModVR_WandController : MonoBehaviour {
     public void onDragRelease()
     {
         GameObject merged = util.mergeMultipleObjects(dragObjects);
-        util.autoWeld(merged.GetComponent<MeshFilter>().sharedMesh,0.004f,0.008f);
+        util.autoWeld(merged.GetComponent<MeshFilter>().sharedMesh,0.02f,0.004f);
         SetupInteractableObject(merged,true,false);
+        merged.GetComponent<Renderer>().material.color = Color.red;
         Debug.Log("v: " + merged.GetComponent<MeshFilter>().mesh.vertices.Length.ToString());
         dragObjects.Clear();
     }
