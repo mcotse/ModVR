@@ -68,6 +68,12 @@ namespace VRTK
 		public string groupObjectsTooltip;
 		public string ungroupObjectsTooltip;
 		public string mergeObjectsTooltip;
+		public string redTooltip;
+		public string greenTooltip;
+		public string blueTooltip;
+		public string yellowTooltip;
+		public string whiteTooltip;
+		public string blackTooltip;
 
         public event HapticPulseEventHandler FireHapticPulse;
 
@@ -197,6 +203,32 @@ namespace VRTK
 		public void OnHoverMerge()
 		{
 			ChangeButtonTooltip(menuButtons[4], mergeObjectsTooltip);
+		}
+
+		// Hover on color buttons
+		public void OnHoverRed()
+		{
+			ChangeButtonTooltip(menuButtons[0], redTooltip);
+		}
+		public void OnHoverGreen()
+		{
+			ChangeButtonTooltip(menuButtons[1], greenTooltip);
+		}
+		public void OnHoverBlue()
+		{
+			ChangeButtonTooltip(menuButtons[2], blueTooltip);
+		}
+		public void OnHoverYellow()
+		{
+			ChangeButtonTooltip(menuButtons[3], yellowTooltip);
+		}
+		public void OnHoverWhite()
+		{
+			ChangeButtonTooltip(menuButtons[4], whiteTooltip);
+		}
+		public void OnHoverBlack()
+		{
+			ChangeButtonTooltip(menuButtons[5], blackTooltip);
 		}
 
 		public void ChangeButtonTooltip(GameObject button, string tooltipText)
