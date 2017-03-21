@@ -537,6 +537,8 @@ public class ModVR_WandController : MonoBehaviour {
         foreach (ModVR_InteractableObject io in GameManager.instance.selectedObjectList)
         {
             ModVR_ColorUtil.changeColor(io.gameObject, "red");
+
+            GameManager.instance.handleSelectedObject(io.gameObject);
         }
     }
     public void OnBlueClicked()
@@ -544,6 +546,7 @@ public class ModVR_WandController : MonoBehaviour {
         foreach (ModVR_InteractableObject io in GameManager.instance.selectedObjectList)
         {
             ModVR_ColorUtil.changeColor(io.gameObject, "blue");
+            GameManager.instance.handleSelectedObject(io.gameObject);
         }
     }
     public void OnYellowClicked()
@@ -551,6 +554,7 @@ public class ModVR_WandController : MonoBehaviour {
         foreach (ModVR_InteractableObject io in GameManager.instance.selectedObjectList)
         {
             ModVR_ColorUtil.changeColor(io.gameObject, "yellow");
+            GameManager.instance.handleSelectedObject(io.gameObject);
         }
     }
     public void OnWhiteClicked()
@@ -558,6 +562,7 @@ public class ModVR_WandController : MonoBehaviour {
         foreach (ModVR_InteractableObject io in GameManager.instance.selectedObjectList)
         {
             ModVR_ColorUtil.changeColor(io.gameObject, "white");
+            GameManager.instance.handleSelectedObject(io.gameObject);
         }
     }
     public void OnBlackClicked()
@@ -565,6 +570,7 @@ public class ModVR_WandController : MonoBehaviour {
         foreach (ModVR_InteractableObject io in GameManager.instance.selectedObjectList)
         {
             ModVR_ColorUtil.changeColor(io.gameObject, "black");
+            GameManager.instance.handleSelectedObject(io.gameObject);
         }
     }
     public void OnGreenClicked()
@@ -573,6 +579,11 @@ public class ModVR_WandController : MonoBehaviour {
         {
             ModVR_ColorUtil.changeColor(io.gameObject, "green");
         }
+    }
+
+    private void ClearSelection(){
+
+        GameManager.instance.selectedObjectList = new List<ModVR_InteractableObject>();
     }
     #endregion
 }
