@@ -56,6 +56,12 @@ namespace VRTK
         [Range(0, 1)]
         public float baseHapticStrength;
 
+		[Header("RadialMenu Settings", order = 2)]
+		[Tooltip("The RadialMenu GameObject")]
+		public GameObject radialMenu;
+		[Tooltip("The ColorMenu GameObject")]
+		public GameObject colorMenu;
+
 		[Header("RadialMenu Tooltip Settings", order = 2)]
 		[Tooltip("The RadialMenu Tooltip GameObject")]
 		public GameObject radialMenuTooltip;
@@ -229,6 +235,12 @@ namespace VRTK
 		public void OnHoverBlack()
 		{
 			ChangeButtonTooltip(menuButtons[5], blackTooltip);
+		}
+
+		public void OnColorClicked()
+		{
+			radialMenu.SetActive(false);
+			colorMenu.SetActive(true);
 		}
 
 		public void ChangeButtonTooltip(GameObject button, string tooltipText)
