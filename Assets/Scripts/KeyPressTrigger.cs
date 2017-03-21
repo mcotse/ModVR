@@ -102,8 +102,8 @@ public class KeyPressTrigger : MonoBehaviour {
     if (Input.GetKeyDown("c")){
       GameObject s1 = GameObject.Find("s1");
       GameObject c1 = GameObject.Find("c1");
-      GameObject groupUtil = GameObject.Find("groupUtil");
-      groupUtil.GetComponent<GroupUtil>().mergeObjects(s1,c1,true);
+      GameObject groupUtilObj = GameObject.Find("groupUtil");
+	  groupUtilObj.GetComponent<GroupUtil>().mergeObjects(s1,c1,true);
     }
     if (Input.GetKeyDown("x")){
       GameObject s1 = GameObject.Find("s1");
@@ -112,4 +112,5 @@ public class KeyPressTrigger : MonoBehaviour {
       ModVR_ColorUtil.changeColor(c1,"red");
     }
   }
+}
 }
