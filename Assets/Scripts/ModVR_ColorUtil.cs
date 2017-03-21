@@ -20,7 +20,7 @@ public class ModVR_ColorUtil {
 			case "red":
 				newColor = Color.red;
 				break;
-			case "yello":
+			case "yellow":
 				newColor = Color.yellow;			
 				break;
 			case "blue":

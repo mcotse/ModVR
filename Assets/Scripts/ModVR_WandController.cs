@@ -578,6 +578,7 @@ public class ModVR_WandController : MonoBehaviour {
         foreach (ModVR_InteractableObject io in GameManager.instance.selectedObjectList)
         {
             ModVR_ColorUtil.changeColor(io.gameObject, "green");
+            GameManager.instance.handleSelectedObject(io.gameObject);
         }
     }
 
