@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using VRTK;
 using ModVR;
+using System.Linq;
+using VRTK.Highlighters;
 
 public class ModVR_InteractableObject : VRTK_InteractableObject {
     
@@ -62,6 +64,16 @@ public class ModVR_InteractableObject : VRTK_InteractableObject {
         {
             GameManager.instance.laserColliding = true;
             GameManager.instance.lastLaserSelectedObj = gameObject;
+
+            if (gameObject.name.Contains("groupObj"))
+            {
+                List<GameObject> children = GetChildren();
+                foreach(GameObject child in children)
+                {
+                    VRTK_OutlineObjectCopyHighlighter highlighter = child.GetComponent<VRTK_OutlineObjectCopyHighlighter>();
+                    highlighter.Highlight(Color.red);
+                }
+            }
         }
 
 
@@ -85,6 +97,27 @@ public class ModVR_InteractableObject : VRTK_InteractableObject {
             e.collider = other;
             InteractableObjectCollisionExit(gameObject, e);
         }
-		GameManager.instance.laserColliding = false;
+
+        bool isPointer = other.gameObject.name.Contains("BasePointer_ObjectInteractor_Collider");
+        if (isPointer && gameObject.name.Contains("groupObj"))
+        {
+            List<GameObject> children = GetChildren();
+            foreach (GameObject child in children)
+            {
+                VRTK_OutlineObjectCopyHighlighter highlighter = child.GetComponent<VRTK_OutlineObjectCopyHighlighter>();
+                highlighter.Unhighlight(Color.clear);
+            }
+        }
+        GameManager.instance.laserColliding = false;
+    }
+
+
+    private List<GameObject> GetChildren()
+    {
+        List<GameObject> children = (from Transform t in gameObject.transform
+                                     where t.name.Contains("Highlight") == false
+                                     select t.gameObject).ToList();
+
+        return children;
     }
 }

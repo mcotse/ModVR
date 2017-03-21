@@ -79,7 +79,7 @@ public class ModVR_WandController : MonoBehaviour {
         menu.SetActive(showMenu);
     }
 
-    private void SetupInteractableObject(GameObject obj, bool hasSelectHighlighter)
+    private void SetupInteractableObject(GameObject obj, bool hasSelectHighlighter, bool isGroupedObj)
     {
         Rigidbody rb = obj.GetComponent<Rigidbody>();
         if (rb == null)
@@ -102,14 +102,15 @@ public class ModVR_WandController : MonoBehaviour {
             {
                 if (!t.name.Contains("Highlight"))
                 {
-                    Bounds colBounds = t.GetComponent<Collider>().bounds;
-                    if(bcBounds.extents == Vector3.zero)
-                    {
-                        bcBounds = colBounds;
-                    }
-                    bcBounds.Encapsulate(colBounds);
+                    //Bounds colBounds = t.GetComponent<Collider>().bounds;
+                    //if(bcBounds.extents == Vector3.zero)
+                    //{
+                    //    bcBounds = colBounds;
+                    //}
+                    //bcBounds.Encapsulate(colBounds);
 
                     ModVR_SelectHighlighter selectHighlighter = t.gameObject.AddComponent<ModVR_SelectHighlighter>();
+                    
                     selectHighlighter.Initialise(color);
                 }
 
@@ -143,13 +144,18 @@ public class ModVR_WandController : MonoBehaviour {
         if (hasSelectHighlighter)
         {
             ModVR_SelectHighlighter selectHighlighter = obj.AddComponent<ModVR_SelectHighlighter>();
+            selectHighlighter.thickness = 0.3f;
             selectHighlighter.Initialise(color);
         }
 
-        VRTK_OutlineObjectCopyHighlighter highligher = obj.GetComponent<VRTK_OutlineObjectCopyHighlighter>();
-        if(highligher == null)
+        if (!isGroupedObj)
         {
-            highligher = obj.AddComponent<VRTK_OutlineObjectCopyHighlighter>();
+            VRTK_OutlineObjectCopyHighlighter highligher = obj.GetComponent<VRTK_OutlineObjectCopyHighlighter>();
+            if (highligher == null)
+            {
+                highligher = obj.AddComponent<VRTK_OutlineObjectCopyHighlighter>();
+                highligher.thickness = 0.2f;
+            }
         }
 
         
@@ -161,7 +167,7 @@ public class ModVR_WandController : MonoBehaviour {
         GameObject newGameObj = Instantiate(selected, selected.transform.position, selected.transform.rotation);
         Guid gameObjName = Guid.NewGuid();
         newGameObj.name = gameObjName.ToString() + "_" + newGameObj.name;
-        SetupInteractableObject(newGameObj, true);
+        SetupInteractableObject(newGameObj, true, false);
     }
 
 	public void GetNewRadialMenuOptions()
@@ -313,7 +319,7 @@ public class ModVR_WandController : MonoBehaviour {
         
         foreach(Transform t in merged.transform)
         {
-            SetupInteractableObject(t.gameObject, true);
+            SetupInteractableObject(t.gameObject, true, false);
         }
 
         GameManager.instance.selectedObjectList = new List<ModVR_InteractableObject>();
@@ -390,12 +396,13 @@ public class ModVR_WandController : MonoBehaviour {
         if (GameManager.instance.selectedObjectList.Count > 1)
         {
             GameObject grouped = util.groupObjects(GameManager.instance.selectedObjectList);
-            SetupInteractableObject(grouped, false);
+            SetupInteractableObject(grouped, false, true);
             GameManager.instance.selectedObjectList = new List<ModVR_InteractableObject>();
 
             List<GameObject> children = (from Transform t in grouped.transform
                                          where t.name.Contains("Highlight") == false
                                          select t.gameObject).ToList();
+
             foreach(GameObject go in children)
             {
                 Collider coll = go.GetComponent<Collider>();
@@ -430,7 +437,7 @@ public class ModVR_WandController : MonoBehaviour {
         GameObject go = ModVR_ObjImporter.ImportLastSavedObject(GameManager.instance.lastSaved);
         
         go.AddComponent<BoxCollider>();
-        SetupInteractableObject(go, true);
+        SetupInteractableObject(go, true, false);
         go.transform.position = gameObject.transform.position;
 
     }
