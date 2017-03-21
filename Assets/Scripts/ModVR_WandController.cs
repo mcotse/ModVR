@@ -433,31 +433,42 @@ public class ModVR_WandController : MonoBehaviour {
         {
             foreach (Transform t in io.transform)
             {
-                util.unGroupObject(t.gameObject);
-                ModVR_SelectHighlighter highlighter = t.gameObject.GetComponent<ModVR_SelectHighlighter>();
-                if (highlighter == null)
+                if (t.name.Contains("Highlight") == false)
                 {
-                    highlighter = t.gameObject.AddComponent<ModVR_SelectHighlighter>();
-                    
+                    util.unGroupObject(t.gameObject);
+                    ModVR_SelectHighlighter highlighter = t.gameObject.GetComponent<ModVR_SelectHighlighter>();
+                    if (highlighter == null)
+                    {
+                        highlighter = t.gameObject.AddComponent<ModVR_SelectHighlighter>();
+
+                    }
+
+                    highlighter.Initialise(color);
                 }
-
-                highlighter.Initialise(color);
             }
-            io.transform.DetachChildren();
             objsToRemove.Add(io.gameObject);
-            GameManager.instance.RemoveInteractableObject(io);
+            //GameManager.instance.RemoveInteractableObject(io);
 
 
-            
-            foreach (Collider col in GameManager.instance.groupedColliders[io.gameObject.name])
-            {
-                col.enabled = true;
+            if (GameManager.instance.groupedColliders.ContainsKey(io.gameObject.name)) {
+                foreach (Collider col in GameManager.instance.groupedColliders[io.gameObject.name])
+                {
+                    col.enabled = true;
+                }
             }
         }
 
 
-        foreach(GameObject go in objsToRemove)
-        { 
+
+        //foreach (GameObject go in objsToRemove)
+        //{
+        //    go.GetComponent<ModVR_SelectHighlighter>().Unhighlight(Color.clear);
+        //}
+        List<GameObject> groupsToDelete = (from ModVR_InteractableObject io in grouped
+                                           where io.name.Contains("groupObj")
+                                           select io.gameObject).ToList();
+        foreach (GameObject go in groupsToDelete)
+        {
             Destroy(go);
         }
 
@@ -475,8 +486,7 @@ public class ModVR_WandController : MonoBehaviour {
                                        select obj.name).ToList();
 
             List<Collider> disabledColliders = new List<Collider>();
-
-            Debug.Log(groupNames.Count);
+            
             foreach(string name in groupNames)
             {
                 disabledColliders.AddRange(GameManager.instance.groupedColliders[name]);
@@ -485,11 +495,11 @@ public class ModVR_WandController : MonoBehaviour {
 
             GameObject grouped = util.groupObjects(GameManager.instance.selectedObjectList);
             SetupInteractableObject(grouped, false, true);
-            GameManager.instance.selectedObjectList = new List<ModVR_InteractableObject>();
 
             List<GameObject> children = (from Transform t in grouped.transform
                                          where t.name.Contains("Highlight") == false
                                          select t.gameObject).ToList();
+            
             foreach(GameObject go in children)
             {
 
