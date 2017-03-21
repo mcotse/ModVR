@@ -12,6 +12,7 @@ using ModVR;
 public class ModVR_WandController : MonoBehaviour {
 
     public GameObject menu;
+	public GameObject radialMenuTooltip;
 
     private GroupUtil util;
     private GameObject otherController;
@@ -52,6 +53,7 @@ public class ModVR_WandController : MonoBehaviour {
         events.TriggerPressed += OnTriggerPressed;
 		events.GripPressed += OnGripPressed;
         events.TouchpadTouchStart += OnTouchpadTouched;
+		events.TouchpadTouchEnd += OnTouchpadTouchEnd;
         // events.GripPressed += GroupOnPressed;
         //events.GripPressed += MergeOnPressed;
 
@@ -266,6 +268,11 @@ public class ModVR_WandController : MonoBehaviour {
             GameManager.instance.radialMenu.SetActive(true);
         }
     }
+
+	private void OnTouchpadTouchEnd(object sender, ControllerInteractionEventArgs e)
+	{
+		radialMenuTooltip.SetActive(false);
+	}
 
     #endregion
 
