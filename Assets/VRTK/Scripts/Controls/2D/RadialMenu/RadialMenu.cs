@@ -55,9 +55,10 @@ namespace VRTK
         [Range(0, 1)]
         public float baseHapticStrength;
 
-		[Header("RadialMenu Tooltip Settings", order = 1)]
+		[Header("RadialMenu Tooltip Settings", order = 2)]
 		[Tooltip("The RadialMenu Tooltip GameObject")]
 		public GameObject radialMenuTooltip;
+		public string importObjectTooltip;
 
         public event HapticPulseEventHandler FireHapticPulse;
 
@@ -156,18 +157,17 @@ namespace VRTK
 
 		public void ChangeButtonTooltip(GameObject button, int buttonID)
 		{
+			radialMenuTooltip.SetActive(true);
 			VRTK_ObjectTooltip tooltip = radialMenuTooltip.GetComponent<VRTK_ObjectTooltip>();
-			//tooltip.drawLineTo = button.transform;
 			tooltip.drawLineTo = button.GetComponentInChildren<RadialButtonIcon>().transform;
-			tooltip.UpdateText("Button ID: " + buttonID);
-			//tooltip.ToggleTips(true, VRTK.VRTK_ControllerTooltips.TooltipButtons.TriggerTooltip);
+			tooltip.UpdateText(importObjectTooltip);
 		}
 
 		public void ResetButtonTooltip()
 		{
 			VRTK_ObjectTooltip tooltip = radialMenuTooltip.GetComponent<VRTK_ObjectTooltip>();
-			//tooltip.ToggleTips(false, VRTK.VRTK_ControllerTooltips.TooltipButtons.TriggerTooltip);
 			tooltip.ResetTooltip();
+			radialMenuTooltip.SetActive(false);
 		}
 
         /*
