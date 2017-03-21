@@ -80,6 +80,7 @@ namespace VRTK
 		public string yellowTooltip;
 		public string whiteTooltip;
 		public string blackTooltip;
+		public string returnTooltip;
 
         public event HapticPulseEventHandler FireHapticPulse;
 
@@ -235,6 +236,10 @@ namespace VRTK
 		public void OnHoverBlack()
 		{
 			ChangeButtonTooltip(menuButtons[5], blackTooltip);
+		}
+		public void OnHoverReturn()
+		{
+			ChangeButtonTooltip(menuButtons[6], returnTooltip);
 		}
 
 		public void OnColorClicked()
