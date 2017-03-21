@@ -55,6 +55,10 @@ namespace VRTK
         [Range(0, 1)]
         public float baseHapticStrength;
 
+		[Header("RadialMenu Tooltip Settings", order = 1)]
+		[Tooltip("The RadialMenu Tooltip GameObject")]
+		public GameObject radialMenuTooltip;
+
         public event HapticPulseEventHandler FireHapticPulse;
 
         //Has to be public to keep state from editor -> play mode?
@@ -143,9 +147,26 @@ namespace VRTK
                 ExecuteEvents.Execute(menuButtons[buttonID], pointer, ExecuteEvents.pointerEnterHandler);
                 buttons[buttonID].OnHoverEnter.Invoke();
                 AttempHapticPulse(baseHapticStrength);
+				// Change tooltip
+				ChangeButtonTooltip(menuButtons[buttonID]);
             }
             currentHover = buttonID; //Set current hover ID, need this to un-hover if selected button changes
         }
+
+		public void ChangeButtonTooltip(GameObject button)
+		{
+			VRTK_ObjectTooltip tooltip = radialMenuTooltip.GetComponent<VRTK_ObjectTooltip>();
+			tooltip.drawLineTo = button.transform;
+			tooltip.UpdateText("test");
+			//tooltip.ToggleTips(true, VRTK.VRTK_ControllerTooltips.TooltipButtons.TriggerTooltip);
+		}
+
+		public void ResetButtonTooltip()
+		{
+			VRTK_ObjectTooltip tooltip = radialMenuTooltip.GetComponent<VRTK_ObjectTooltip>();
+			//tooltip.ToggleTips(false, VRTK.VRTK_ControllerTooltips.TooltipButtons.TriggerTooltip);
+			tooltip.ResetTooltip();
+		}
 
         /*
         * Public methods to call Interact
