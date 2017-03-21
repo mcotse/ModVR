@@ -155,12 +155,18 @@ namespace VRTK
                 buttons[buttonID].OnHoverEnter.Invoke();
                 AttempHapticPulse(baseHapticStrength);
 				// Change tooltip
-				ChangeButtonTooltip(menuButtons[buttonID], buttonID);
+				//ChangeButtonTooltip(menuButtons[buttonID], buttonID);
             }
             currentHover = buttonID; //Set current hover ID, need this to un-hover if selected button changes
         }
 
-		public void ChangeButtonTooltip(GameObject button, int buttonID)
+		public void OnHoverImport()
+		{
+			//ChangeButtonTooltip(menuButtons[currentHover], importObjectTooltip);
+			ChangeButtonTooltip(gameObject, importObjectTooltip);
+		}
+
+		public void ChangeButtonTooltip(GameObject button, string tooltipText)
 		{
 			radialMenuTooltip.SetActive(true);
 			VRTK_ObjectTooltip tooltip = radialMenuTooltip.GetComponent<VRTK_ObjectTooltip>();
