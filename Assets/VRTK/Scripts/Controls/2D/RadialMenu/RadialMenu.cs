@@ -56,9 +56,17 @@ namespace VRTK
         [Range(0, 1)]
         public float baseHapticStrength;
 
+		[Header("RadialMenu Settings", order = 2)]
+		[Tooltip("The RadialMenu GameObject")]
+		public GameObject radialMenu;
+		[Tooltip("The ColorMenu GameObject")]
+		public GameObject colorMenu;
+
 		[Header("RadialMenu Tooltip Settings", order = 2)]
 		[Tooltip("The RadialMenu Tooltip GameObject")]
 		public GameObject radialMenuTooltip;
+		public string dragCreateTooltip;
+		public string colorTooltip;
 		public string toggleScaleTooltip;
 		public string importObjectTooltip;
 		public string exportObjectTooltip;
@@ -66,6 +74,13 @@ namespace VRTK
 		public string groupObjectsTooltip;
 		public string ungroupObjectsTooltip;
 		public string mergeObjectsTooltip;
+		public string redTooltip;
+		public string greenTooltip;
+		public string blueTooltip;
+		public string yellowTooltip;
+		public string whiteTooltip;
+		public string blackTooltip;
+		public string returnTooltip;
 
         public event HapticPulseEventHandler FireHapticPulse;
 
@@ -160,13 +175,21 @@ namespace VRTK
             currentHover = buttonID; //Set current hover ID, need this to un-hover if selected button changes
         }
 
+		public void OnHoverImport()
+		{
+			ChangeButtonTooltip(menuButtons[0], importObjectTooltip);
+		}
 		public void OnHoverToggleScaling()
 		{
 			ChangeButtonTooltip(menuButtons[1], toggleScaleTooltip);
 		}
-		public void OnHoverImport()
+		public void OnHoverDragCreate()
 		{
-			ChangeButtonTooltip(menuButtons[0], importObjectTooltip);
+			ChangeButtonTooltip(menuButtons[2], dragCreateTooltip);
+		}
+		public void OnHoverColor()
+		{
+			ChangeButtonTooltip(menuButtons[3], colorTooltip);
 		}
 		public void OnHoverExport()
 		{
@@ -187,6 +210,47 @@ namespace VRTK
 		public void OnHoverMerge()
 		{
 			ChangeButtonTooltip(menuButtons[4], mergeObjectsTooltip);
+		}
+
+		// Hover on color buttons
+		public void OnHoverRed()
+		{
+			ChangeButtonTooltip(menuButtons[0], redTooltip);
+		}
+		public void OnHoverGreen()
+		{
+			ChangeButtonTooltip(menuButtons[1], greenTooltip);
+		}
+		public void OnHoverBlue()
+		{
+			ChangeButtonTooltip(menuButtons[2], blueTooltip);
+		}
+		public void OnHoverYellow()
+		{
+			ChangeButtonTooltip(menuButtons[3], yellowTooltip);
+		}
+		public void OnHoverWhite()
+		{
+			ChangeButtonTooltip(menuButtons[4], whiteTooltip);
+		}
+		public void OnHoverBlack()
+		{
+			ChangeButtonTooltip(menuButtons[5], blackTooltip);
+		}
+		public void OnHoverReturn()
+		{
+			ChangeButtonTooltip(menuButtons[6], returnTooltip);
+		}
+
+		public void OnColorClicked()
+		{
+			radialMenu.SetActive(false);
+			colorMenu.SetActive(true);
+		}
+
+		public void OnReturnClicked()
+		{
+			colorMenu.SetActive(false);
 		}
 
 		public void ChangeButtonTooltip(GameObject button, string tooltipText)

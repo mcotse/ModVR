@@ -30,7 +30,6 @@ public class ModVR_WandController : MonoBehaviour {
     private bool gripPressed;
     private Vector3 prevPosition;
     private bool dragCreateMode;
-    private GameObject selected;
     private GameObject grabbed;
     private int fpsModifier;
     private List<GameObject> dragObjects;
@@ -343,16 +342,15 @@ public class ModVR_WandController : MonoBehaviour {
 
     private void OnTouchpadTouched(object sender, ControllerInteractionEventArgs e)
     {
-        if (GameManager.instance.selectedObjectList.Count > 0)
-        {
-            GameManager.instance.objectOptions.SetActive(true);
-            GameManager.instance.radialMenu.SetActive(false);
-        }
-        else
-        {
-            GameManager.instance.objectOptions.SetActive(false);
-            GameManager.instance.radialMenu.SetActive(true);
-        }
+		if (!(GameManager.instance.colorMenu.activeSelf)) {
+			if (GameManager.instance.selectedObjectList.Count > 0) {
+				GameManager.instance.objectOptions.SetActive (true);
+				GameManager.instance.radialMenu.SetActive (false);
+			} else {
+				GameManager.instance.objectOptions.SetActive (false);
+				GameManager.instance.radialMenu.SetActive (true);
+			}
+		}
     }
 
 	private void OnTouchpadTouchEnd(object sender, ControllerInteractionEventArgs e)
@@ -577,27 +575,53 @@ public class ModVR_WandController : MonoBehaviour {
     }
     public void OnRedClicked()
     {
-        ModVR_ColorUtil.changeColor(selected,"red");
+        foreach (ModVR_InteractableObject io in GameManager.instance.selectedObjectList)
+        {
+            ModVR_ColorUtil.changeColor(io.gameObject, "red");
+
+            GameManager.instance.handleSelectedObject(io.gameObject);
+        }
     }
     public void OnBlueClicked()
     {
-        ModVR_ColorUtil.changeColor(selected,"blue");
+        foreach (ModVR_InteractableObject io in GameManager.instance.selectedObjectList)
+        {
+            ModVR_ColorUtil.changeColor(io.gameObject, "blue");
+            GameManager.instance.handleSelectedObject(io.gameObject);
+        }
     }
     public void OnYellowClicked()
     {
-        ModVR_ColorUtil.changeColor(selected,"yellow");
+        foreach (ModVR_InteractableObject io in GameManager.instance.selectedObjectList)
+        {
+            ModVR_ColorUtil.changeColor(io.gameObject, "yellow");
+            GameManager.instance.handleSelectedObject(io.gameObject);
+        }
     }
     public void OnWhiteClicked()
     {
-        ModVR_ColorUtil.changeColor(selected,"white");
+        foreach (ModVR_InteractableObject io in GameManager.instance.selectedObjectList)
+        {
+            ModVR_ColorUtil.changeColor(io.gameObject, "white");
+            GameManager.instance.handleSelectedObject(io.gameObject);
+        }
     }
     public void OnBlackClicked()
     {
-        ModVR_ColorUtil.changeColor(selected,"black");
+        foreach (ModVR_InteractableObject io in GameManager.instance.selectedObjectList)
+        {
+            ModVR_ColorUtil.changeColor(io.gameObject, "black");
+            GameManager.instance.handleSelectedObject(io.gameObject);
+        }
     }
     public void OnGreenClicked()
     {
-        ModVR_ColorUtil.changeColor(selected,"green");
+        foreach (ModVR_InteractableObject io in GameManager.instance.selectedObjectList)
+        {
+            ModVR_ColorUtil.changeColor(io.gameObject, "green");
+            GameManager.instance.handleSelectedObject(io.gameObject);
+        }
     }
-    #endregion
+
+#endregion
 }
