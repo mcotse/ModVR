@@ -28,6 +28,7 @@ public class ModVR_WandController : MonoBehaviour {
     private bool triggerPressed;
     private bool gripPressed;
     private Vector3 prevPosition;
+    private bool dragCreateMode;
     private GameObject selected;
     private GameObject grabbed;
     private int fpsModifier;
@@ -40,6 +41,7 @@ public class ModVR_WandController : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        dragCreateMode = false;
         menuButtonDown = false;
         isSelectMode = false;
         isInteractMode = true;
@@ -79,13 +81,16 @@ public class ModVR_WandController : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        if(triggerPressed)
+        if(dragCreateMode)
         {
-            OnDragHold();            
-        }
-        else if(dragObjects.Count != 0)
-        {
-            onDragRelease();
+            if(triggerPressed)
+            {
+                OnDragHold();            
+            }
+            else if(dragObjects.Count != 0)
+            {
+                onDragRelease();
+            }
         }
     }
 
@@ -482,6 +487,7 @@ public class ModVR_WandController : MonoBehaviour {
         }
         fpsModifier ++;
     }
+
     public void onDragRelease()
     {
         GameObject merged = util.mergeMultipleObjects(dragObjects);
@@ -489,6 +495,11 @@ public class ModVR_WandController : MonoBehaviour {
         SetupInteractableObject(merged,true,false);
         Debug.Log("v: " + merged.GetComponent<MeshFilter>().mesh.vertices.Length.ToString());
         dragObjects.Clear();
+    }
+
+    public void OnDragCreateButtonClicked()
+    {
+        dragCreateMode = !dragCreateMode;
     }
     #endregion
 }
