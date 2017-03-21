@@ -155,39 +155,37 @@ namespace VRTK
                 ExecuteEvents.Execute(menuButtons[buttonID], pointer, ExecuteEvents.pointerEnterHandler);
                 buttons[buttonID].OnHoverEnter.Invoke();
                 AttempHapticPulse(baseHapticStrength);
-				// Change tooltip
-				//ChangeButtonTooltip(menuButtons[buttonID], buttonID);
             }
             currentHover = buttonID; //Set current hover ID, need this to un-hover if selected button changes
         }
 
 		public void OnHoverToggleScaling()
 		{
-			ChangeButtonTooltip(gameObject, toggleScaleTooltip);
+			ChangeButtonTooltip(menuButtons[1], toggleScaleTooltip);
 		}
 		public void OnHoverImport()
 		{
-			ChangeButtonTooltip(gameObject, importObjectTooltip);
+			ChangeButtonTooltip(menuButtons[0], importObjectTooltip);
 		}
 		public void OnHoverExport()
 		{
-			ChangeButtonTooltip(gameObject, exportObjectTooltip);
+			ChangeButtonTooltip(menuButtons[0], exportObjectTooltip);
 		}
 		public void OnHoverGroup()
 		{
-			ChangeButtonTooltip(gameObject, groupObjectsTooltip);
+			ChangeButtonTooltip(menuButtons[1], groupObjectsTooltip);
 		}
 		public void OnHoverUngroup()
 		{
-			ChangeButtonTooltip(gameObject, ungroupObjectsTooltip);
+			ChangeButtonTooltip(menuButtons[2], ungroupObjectsTooltip);
 		}
 		public void OnHoverDelete()
 		{
-			ChangeButtonTooltip(gameObject, deleteObjectTooltip);
+			ChangeButtonTooltip(menuButtons[3], deleteObjectTooltip);
 		}
 		public void OnHoverMerge()
 		{
-			ChangeButtonTooltip(gameObject, mergeObjectsTooltip);
+			ChangeButtonTooltip(menuButtons[4], mergeObjectsTooltip);
 		}
 
 		public void ChangeButtonTooltip(GameObject button, string tooltipText)
@@ -195,12 +193,13 @@ namespace VRTK
 			radialMenuTooltip.SetActive(true);
 			VRTK_ObjectTooltip tooltip = radialMenuTooltip.GetComponent<VRTK_ObjectTooltip>();
 			tooltip.drawLineTo = button.GetComponentInChildren<RadialButtonIcon>().transform;
-			tooltip.UpdateText(importObjectTooltip);
+			tooltip.UpdateText(tooltipText);
 		}
 
 		public void ResetButtonTooltip()
 		{
 			VRTK_ObjectTooltip tooltip = radialMenuTooltip.GetComponent<VRTK_ObjectTooltip>();
+			tooltip.drawLineTo = null;
 			tooltip.ResetTooltip();
 			radialMenuTooltip.SetActive(false);
 		}
