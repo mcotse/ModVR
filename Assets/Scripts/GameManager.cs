@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour {
     public string lastSaved = "";
     public List<ModVR_InteractableObject> interactableObjectList;
     public List<ModVR_InteractableObject> selectedObjectList;
+    public Dictionary<string, List<Collider>> groupedColliders;
 
     public List<List<string>> collisionSet;
     public bool laserColliding = false;
@@ -51,7 +52,7 @@ public class GameManager : MonoBehaviour {
 
         selectedObjectList = new List<ModVR_InteractableObject>();
         interactableObjectList = new List<ModVR_InteractableObject>();
-        
+        groupedColliders = new Dictionary<string, List<Collider>>();
 
         collisionSet = new List<List<string>>();
         GameObject cube = FindObjectsOfType<ModVR_InteractableObject>().Where(o => o.name == "Cube").First().gameObject;
