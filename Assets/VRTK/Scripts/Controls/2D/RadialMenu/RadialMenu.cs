@@ -7,6 +7,7 @@ namespace VRTK
     using System.Collections.Generic;
     using UnityEngine.UI;
     using UnityEngine.EventSystems;
+    using SecondaryControllerGrabActions;
 
     public delegate void HapticPulseEventHandler(float strength);
 
@@ -360,6 +361,13 @@ namespace VRTK
 		{
 			RemoveAllButtons();
 		}
+        public void EnlargeStrechSwap()
+        {
+            List<ModVR_InteractableObject> interactableObjectList = GameManager.instance.interactableObjectList;
+            foreach (ModVR_InteractableObject obj in interactableObjectList) {
+                obj.gameObject.GetComponent<VRTK_AxisScaleGrabAction>().uniformScaling = !obj.gameObject.GetComponent<VRTK_AxisScaleGrabAction>().uniformScaling; 
+            }
+    }
 
     }
 
@@ -380,4 +388,5 @@ namespace VRTK
         click,
         unclick
     }
+
 }
