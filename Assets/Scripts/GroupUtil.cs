@@ -7,6 +7,34 @@ using System.Linq;
 using ModVR;
 
 public class GroupUtil : MonoBehaviour {
+    public GameObject mergeMultipleObjects(List<GameObject> objects)
+    {
+        GameObject newObj = new GameObject("Empty");
+        newObj.AddComponent<MeshFilter>();
+        newObj.AddComponent<MeshRenderer>();
+        string tstamp = getTime();
+        newObj.name = "mergedObj" + tstamp;
+        newObj.tag = "mergedObj";
+
+        Mesh combinedMesh = combineMeshes(objects);
+        newObj.GetComponent<MeshFilter>().mesh = combinedMesh;
+
+        //cleanup old object
+        foreach (GameObject obj in objects)
+            Destroy(obj);
+        //setting the texture
+        var texture = new Texture2D(2, 2, TextureFormat.ARGB32, false);
+        texture.Apply();
+        
+        // connect texture to material of GameObject this script is attached to
+        // GetComponent<Renderer>().material.mainTexture = texture;
+        newObj.GetComponent<Renderer>().material.mainTexture = texture;
+        MeshCollider combinedMeshCollider = newObj.AddComponent<MeshCollider>();
+        combinedMeshCollider.sharedMesh = combinedMesh;
+
+        Debug.Log(newObj.name);
+        return newObj;
+    }
     public GameObject mergeObjects(GameObject obj1, GameObject obj2, bool destoryOld)
     {
         List<GameObject> meshObjectList = new List<GameObject>();
