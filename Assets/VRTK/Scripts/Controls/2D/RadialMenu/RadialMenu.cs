@@ -162,8 +162,27 @@ namespace VRTK
 
 		public void OnHoverImport()
 		{
-			//ChangeButtonTooltip(menuButtons[currentHover], importObjectTooltip);
 			ChangeButtonTooltip(gameObject, importObjectTooltip);
+		}
+		public void OnHoverExport()
+		{
+			ChangeButtonTooltip(gameObject, exportObjectTooltip);
+		}
+		public void OnHoverGroup()
+		{
+			ChangeButtonTooltip(gameObject, groupObjectsTooltip);
+		}
+		public void OnHoverUngroup()
+		{
+			ChangeButtonTooltip(gameObject, ungroupObjectsTooltip);
+		}
+		public void OnHoverDelete()
+		{
+			ChangeButtonTooltip(gameObject, deleteObjectTooltip);
+		}
+		public void OnHoverMerge()
+		{
+			ChangeButtonTooltip(gameObject, mergeObjectsTooltip);
 		}
 
 		public void ChangeButtonTooltip(GameObject button, string tooltipText)
