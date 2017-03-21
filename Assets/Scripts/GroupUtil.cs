@@ -14,7 +14,7 @@ public class GroupUtil : MonoBehaviour {
         newObj.AddComponent<MeshRenderer>();
         string tstamp = getTime();
         newObj.name = "mergedObj" + tstamp;
-        newObj.tag = "mergedObj";
+        // newObj.tag = "mergedObj";
 
         Mesh combinedMesh = combineMeshes(objects);
         newObj.GetComponent<MeshFilter>().mesh = combinedMesh;
@@ -45,7 +45,7 @@ public class GroupUtil : MonoBehaviour {
         newObj.AddComponent<MeshRenderer>();
         string tstamp = getTime();
         newObj.name = "mergedObj" + tstamp;
-        newObj.tag = "mergedObj";
+        // newObj.tag = "mergedObj";
 
         Mesh combinedMesh = combineMeshes(meshObjectList);
         newObj.GetComponent<MeshFilter>().mesh = combinedMesh;
@@ -69,6 +69,9 @@ public class GroupUtil : MonoBehaviour {
 
         MeshCollider combinedMeshCollider = newObj.AddComponent<MeshCollider>();
         combinedMeshCollider.sharedMesh = combinedMesh;
+        Color c1 = obj1.GetComponent<Renderer>().material.color;
+        Color c2 = obj2.GetComponent<Renderer>().material.color;
+        newObj.GetComponent<Renderer>().material.color = ModVR_ColorUtil.combineTwoColors(c1,c2);
         Debug.Log(newObj.name);
         return newObj;
     }
@@ -127,7 +130,7 @@ public class GroupUtil : MonoBehaviour {
         GameObject newObj = new GameObject();
         string tstamp = Guid.NewGuid().ToString();
         newObj.name = "groupObj" + tstamp;
-        newObj.tag = "groupObj";
+        // newObj.tag = "groupObj";
         foreach (ModVR_InteractableObject obj in objects)
         {
             obj.transform.parent = newObj.transform;

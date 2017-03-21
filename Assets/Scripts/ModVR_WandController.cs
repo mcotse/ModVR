@@ -441,6 +441,29 @@ public class ModVR_WandController : MonoBehaviour {
         go.transform.position = gameObject.transform.position;
 
     }
-
+    public void OnRedClicked()
+    {
+        ModVR_ColorUtil.changeColor(selected,"red");
+    }
+    public void OnBlueClicked()
+    {
+        ModVR_ColorUtil.changeColor(selected,"blue");
+    }
+    public void OnYellowClicked()
+    {
+        ModVR_ColorUtil.changeColor(selected,"yellow");
+    }
+    public void OnWhiteClicked()
+    {
+        ModVR_ColorUtil.changeColor(selected,"white");
+    }
+    public void OnBlackClicked()
+    {
+        ModVR_ColorUtil.changeColor(selected,"black");
+    }
+    public void OnGreenClicked()
+    {
+        ModVR_ColorUtil.changeColor(selected,"green");
+    }
     #endregion
 }

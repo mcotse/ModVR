@@ -58,5 +58,17 @@ public class KeyPressTrigger : MonoBehaviour {
       // ObjExporter.MeshToFile(cube1Mesh);
       print("object saved to: " + Directory.GetCurrentDirectory());
     }
+    if (Input.GetKeyDown("c")){
+      GameObject s1 = GameObject.Find("s1");
+      GameObject c1 = GameObject.Find("c1");
+      GameObject groupUtil = GameObject.Find("groupUtil");
+      groupUtil.GetComponent<GroupUtil>().mergeObjects(s1,c1,true);
+    }
+    if (Input.GetKeyDown("x")){
+      GameObject s1 = GameObject.Find("s1");
+      GameObject c1 = GameObject.Find("c1");
+      ModVR_ColorUtil.changeColor(s1,"white");
+      ModVR_ColorUtil.changeColor(c1,"red");
+    }
   }
 }
