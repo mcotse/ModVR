@@ -30,6 +30,7 @@ public class ModVR_WandController : MonoBehaviour {
 
     private GameObject selected;
     private GameObject grabbed;
+    private GameManager gm;
     Color color = new Color(237, 241, 39);
 
     private UnityEngine.Events.UnityEvent OnGroup;
@@ -58,10 +59,11 @@ public class ModVR_WandController : MonoBehaviour {
         GameObject objectOptions = gameObject.transform.Find("ObjectOptions").gameObject;
         GameObject radialMenu = gameObject.transform.Find("RadialMenu").gameObject;
 
+        gm = GameManager.instance;
         if(objectOptions && radialMenu)
         {
-            GameManager.instance.objectOptions = objectOptions;
-            GameManager.instance.radialMenu = radialMenu;
+            gm.objectOptions = objectOptions;
+            gm.radialMenu = radialMenu;
         }
 	}
 
@@ -138,7 +140,7 @@ public class ModVR_WandController : MonoBehaviour {
 
         io.secondaryGrabActionScript = obj.AddComponent<VRTK_AxisScaleGrabAction>();
 
-        GameManager.instance.AddInteractableObject(io);
+        gm.AddInteractableObject(io);
         //obj.AddComponent<VRTK_FixedJointGrabAttach>();
         
         if (hasSelectHighlighter)
@@ -227,7 +229,7 @@ public class ModVR_WandController : MonoBehaviour {
     {
         if (isInteractMode)
         {
-            ModVR_InteractableObject selectedObj = (from io in GameObject.FindObjectsOfType<ModVR_InteractableObject>()
+            ModVR_InteractableObject selectedObj = (from io in FindObjectsOfType<ModVR_InteractableObject>()
                                                     where io.IsTouched() && io.GetTouchingObjects().Contains(this.gameObject)
                                                     select io).SingleOrDefault();
 
@@ -245,12 +247,12 @@ public class ModVR_WandController : MonoBehaviour {
     private void OnTriggerPressed(object sender, ControllerInteractionEventArgs e)
     {
         GameObject triggeredObj = sender as GameObject;
-        if (isSelectMode && GameManager.instance.laserColliding)
+        if (isSelectMode && gm.laserColliding)
         {
-            GameObject go = GameManager.instance.lastLaserSelectedObj;
+            GameObject go = gm.lastLaserSelectedObj;
             ModVR_SelectHighlighter selector = go.GetComponent<ModVR_SelectHighlighter>();
             
-            if(go.name.Contains("groupObj") || go.name.Contains("merged"))
+            if(go.name.Contains("groupObj"))
             {
                 List<Transform> children = (from Transform t in go.transform
                                             where t.name.Contains("Highlight") == false
@@ -277,7 +279,7 @@ public class ModVR_WandController : MonoBehaviour {
 
     private void ToggleSelection(GameObject go, ModVR_SelectHighlighter selector)
     {
-        bool isSelected = GameManager.instance.handleSelectedObject(go);
+        bool isSelected = gm.handleSelectedObject(go);
 
         if (isSelected == true)
         {
@@ -291,15 +293,15 @@ public class ModVR_WandController : MonoBehaviour {
 
     private void OnTouchpadTouched(object sender, ControllerInteractionEventArgs e)
     {
-        if (GameManager.instance.selectedObjectList.Count > 0)
+        if (gm.selectedObjectList.Count > 0)
         {
-            GameManager.instance.objectOptions.SetActive(true);
-            GameManager.instance.radialMenu.SetActive(false);
+            gm.objectOptions.SetActive(true);
+            gm.radialMenu.SetActive(false);
         }
         else
         {
-            GameManager.instance.objectOptions.SetActive(false);
-            GameManager.instance.radialMenu.SetActive(true);
+            gm.objectOptions.SetActive(false);
+            gm.radialMenu.SetActive(true);
         }
     }
 
@@ -311,8 +313,8 @@ public class ModVR_WandController : MonoBehaviour {
     //Object Options Radial Menu
     public void OnMergeClick()
     {
-        List<ModVR_InteractableObject> objList = GameManager.instance.interactableObjectList;
-        List<List<string>> collisionSet = GameManager.instance.collisionSet;
+        List<ModVR_InteractableObject> objList = gm.interactableObjectList;
+        List<List<string>> collisionSet = gm.collisionSet;
         
 
         GameObject merged = util.mergeGroups(objList, collisionSet);
@@ -322,30 +324,30 @@ public class ModVR_WandController : MonoBehaviour {
             SetupInteractableObject(t.gameObject, true, false);
         }
 
-        GameManager.instance.selectedObjectList = new List<ModVR_InteractableObject>();
-        GameManager.instance.collisionSet = new List<List<string>>();
+        gm.selectedObjectList = new List<ModVR_InteractableObject>();
+        gm.collisionSet = new List<List<string>>();
 
         foreach(List<string> collision in collisionSet)
         {
-            GameManager.instance.interactableObjectList = GameManager.instance.interactableObjectList.Where(o => o.name != collision[0]).ToList();
-            GameManager.instance.interactableObjectList = GameManager.instance.interactableObjectList.Where(o => o.name != collision[1]).ToList();
+            gm.interactableObjectList = gm.interactableObjectList.Where(o => o.name != collision[0]).ToList();
+            gm.interactableObjectList = gm.interactableObjectList.Where(o => o.name != collision[1]).ToList();
         }
     }
 
     public void OnDeleteClicked()
     {
-        List<ModVR_InteractableObject> selectedObjs = GameManager.instance.selectedObjectList;
-        List<ModVR_InteractableObject> itemsToRemove = GameManager.instance.interactableObjectList.Union(selectedObjs).ToList();
+        List<ModVR_InteractableObject> selectedObjs = gm.selectedObjectList;
+        List<ModVR_InteractableObject> itemsToRemove = gm.interactableObjectList.Union(selectedObjs).ToList();
         List<string> objNames = selectedObjs.Select(d => d.name).ToList();
 
         foreach(ModVR_InteractableObject io in itemsToRemove)
         {
-            GameManager.instance.RemoveInteractableObject(io);
+            gm.RemoveInteractableObject(io);
         }
 
         foreach (string name in objNames)
         {
-            GameManager.instance.RemoveCollisionByName(name);
+            gm.RemoveCollisionByName(name);
         }
 
         foreach (ModVR_InteractableObject io in selectedObjs)
@@ -353,14 +355,14 @@ public class ModVR_WandController : MonoBehaviour {
             Destroy(io.gameObject);
         }
 
-        GameManager.instance.selectedObjectList = new List<ModVR_InteractableObject>();
+        gm.selectedObjectList = new List<ModVR_InteractableObject>();
         
     }
     
 
     public void OnUngroupClicked()
     {
-        List<ModVR_InteractableObject> grouped = GameManager.instance.selectedObjectList;
+        List<ModVR_InteractableObject> grouped = gm.selectedObjectList;
         
         List<GameObject> objsToRemove = new List<GameObject>();
         foreach(ModVR_InteractableObject io in grouped)
@@ -368,7 +370,6 @@ public class ModVR_WandController : MonoBehaviour {
             foreach (Transform t in io.transform)
             {
                 util.unGroupObject(t.gameObject);
-                t.gameObject.GetComponent<Collider>().enabled = true;
                 ModVR_SelectHighlighter highlighter = t.gameObject.GetComponent<ModVR_SelectHighlighter>();
                 if (highlighter == null)
                 {
@@ -380,65 +381,91 @@ public class ModVR_WandController : MonoBehaviour {
             }
             io.transform.DetachChildren();
             objsToRemove.Add(io.gameObject);
-            GameManager.instance.RemoveInteractableObject(io);
+            gm.RemoveInteractableObject(io);
+
+
+            foreach (Collider col in gm.groupedColliders[io.gameObject.name])
+            {
+                col.enabled = true;
+            }
         }
+
 
         foreach(GameObject go in objsToRemove)
         { 
             Destroy(go);
         }
 
-        GameManager.instance.selectedObjectList = new List<ModVR_InteractableObject>();
+        gm.selectedObjectList = new List<ModVR_InteractableObject>();
     }
 
     public void OnGroupClicked(string message)
     {
-        if (GameManager.instance.selectedObjectList.Count > 1)
+        if (gm.selectedObjectList.Count > 1)
         {
-            GameObject grouped = util.groupObjects(GameManager.instance.selectedObjectList);
+            List<string> groupNames = (from ModVR_InteractableObject obj in gm.selectedObjectList
+                                       where obj.name.Contains("groupObj")
+                                       select obj.name).ToList();
+
+            List<Collider> disabledColliders = new List<Collider>();
+
+
+            foreach(string name in groupNames)
+            {
+                disabledColliders.AddRange(gm.groupedColliders[name]);
+                gm.groupedColliders.Remove(name);
+            }
+
+            GameObject grouped = util.groupObjects(gm.selectedObjectList);
             SetupInteractableObject(grouped, false, true);
-            GameManager.instance.selectedObjectList = new List<ModVR_InteractableObject>();
+            gm.selectedObjectList = new List<ModVR_InteractableObject>();
 
             List<GameObject> children = (from Transform t in grouped.transform
                                          where t.name.Contains("Highlight") == false
                                          select t.gameObject).ToList();
-
             foreach(GameObject go in children)
             {
+
                 Collider coll = go.GetComponent<Collider>();
-                coll.enabled = false;
-
+                if (coll != null)
+                {
+                    coll.enabled = false;
+                    disabledColliders.Add(coll);
+                }
                 go.GetComponent<ModVR_SelectHighlighter>().Unhighlight(Color.clear);
-            }          
-        }
+            }
 
-        GameManager.instance.selectedObjectList = new List<ModVR_InteractableObject>();
+            gm.groupedColliders.Add(grouped.name, disabledColliders);
+            
+            gm.selectedObjectList = new List<ModVR_InteractableObject>();
+        }
 
     }
 
     public void OnExportClicked()
     {
-        List<ModVR_InteractableObject> selected = GameManager.instance.selectedObjectList;
+        List<ModVR_InteractableObject> selected = gm.selectedObjectList;
         foreach(ModVR_InteractableObject io in selected)
         {
             ModVR_ObjExporter.GameObjectToFile(io.gameObject);
             io.GetComponent<ModVR_SelectHighlighter>().Unhighlight();
 
-            GameManager.instance.UpdateLastSaved(io.name);
+            gm.UpdateLastSaved(io.name);
         }
 
 
 
-        GameManager.instance.selectedObjectList = new List<ModVR_InteractableObject>();
+        gm.selectedObjectList = new List<ModVR_InteractableObject>();
     }
     public void OnImportClicked()
     {
         
-        GameObject go = ModVR_ObjImporter.ImportLastSavedObject(GameManager.instance.lastSaved);
+        GameObject go = ModVR_ObjImporter.ImportLastSavedObject(gm.lastSaved);
         
         go.AddComponent<BoxCollider>();
         SetupInteractableObject(go, true, false);
         go.transform.position = gameObject.transform.position;
+        gm.AddInteractableObject(go.GetComponent<ModVR_InteractableObject>());
 
     }
 
