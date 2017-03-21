@@ -56,6 +56,21 @@ public class ModVR_InteractableObject : VRTK_InteractableObject {
 
 
     //}
+    public void Deselect()
+    {
+        List<GameObject> goList = (from Transform t in gameObject.transform
+                                   where t.name.Contains("Highlight") == false
+                                   select t.gameObject).ToList();
+        foreach(GameObject go in goList)
+        {
+            go.GetComponent<ModVR_SelectHighlighter>().Unhighlight(Color.clear);
+        }
+
+        if (goList.Count == 0)
+        {
+            gameObject.GetComponent<ModVR_SelectHighlighter>().Unhighlight(Color.clear);
+        }
+    }
 
     private void OnTriggerEnter(Collider other)
     {

@@ -251,6 +251,17 @@ public class ModVR_WandController : MonoBehaviour {
                 ToggleMenu();
             }
         }
+        else
+        {
+            //Reset selection if pointer is disabled
+            List<ModVR_InteractableObject> ioList = GameManager.instance.selectedObjectList;
+            foreach(ModVR_InteractableObject io in ioList)
+            {
+                io.Deselect();
+            }
+
+            GameManager.instance.selectedObjectList = new List<ModVR_InteractableObject>();
+        }
     }
 
     private void OnGripPressed(object sender, ControllerInteractionEventArgs e)
@@ -358,6 +369,7 @@ public class ModVR_WandController : MonoBehaviour {
     {
         List<ModVR_InteractableObject> objList = GameManager.instance.interactableObjectList;
         List<List<string>> collisionSet = GameManager.instance.collisionSet;
+        
         
 
         GameObject merged = util.mergeGroups(objList, collisionSet);
