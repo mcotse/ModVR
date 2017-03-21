@@ -83,7 +83,7 @@ public class ModVR_WandController : MonoBehaviour {
         {
             OnDragHold();            
         }
-        else if(dragObjects != null)
+        else if(dragObjects.Count != 0)
         {
             onDragRelease();
         }
