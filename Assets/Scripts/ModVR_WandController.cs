@@ -443,8 +443,11 @@ public class ModVR_WandController : MonoBehaviour {
             {
                 col.enabled = true;
             }
-        }
 
+
+            GameManager.instance.groupedColliders.Remove(io.gameObject.name);
+        }
+        
 
         foreach(GameObject go in objsToRemove)
         { 
@@ -473,7 +476,6 @@ public class ModVR_WandController : MonoBehaviour {
 
             GameObject grouped = util.groupObjects(GameManager.instance.selectedObjectList);
             SetupInteractableObject(grouped, false, true);
-            GameManager.instance.selectedObjectList = new List<ModVR_InteractableObject>();
 
             List<GameObject> children = (from Transform t in grouped.transform
                                          where t.name.Contains("Highlight") == false
