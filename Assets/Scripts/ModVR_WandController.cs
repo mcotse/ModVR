@@ -82,7 +82,7 @@ public class ModVR_WandController : MonoBehaviour {
         {
             OnDragHold();            
         }
-        else
+        else if(dragObjects != null)
         {
             onDragRelease();
         }
@@ -485,6 +485,7 @@ public class ModVR_WandController : MonoBehaviour {
     {
         GameObject merged = util.mergeMultipleObjects(dragObjects);
         util.autoWeld(merged.GetComponent<MeshFilter>().sharedMesh,0.004f,0.008f);
+        SetupInteractableObject(merged);
         Debug.Log("v: " + merged.GetComponent<MeshFilter>().mesh.vertices.Length.ToString());
         dragObjects.Clear();
     }
