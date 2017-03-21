@@ -28,15 +28,21 @@ public class ModVR_WandController : MonoBehaviour {
     private bool showMenu;
     private bool triggerPressed;
     private bool gripPressed;
-
+    private Vector3 prevPosition;
+    private bool dragCreateMode;
     private GameObject selected;
     private GameObject grabbed;
+    private int fpsModifier;
+    private List<GameObject> dragObjects;
+    // private bool triggerReleased;
+
     Color color = new Color(237, 241, 39);
 
     private UnityEngine.Events.UnityEvent OnGroup;
 
     // Use this for initialization
     void Start () {
+        dragCreateMode = false;
         menuButtonDown = false;
         isSelectMode = false;
         isInteractMode = true;
@@ -44,6 +50,11 @@ public class ModVR_WandController : MonoBehaviour {
         gripPressed = false;
         menu.SetActive(false);
         util = new GroupUtil();
+        prevPosition = gameObject.transform.position;
+        fpsModifier = 1;
+        // triggerReleased = true;
+        triggerPressed = false;
+        dragObjects = new List<GameObject>();
 
         actions = GetComponent<VRTK_ControllerActions>();
         events = GetComponent<VRTK_ControllerEvents>();
@@ -54,6 +65,7 @@ public class ModVR_WandController : MonoBehaviour {
 		events.GripPressed += OnGripPressed;
         events.TouchpadTouchStart += OnTouchpadTouched;
 		events.TouchpadTouchEnd += OnTouchpadTouchEnd;
+        events.TriggerReleased += OnTriggerReleased;
         // events.GripPressed += GroupOnPressed;
         //events.GripPressed += MergeOnPressed;
 
@@ -71,7 +83,17 @@ public class ModVR_WandController : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-
+        if(dragCreateMode)
+        {
+            if(triggerPressed)
+            {
+                OnDragHold();            
+            }
+            else if(dragObjects.Count != 0)
+            {
+                onDragRelease();
+            }
+        }
     }
 
 
@@ -244,8 +266,12 @@ public class ModVR_WandController : MonoBehaviour {
             }
         }
     }
-    private void OnTriggerPressed(object sender, ControllerInteractionEventArgs e)
+    private void OnTriggerReleased(object sender, ControllerInteractionEventArgs e)
     {
+        triggerPressed = false;
+    }
+    private void OnTriggerPressed(object sender, ControllerInteractionEventArgs e)
+    {   
         GameObject triggeredObj = sender as GameObject;
         if (isSelectMode && GameManager.instance.laserColliding)
         {
@@ -274,6 +300,10 @@ public class ModVR_WandController : MonoBehaviour {
                 ToggleSelection(go, selector);
             }
             
+        }
+        else if (!isSelectMode)
+        {
+            triggerPressed = true;
         }
     }
 
@@ -448,6 +478,35 @@ public class ModVR_WandController : MonoBehaviour {
         go.transform.position = gameObject.transform.position;
 
     }
+    public void OnDragHold()
+    {   
+        if (fpsModifier % 5 == 0)
+        {
+            float dist = Vector3.Distance(prevPosition, gameObject.transform.position);
+            if (dist > 0.02)
+            {
+                GameObject newObj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                newObj.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+                newObj.transform.position = gameObject.transform.position;
+                dragObjects.Add(newObj);
+            }
+            prevPosition = gameObject.transform.position;
+        }
+        fpsModifier ++;
+    }
 
+    public void onDragRelease()
+    {
+        GameObject merged = util.mergeMultipleObjects(dragObjects);
+        util.autoWeld(merged.GetComponent<MeshFilter>().sharedMesh,0.004f,0.008f);
+        SetupInteractableObject(merged,true,false);
+        Debug.Log("v: " + merged.GetComponent<MeshFilter>().mesh.vertices.Length.ToString());
+        dragObjects.Clear();
+    }
+
+    public void OnDragCreateButtonClicked()
+    {
+        dragCreateMode = !dragCreateMode;
+    }
     #endregion
 }
