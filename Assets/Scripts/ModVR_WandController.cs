@@ -60,10 +60,11 @@ public class ModVR_WandController : MonoBehaviour {
         GameObject objectOptions = gameObject.transform.Find("ObjectOptions").gameObject;
         GameObject radialMenu = gameObject.transform.Find("RadialMenu").gameObject;
 
+        GameManager gm = GameManager.instance;
         if(objectOptions && radialMenu)
         {
-            GameManager.instance.objectOptions = objectOptions;
-            GameManager.instance.radialMenu = radialMenu;
+            gm.objectOptions = objectOptions;
+            gm.radialMenu = radialMenu;
         }
 	}
 
@@ -229,7 +230,7 @@ public class ModVR_WandController : MonoBehaviour {
     {
         if (isInteractMode)
         {
-            ModVR_InteractableObject selectedObj = (from io in GameObject.FindObjectsOfType<ModVR_InteractableObject>()
+            ModVR_InteractableObject selectedObj = (from io in FindObjectsOfType<ModVR_InteractableObject>()
                                                     where io.IsTouched() && io.GetTouchingObjects().Contains(this.gameObject)
                                                     select io).SingleOrDefault();
 
@@ -252,7 +253,7 @@ public class ModVR_WandController : MonoBehaviour {
             GameObject go = GameManager.instance.lastLaserSelectedObj;
             ModVR_SelectHighlighter selector = go.GetComponent<ModVR_SelectHighlighter>();
             
-            if(go.name.Contains("groupObj") || go.name.Contains("merged"))
+            if(go.name.Contains("groupObj"))
             {
                 List<Transform> children = (from Transform t in go.transform
                                             where t.name.Contains("Highlight") == false
@@ -375,7 +376,6 @@ public class ModVR_WandController : MonoBehaviour {
             foreach (Transform t in io.transform)
             {
                 util.unGroupObject(t.gameObject);
-                t.gameObject.GetComponent<Collider>().enabled = true;
                 ModVR_SelectHighlighter highlighter = t.gameObject.GetComponent<ModVR_SelectHighlighter>();
                 if (highlighter == null)
                 {
@@ -388,7 +388,14 @@ public class ModVR_WandController : MonoBehaviour {
             io.transform.DetachChildren();
             objsToRemove.Add(io.gameObject);
             GameManager.instance.RemoveInteractableObject(io);
+
+
+            foreach (Collider col in GameManager.instance.groupedColliders[io.gameObject.name])
+            {
+                col.enabled = true;
+            }
         }
+
 
         foreach(GameObject go in objsToRemove)
         { 
@@ -402,6 +409,19 @@ public class ModVR_WandController : MonoBehaviour {
     {
         if (GameManager.instance.selectedObjectList.Count > 1)
         {
+            List<string> groupNames = (from ModVR_InteractableObject obj in GameManager.instance.selectedObjectList
+                                       where obj.name.Contains("groupObj")
+                                       select obj.name).ToList();
+
+            List<Collider> disabledColliders = new List<Collider>();
+
+
+            foreach(string name in groupNames)
+            {
+                disabledColliders.AddRange(GameManager.instance.groupedColliders[name]);
+                GameManager.instance.groupedColliders.Remove(name);
+            }
+
             GameObject grouped = util.groupObjects(GameManager.instance.selectedObjectList);
             SetupInteractableObject(grouped, false, true);
             GameManager.instance.selectedObjectList = new List<ModVR_InteractableObject>();
@@ -409,17 +429,22 @@ public class ModVR_WandController : MonoBehaviour {
             List<GameObject> children = (from Transform t in grouped.transform
                                          where t.name.Contains("Highlight") == false
                                          select t.gameObject).ToList();
-
             foreach(GameObject go in children)
             {
+
                 Collider coll = go.GetComponent<Collider>();
-                coll.enabled = false;
-
+                if (coll != null)
+                {
+                    coll.enabled = false;
+                    disabledColliders.Add(coll);
+                }
                 go.GetComponent<ModVR_SelectHighlighter>().Unhighlight(Color.clear);
-            }          
-        }
+            }
 
-        GameManager.instance.selectedObjectList = new List<ModVR_InteractableObject>();
+            GameManager.instance.groupedColliders.Add(grouped.name, disabledColliders);
+            
+            GameManager.instance.selectedObjectList = new List<ModVR_InteractableObject>();
+        }
 
     }
 
@@ -446,6 +471,7 @@ public class ModVR_WandController : MonoBehaviour {
         go.AddComponent<BoxCollider>();
         SetupInteractableObject(go, true, false);
         go.transform.position = gameObject.transform.position;
+        GameManager.instance.AddInteractableObject(go.GetComponent<ModVR_InteractableObject>());
 
     }
 
