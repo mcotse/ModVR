@@ -9,9 +9,6 @@ using ModVR;
 public class GroupUtil : MonoBehaviour {
     public GameObject mergeObjects(GameObject obj1, GameObject obj2, bool destoryOld)
     {
-        Debug.Log("in mergeObjects");
-        Debug.Log(obj1.name);
-        Debug.Log(obj2.name);
         List<GameObject> meshObjectList = new List<GameObject>();
         meshObjectList.Add(obj1);
         meshObjectList.Add(obj2);
@@ -54,17 +51,8 @@ public class GroupUtil : MonoBehaviour {
         newObj.GetComponent<Renderer>().material.mainTexture = texture;
 
 
-        //Bounds bcBounds = new Bounds();
-        //bcBounds = obj1.GetComponent<Collider>().bounds;
-        //bcBounds.Encapsulate(obj1.GetComponent<Collider>().bounds);
-        //bcBounds.Encapsulate(obj2.GetComponent<Collider>().bounds);
-
         MeshCollider combinedMeshCollider = newObj.AddComponent<MeshCollider>();
         combinedMeshCollider.sharedMesh = combinedMesh;
-        // BoxCollider bc = newObj.AddComponent<BoxCollider>();
-        //bc.size = bcBounds.size;
-        //bc.center = bcBounds.center;
-
         Debug.Log(newObj.name);
         return newObj;
     }
