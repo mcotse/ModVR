@@ -48,6 +48,9 @@ public class MenuController : MonoBehaviour {
         io.isUsable = true;
         io.touchHighlightColor = Color.red;
         io.pointerActivatesUseAction = true;
+
+        VRTK_ObjectAutoGrab autoGrab = obj.AddComponent<VRTK_ObjectAutoGrab>();
+        autoGrab.cloneGrabbedObject = true;
     }
 
 }

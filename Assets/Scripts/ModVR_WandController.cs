@@ -80,7 +80,7 @@ public class ModVR_WandController : MonoBehaviour {
         menu.SetActive(showMenu);
     }
 
-    private void SetupInteractableObject(GameObject obj, bool hasSelectHighlighter, bool isGroupedObj)
+    private void SetupInteractableObject(GameObject obj, bool hasSelectHighlighter, bool isGroupParentObj)
     {
         Rigidbody rb = obj.GetComponent<Rigidbody>();
         if (rb == null)
@@ -103,15 +103,7 @@ public class ModVR_WandController : MonoBehaviour {
             {
                 if (!t.name.Contains("Highlight"))
                 {
-                    //Bounds colBounds = t.GetComponent<Collider>().bounds;
-                    //if(bcBounds.extents == Vector3.zero)
-                    //{
-                    //    bcBounds = colBounds;
-                    //}
-                    //bcBounds.Encapsulate(colBounds);
-
                     ModVR_SelectHighlighter selectHighlighter = t.gameObject.AddComponent<ModVR_SelectHighlighter>();
-                    
                     selectHighlighter.Initialise(color);
                 }
 
@@ -140,7 +132,6 @@ public class ModVR_WandController : MonoBehaviour {
         io.secondaryGrabActionScript = obj.AddComponent<VRTK_AxisScaleGrabAction>();
 
         GameManager.instance.AddInteractableObject(io);
-        //obj.AddComponent<VRTK_FixedJointGrabAttach>();
         
         if (hasSelectHighlighter)
         {
@@ -149,13 +140,13 @@ public class ModVR_WandController : MonoBehaviour {
             selectHighlighter.Initialise(color);
         }
 
-        if (!isGroupedObj)
+        if (!isGroupParentObj)
         {
             VRTK_OutlineObjectCopyHighlighter highligher = obj.GetComponent<VRTK_OutlineObjectCopyHighlighter>();
             if (highligher == null)
             {
                 highligher = obj.AddComponent<VRTK_OutlineObjectCopyHighlighter>();
-                highligher.thickness = 0.2f;
+                highligher.thickness = 0.1f;
             }
         }
 
@@ -168,6 +159,8 @@ public class ModVR_WandController : MonoBehaviour {
         GameObject newGameObj = Instantiate(selected, selected.transform.position, selected.transform.rotation);
         Guid gameObjName = Guid.NewGuid();
         newGameObj.name = gameObjName.ToString() + "_" + newGameObj.name;
+        VRTK_ObjectAutoGrab autoGrab = selectedObj.gameObject.AddComponent<VRTK_ObjectAutoGrab>();
+        
         SetupInteractableObject(newGameObj, true, false);
     }
 
@@ -336,7 +329,7 @@ public class ModVR_WandController : MonoBehaviour {
     public void OnDeleteClicked()
     {
         List<ModVR_InteractableObject> selectedObjs = GameManager.instance.selectedObjectList;
-        List<ModVR_InteractableObject> itemsToRemove = GameManager.instance.interactableObjectList.Union(selectedObjs).ToList();
+        List<ModVR_InteractableObject> itemsToRemove = GameManager.instance.interactableObjectList.Intersect(selectedObjs).ToList();
         List<string> objNames = selectedObjs.Select(d => d.name).ToList();
 
         foreach(ModVR_InteractableObject io in itemsToRemove)
@@ -398,7 +391,7 @@ public class ModVR_WandController : MonoBehaviour {
         GameManager.instance.selectedObjectList = new List<ModVR_InteractableObject>();
     }
 
-    public void OnGroupClicked(string message)
+    public void OnGroupClicked()
     {
         if (GameManager.instance.selectedObjectList.Count > 1)
         {
