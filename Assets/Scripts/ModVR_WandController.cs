@@ -178,7 +178,7 @@ public class ModVR_WandController : MonoBehaviour {
             if (highligher == null)
             {
                 highligher = obj.AddComponent<VRTK_OutlineObjectCopyHighlighter>();
-                highligher.thickness = 0.2f;
+                highligher.thickness = 0.1f;
             }
         }
 
@@ -307,6 +307,7 @@ public class ModVR_WandController : MonoBehaviour {
                     if(selector == null)
                     {
                         selector = t.gameObject.AddComponent<ModVR_SelectHighlighter>();
+                        selector.thickness = 0.3f;
                         selector.Initialise(color);
                     }
 
@@ -440,7 +441,7 @@ public class ModVR_WandController : MonoBehaviour {
                         highlighter = t.gameObject.AddComponent<ModVR_SelectHighlighter>();
 
                     }
-
+                    highlighter.thickness = 0.3f;
                     highlighter.Initialise(color);
                 }
             }
