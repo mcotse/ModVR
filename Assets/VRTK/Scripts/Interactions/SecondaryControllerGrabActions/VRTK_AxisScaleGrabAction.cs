@@ -165,20 +165,28 @@ namespace VRTK.SecondaryControllerGrabActions
             GrabbingDirection = GrabbingDirection - lastPos;
 
 
+            /*   
+           //float abs = Mathf.Sqrt(Mathf.Pow(GrabbingDirection.x, 2) + Mathf.Pow(GrabbingDirection.x, 2) + Mathf.Pow(GrabbingDirection.x, 2));
+           float f = Mathf.Deg2Rad * grabbedObject.transform.rotation.eulerAngles.y; 
+          // Debug.Log("eulerAngles.y" + Mathf.Cos(5.2F));
+           float newScaleX = GrabbingDirection.x+ Mathf.Cos(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.y) * GrabbingDirection.x - Mathf.Sin(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.y) * GrabbingDirection.z + Mathf.Cos(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.z) * GrabbingDirection.x - Mathf.Sin(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.z) * GrabbingDirection.y; 
+           float newScaleY = GrabbingDirection.y + Mathf.Sin(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.x) * GrabbingDirection.z + Mathf.Cos(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.x) * GrabbingDirection.y - Mathf.Sin(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.z) * GrabbingDirection.x + Mathf.Cos(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.z) * GrabbingDirection.y;
+           //Debug.Log("newScaleX " + newScaleX + " newScaleY" + newScaleY + " newScaleZ " + newScaleZ);
+           float newScaleZ = GrabbingDirection.z + Mathf.Sin(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.y) * GrabbingDirection.x + Mathf.Cos(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.y) * GrabbingDirection.z + Mathf.Cos(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.x) * GrabbingDirection.z - Mathf.Sin(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.x) * GrabbingDirection.y;
+          // Debug.Log("newScaleX " + newScaleX + " newScaleY" + newScaleY + " newScaleZ " + newScaleZ);
+           //Debug.Log("newScaleX " + newScaleX + " secondaryInitialGrabPoint.position " + secondaryInitialGrabPoint.position + " secondaryGrabbingObject.transform.position " + secondaryGrabbingObject.transform.position);
+         //  Debug.Log(")
+           */
+            Vector3 newScale = calcRotation(GrabbingDirection.x, GrabbingDirection.y, GrabbingDirection.z, Mathf.Deg2Rad * grabbedObject.transform.rotation.eulerAngles.y);
+            newScale = calcRotation(newScale.z, newScale.x, newScale.y, Mathf.Deg2Rad * grabbedObject.transform.rotation.eulerAngles.x);
+            newScale = calcRotationZ(newScale.x, newScale.y, newScale.z, Mathf.Deg2Rad * grabbedObject.transform.rotation.eulerAngles.z);
+            //var newScale = initialScale;
+            /*Vector3 newScale1;
+            newScale1.x = newScale.z;
+            newScale1.y = newScale.x;
+            newScale1.z = newScale.y;*/
 
-            //float abs = Mathf.Sqrt(Mathf.Pow(GrabbingDirection.x, 2) + Mathf.Pow(GrabbingDirection.x, 2) + Mathf.Pow(GrabbingDirection.x, 2));
-            float f = Mathf.Deg2Rad * grabbedObject.transform.rotation.eulerAngles.y; 
-           // Debug.Log("eulerAngles.y" + Mathf.Cos(5.2F));
-            float newScaleX = GrabbingDirection.x+ Mathf.Cos(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.y) * GrabbingDirection.x - Mathf.Sin(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.y) * GrabbingDirection.z + Mathf.Cos(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.z) * GrabbingDirection.x - Mathf.Sin(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.z) * GrabbingDirection.y; 
-            float newScaleY =  GrabbingDirection.y + Mathf.Sin(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.x) * GrabbingDirection.z + Mathf.Cos(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.x) * GrabbingDirection.y - Mathf.Sin(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.z) * GrabbingDirection.x + Mathf.Cos(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.z) * GrabbingDirection.y;
-            //Debug.Log("newScaleX " + newScaleX + " newScaleY" + newScaleY + " newScaleZ " + newScaleZ);
-            float newScaleZ = GrabbingDirection.z + Mathf.Sin(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.y) * GrabbingDirection.x + Mathf.Cos(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.y) * GrabbingDirection.z + Mathf.Cos(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.x) * GrabbingDirection.z - Mathf.Sin(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.x) * GrabbingDirection.y;
-           // Debug.Log("newScaleX " + newScaleX + " newScaleY" + newScaleY + " newScaleZ " + newScaleZ);
-            //Debug.Log("newScaleX " + newScaleX + " secondaryInitialGrabPoint.position " + secondaryInitialGrabPoint.position + " secondaryGrabbingObject.transform.position " + secondaryGrabbingObject.transform.position);
-          //  Debug.Log(")
-            
-            var newScale = initialScale;
-            newScale += new Vector3(newScaleX, newScaleY, newScaleZ);
+            newScale += initialScale; 
             ApplyScale(newScale);
         }
 
@@ -199,8 +207,20 @@ namespace VRTK.SecondaryControllerGrabActions
         }
 
 
-        private float calcRotation(float x, float y, float z, float angX, float angY, float angZ) {
-
+        private Vector3 calcRotation(float x, float y, float z, float ang) {
+            Vector3 newVec;
+            newVec.x = x * Mathf.Cos(ang) - z * Mathf.Sin(ang);
+            newVec.y = y;
+            newVec.z = x * Mathf.Sin(ang) + z * Mathf.Cos(ang);
+            return newVec; 
+        }
+        private Vector3 calcRotationZ(float x, float y, float z, float ang)
+        {
+            Vector3 newVec;
+            newVec.x = x * Mathf.Cos(ang) + y * Mathf.Sin(ang);
+            newVec.z = z;
+            newVec.y = -x * Mathf.Sin(ang) + y * Mathf.Cos(ang);
+            return newVec;
         }
     }
 }
