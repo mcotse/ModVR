@@ -243,6 +243,11 @@ namespace VRTK
 			colorMenu.SetActive(true);
 		}
 
+		public void OnReturnClicked()
+		{
+			colorMenu.SetActive(false);
+		}
+
 		public void ChangeButtonTooltip(GameObject button, string tooltipText)
 		{
 			radialMenuTooltip.SetActive(true);

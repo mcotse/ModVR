@@ -324,16 +324,15 @@ public class ModVR_WandController : MonoBehaviour {
 
     private void OnTouchpadTouched(object sender, ControllerInteractionEventArgs e)
     {
-        if (GameManager.instance.selectedObjectList.Count > 0)
-        {
-            GameManager.instance.objectOptions.SetActive(true);
-            GameManager.instance.radialMenu.SetActive(false);
-        }
-        else
-        {
-            GameManager.instance.objectOptions.SetActive(false);
-            GameManager.instance.radialMenu.SetActive(true);
-        }
+		if (!(GameManager.instance.colorMenu.activeSelf)) {
+			if (GameManager.instance.selectedObjectList.Count > 0) {
+				GameManager.instance.objectOptions.SetActive (true);
+				GameManager.instance.radialMenu.SetActive (false);
+			} else {
+				GameManager.instance.objectOptions.SetActive (false);
+				GameManager.instance.radialMenu.SetActive (true);
+			}
+		}
     }
 
 	private void OnTouchpadTouchEnd(object sender, ControllerInteractionEventArgs e)

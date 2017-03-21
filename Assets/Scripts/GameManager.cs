@@ -21,6 +21,8 @@ public class GameManager : MonoBehaviour {
 
     public GameObject radialMenu;
     public GameObject objectOptions;
+	public GameObject colorMenu;
+
     public static void IncrementImportCounter() {
         importCounter ++;
     }
