@@ -25,6 +25,8 @@ namespace VRTK.SecondaryControllerGrabActions
         private Vector3 initialScale;
         private float initalLength;
         private float initialScaleFactor;
+        private Vector3 lastPos; 
+       
 
         /// <summary>
         /// The Initalise method is used to set up the state of the secondary action when the object is initially grabbed by a secondary controller.
@@ -40,6 +42,7 @@ namespace VRTK.SecondaryControllerGrabActions
             initialScale = currentGrabbdObject.transform.localScale;
             initalLength = (grabbedObject.transform.position - secondaryGrabbingObject.transform.position).magnitude;
             initialScaleFactor = currentGrabbdObject.transform.localScale.x / initalLength;
+            lastPos = (GameObject.Find("Controller (right)").transform.position - GameObject.Find("Controller (left)").transform.position);
         }
 
         /// <summary>
@@ -146,16 +149,37 @@ namespace VRTK.SecondaryControllerGrabActions
             Vector3 initialRotatedPosition = grabbedObject.transform.rotation * grabbedObject.transform.position;
             Vector3 initialSecondGrabRotatedPosition = grabbedObject.transform.rotation * secondaryInitialGrabPoint.position;
             Vector3 currentSecondGrabRotatedPosition = grabbedObject.transform.rotation * secondaryGrabbingObject.transform.position;
-            float newScaleX = CalculateAxisScale(initialRotatedPosition.x, initialSecondGrabRotatedPosition.x, currentSecondGrabRotatedPosition.x);
+            /*float newScaleX = CalculateAxisScale(initialRotatedPosition.x, initialSecondGrabRotatedPosition.x, currentSecondGrabRotatedPosition.x);
             float newScaleY = CalculateAxisScale(initialRotatedPosition.y, initialSecondGrabRotatedPosition.y, currentSecondGrabRotatedPosition.y);
-            float newScaleZ = CalculateAxisScale(initialRotatedPosition.z, initialSecondGrabRotatedPosition.z, currentSecondGrabRotatedPosition.z);
+            float newScaleZ = CalculateAxisScale(initialRotatedPosition.z, initialSecondGrabRotatedPosition.z, currentSecondGrabRotatedPosition.z);*/
             //Debug.Log("newScaleX " + newScaleX + " newScaleY" + newScaleY + " newScaleZ "+ newScaleZ);
-            Debug.Log("newScaleX " + newScaleX + " secondaryInitialGrabPoint.position " + secondaryInitialGrabPoint.position + " secondaryGrabbingObject.transform.position " + secondaryGrabbingObject.transform.position);
-            Vector3 GrabbingDirection = secondaryGrabbingObject.transform.position - secondaryInitialGrabPoint.position; 
+            // Debug.Log(GameObject.Find("Controller (left)").transform.position);
+
+
+            /*if (!flag) {
+                initialDif = GameObject.Find("Controller (left)").transform.position - GameObject.Find("Controller (right)").transform.position;
+                flag = !flag; 
+            }*/
+            Vector3 GrabbingDirection = (GameObject.Find("Controller (right)").transform.position - GameObject.Find("Controller (left)").transform.position);
+            Debug.Log("GrabbingDirection " + GrabbingDirection + "lastpos" + lastPos);
+            GrabbingDirection = GrabbingDirection - lastPos;
+
+
+
+            //float abs = Mathf.Sqrt(Mathf.Pow(GrabbingDirection.x, 2) + Mathf.Pow(GrabbingDirection.x, 2) + Mathf.Pow(GrabbingDirection.x, 2));
+            float f = Mathf.Deg2Rad * grabbedObject.transform.rotation.eulerAngles.y; 
+           // Debug.Log("eulerAngles.y" + Mathf.Cos(5.2F));
+            float newScaleX = GrabbingDirection.x+ Mathf.Cos(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.y) * GrabbingDirection.x - Mathf.Sin(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.y) * GrabbingDirection.z + Mathf.Cos(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.z) * GrabbingDirection.x - Mathf.Sin(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.z) * GrabbingDirection.y; 
+            float newScaleY =  GrabbingDirection.y + Mathf.Sin(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.x) * GrabbingDirection.z + Mathf.Cos(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.x) * GrabbingDirection.y - Mathf.Sin(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.z) * GrabbingDirection.x + Mathf.Cos(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.z) * GrabbingDirection.y;
+            //Debug.Log("newScaleX " + newScaleX + " newScaleY" + newScaleY + " newScaleZ " + newScaleZ);
+            float newScaleZ = GrabbingDirection.z + Mathf.Sin(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.y) * GrabbingDirection.x + Mathf.Cos(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.y) * GrabbingDirection.z + Mathf.Cos(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.x) * GrabbingDirection.z - Mathf.Sin(Mathf.Deg2Rad*grabbedObject.transform.rotation.eulerAngles.x) * GrabbingDirection.y;
+           // Debug.Log("newScaleX " + newScaleX + " newScaleY" + newScaleY + " newScaleZ " + newScaleZ);
+            //Debug.Log("newScaleX " + newScaleX + " secondaryInitialGrabPoint.position " + secondaryInitialGrabPoint.position + " secondaryGrabbingObject.transform.position " + secondaryGrabbingObject.transform.position);
+          //  Debug.Log(")
+            
             var newScale = initialScale;
             newScale += new Vector3(newScaleX, newScaleY, newScaleZ);
-          
-           ApplyScale(newScale);
+            ApplyScale(newScale);
         }
 
         private void UniformScale()
@@ -172,6 +196,11 @@ namespace VRTK.SecondaryControllerGrabActions
             float distance = currentPosition - initialPosition;
             distance = (centerPosition < initialPosition ? distance : -distance);
             return distance;
+        }
+
+
+        private float calcRotation(float x, float y, float z, float angX, float angY, float angZ) {
+
         }
     }
 }

@@ -438,7 +438,7 @@ public class ModVR_WandController : MonoBehaviour {
         
         go.AddComponent<BoxCollider>();
         SetupInteractableObject(go, true, false);
-        go.transform.position = gameObject.transform.position;
+        go.transform.position = gameObject.transform.position - go.AddComponent<BoxCollider>().center;
 
     }
 

@@ -18,3 +18,11 @@ obj/
 .Trashes
 ehthumbs.db
 Thumbs.db
+Assets/Scenes/Workshop.meta
+Assets/Scripts/ModVR_ObjExporter.cs.meta
+Assets/Scripts/ModVR_ObjImporter.cs.meta
+Assets/Scripts/objReaderCSharpV4.cs.meta
+Assets/Shapes/Materials.meta
+Assets/Shapes/Materials/Material.mat.meta
+Assets/SteamVR/Editor/SteamVR_Preferences.cs.meta
+Assets/SteamVR/InteractionSystem/Core/Icons/vr_interaction_system.png.meta
