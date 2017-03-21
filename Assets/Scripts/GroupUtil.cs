@@ -7,11 +7,36 @@ using System.Linq;
 using ModVR;
 
 public class GroupUtil : MonoBehaviour {
+    public GameObject mergeMultipleObjects(List<GameObject> objects)
+    {
+        GameObject newObj = new GameObject("Empty");
+        newObj.AddComponent<MeshFilter>();
+        newObj.AddComponent<MeshRenderer>();
+        string tstamp = getTime();
+        newObj.name = "mergedObj" + tstamp;
+        newObj.tag = "mergedObj";
+
+        Mesh combinedMesh = combineMeshes(objects);
+        newObj.GetComponent<MeshFilter>().mesh = combinedMesh;
+
+        //cleanup old object
+        foreach (GameObject obj in objects)
+            Destroy(obj);
+        //setting the texture
+        var texture = new Texture2D(2, 2, TextureFormat.ARGB32, false);
+        texture.Apply();
+        
+        // connect texture to material of GameObject this script is attached to
+        // GetComponent<Renderer>().material.mainTexture = texture;
+        newObj.GetComponent<Renderer>().material.mainTexture = texture;
+        MeshCollider combinedMeshCollider = newObj.AddComponent<MeshCollider>();
+        combinedMeshCollider.sharedMesh = combinedMesh;
+
+        Debug.Log(newObj.name);
+        return newObj;
+    }
     public GameObject mergeObjects(GameObject obj1, GameObject obj2, bool destoryOld)
     {
-        Debug.Log("in mergeObjects");
-        Debug.Log(obj1.name);
-        Debug.Log(obj2.name);
         List<GameObject> meshObjectList = new List<GameObject>();
         meshObjectList.Add(obj1);
         meshObjectList.Add(obj2);
@@ -22,18 +47,6 @@ public class GroupUtil : MonoBehaviour {
         newObj.name = "mergedObj" + tstamp;
         newObj.tag = "mergedObj";
 
-
-        // CombineInstance[] combine = new CombineInstance[meshObjectList.Count];
-        // int i = 0;
-        // while (i < meshObjectList.Count)
-        // {
-        //     MeshFilter meshFilter = meshObjectList[i].gameObject.GetComponent<MeshFilter>();
-        //     combine[i].mesh = meshFilter.sharedMesh;
-        //     combine[i].transform = meshFilter.transform.localToWorldMatrix;
-        //     i++;
-        // }
-        // Mesh combinedMesh = new Mesh();
-        // combinedMesh.CombineMeshes(combine);
         Mesh combinedMesh = combineMeshes(meshObjectList);
         newObj.GetComponent<MeshFilter>().mesh = combinedMesh;
         //cleanup old object
@@ -54,17 +67,8 @@ public class GroupUtil : MonoBehaviour {
         newObj.GetComponent<Renderer>().material.mainTexture = texture;
 
 
-        //Bounds bcBounds = new Bounds();
-        //bcBounds = obj1.GetComponent<Collider>().bounds;
-        //bcBounds.Encapsulate(obj1.GetComponent<Collider>().bounds);
-        //bcBounds.Encapsulate(obj2.GetComponent<Collider>().bounds);
-
         MeshCollider combinedMeshCollider = newObj.AddComponent<MeshCollider>();
         combinedMeshCollider.sharedMesh = combinedMesh;
-        // BoxCollider bc = newObj.AddComponent<BoxCollider>();
-        //bc.size = bcBounds.size;
-        //bc.center = bcBounds.center;
-
         Debug.Log(newObj.name);
         return newObj;
     }
@@ -144,16 +148,11 @@ public class GroupUtil : MonoBehaviour {
     }
     private Mesh combineMeshes(List<GameObject> objects)
     {
-        List<GameObject> meshObjectList = new List<GameObject>();
-        foreach (GameObject obj in objects)
-        {
-            meshObjectList.Add(obj);
-        }
-        CombineInstance[] combine = new CombineInstance[meshObjectList.Count];
+        CombineInstance[] combine = new CombineInstance[objects.Count];
         int i = 0;
-        while (i < meshObjectList.Count)
+        while (i < objects.Count)
         {
-            MeshFilter meshFilter = meshObjectList[i].gameObject.GetComponent<MeshFilter>();
+            MeshFilter meshFilter = objects[i].gameObject.GetComponent<MeshFilter>();
             combine[i].mesh = meshFilter.sharedMesh;
             combine[i].transform = meshFilter.transform.localToWorldMatrix;
             i++;
