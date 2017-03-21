@@ -59,6 +59,7 @@ public class KeyPressTrigger : MonoBehaviour {
       // ObjExporter.MeshToFile(cube1Mesh);
       print("object saved to: " + Directory.GetCurrentDirectory());
     }
+<<<<<<< .merge_file_a10796
      if (Input.GetKeyDown("p")){
       print("testing...");
       GameObject groupUtil = GameObject.Find("groupUtil");
@@ -98,6 +99,19 @@ public class KeyPressTrigger : MonoBehaviour {
       groupUtil.GetComponent<GroupUtil>().autoWeld(merged.GetComponent<MeshFilter>().sharedMesh,0.004f,0.008f);
       Debug.Log("v: " + merged.GetComponent<MeshFilter>().mesh.vertices.Length.ToString());
       ModVR_ObjExporter.GameObjectToFile(merged);
+=======
+    if (Input.GetKeyDown("c")){
+      GameObject s1 = GameObject.Find("s1");
+      GameObject c1 = GameObject.Find("c1");
+      GameObject groupUtil = GameObject.Find("groupUtil");
+      groupUtil.GetComponent<GroupUtil>().mergeObjects(s1,c1,true);
+    }
+    if (Input.GetKeyDown("x")){
+      GameObject s1 = GameObject.Find("s1");
+      GameObject c1 = GameObject.Find("c1");
+      ModVR_ColorUtil.changeColor(s1,"white");
+      ModVR_ColorUtil.changeColor(c1,"red");
+>>>>>>> .merge_file_a13236
     }
   }
 }

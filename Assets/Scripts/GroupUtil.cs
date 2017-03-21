@@ -71,6 +71,9 @@ public class GroupUtil : MonoBehaviour {
 
         MeshCollider combinedMeshCollider = newObj.AddComponent<MeshCollider>();
         combinedMeshCollider.sharedMesh = combinedMesh;
+        Color c1 = obj1.GetComponent<Renderer>().material.color;
+        Color c2 = obj2.GetComponent<Renderer>().material.color;
+        newObj.GetComponent<Renderer>().material.color = ModVR_ColorUtil.combineTwoColors(c1,c2);
         Debug.Log(newObj.name);
         return newObj;
     }

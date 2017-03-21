@@ -528,10 +528,36 @@ public class ModVR_WandController : MonoBehaviour {
         Debug.Log("v: " + merged.GetComponent<MeshFilter>().mesh.vertices.Length.ToString());
         dragObjects.Clear();
     }
+<<<<<<< .merge_file_a12788
 
     public void OnDragCreateButtonClicked()
     {
         dragCreateMode = !dragCreateMode;
+=======
+    public void OnRedClicked()
+    {
+        ModVR_ColorUtil.changeColor(selected,"red");
+    }
+    public void OnBlueClicked()
+    {
+        ModVR_ColorUtil.changeColor(selected,"blue");
+    }
+    public void OnYellowClicked()
+    {
+        ModVR_ColorUtil.changeColor(selected,"yellow");
+    }
+    public void OnWhiteClicked()
+    {
+        ModVR_ColorUtil.changeColor(selected,"white");
+    }
+    public void OnBlackClicked()
+    {
+        ModVR_ColorUtil.changeColor(selected,"black");
+    }
+    public void OnGreenClicked()
+    {
+        ModVR_ColorUtil.changeColor(selected,"green");
+>>>>>>> .merge_file_a11004
     }
     #endregion
 }
