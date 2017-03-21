@@ -58,6 +58,7 @@ namespace VRTK
 		[Header("RadialMenu Tooltip Settings", order = 2)]
 		[Tooltip("The RadialMenu Tooltip GameObject")]
 		public GameObject radialMenuTooltip;
+		public string toggleScaleTooltip;
 		public string importObjectTooltip;
 		public string exportObjectTooltip;
 		public string deleteObjectTooltip;
@@ -160,6 +161,10 @@ namespace VRTK
             currentHover = buttonID; //Set current hover ID, need this to un-hover if selected button changes
         }
 
+		public void OnHoverToggleScaling()
+		{
+			ChangeButtonTooltip(gameObject, toggleScaleTooltip);
+		}
 		public void OnHoverImport()
 		{
 			ChangeButtonTooltip(gameObject, importObjectTooltip);
