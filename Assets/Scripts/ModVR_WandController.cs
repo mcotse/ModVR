@@ -30,7 +30,6 @@ public class ModVR_WandController : MonoBehaviour {
     private bool gripPressed;
     private Vector3 prevPosition;
     private bool dragCreateMode;
-    private GameObject selected;
     private GameObject grabbed;
     private int fpsModifier;
     private List<GameObject> dragObjects;
@@ -535,27 +534,45 @@ public class ModVR_WandController : MonoBehaviour {
 	}
     public void OnRedClicked()
     {
-        ModVR_ColorUtil.changeColor(selected,"red");
+        foreach (ModVR_InteractableObject io in GameManager.instance.selectedObjectList)
+        {
+            ModVR_ColorUtil.changeColor(io.gameObject, "red");
+        }
     }
     public void OnBlueClicked()
     {
-        ModVR_ColorUtil.changeColor(selected,"blue");
+        foreach (ModVR_InteractableObject io in GameManager.instance.selectedObjectList)
+        {
+            ModVR_ColorUtil.changeColor(io.gameObject, "blue");
+        }
     }
     public void OnYellowClicked()
     {
-        ModVR_ColorUtil.changeColor(selected,"yellow");
+        foreach (ModVR_InteractableObject io in GameManager.instance.selectedObjectList)
+        {
+            ModVR_ColorUtil.changeColor(io.gameObject, "yellow");
+        }
     }
     public void OnWhiteClicked()
     {
-        ModVR_ColorUtil.changeColor(selected,"white");
+        foreach (ModVR_InteractableObject io in GameManager.instance.selectedObjectList)
+        {
+            ModVR_ColorUtil.changeColor(io.gameObject, "white");
+        }
     }
     public void OnBlackClicked()
     {
-        ModVR_ColorUtil.changeColor(selected,"black");
+        foreach (ModVR_InteractableObject io in GameManager.instance.selectedObjectList)
+        {
+            ModVR_ColorUtil.changeColor(io.gameObject, "black");
+        }
     }
     public void OnGreenClicked()
     {
-        ModVR_ColorUtil.changeColor(selected,"green");
+        foreach (ModVR_InteractableObject io in GameManager.instance.selectedObjectList)
+        {
+            ModVR_ColorUtil.changeColor(io.gameObject, "green");
+        }
     }
     #endregion
 }
