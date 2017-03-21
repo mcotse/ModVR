@@ -186,13 +186,18 @@ public class ModVR_WandController : MonoBehaviour {
         
     }
 
-    void CreateSelectedObject(ModVR_InteractableObject selectedObj)
+    IEnumerator CreateSelectedObject(ModVR_InteractableObject selectedObj)
     {
+        yield return new WaitForEndOfFrame();
+        
         GameObject selected = selectedObj.gameObject;
+        selected.gameObject.GetComponentInParent<ModVR_WandController>().ToggleMenu();   
         GameObject newGameObj = Instantiate(selected, selected.transform.position, selected.transform.rotation);
         Guid gameObjName = Guid.NewGuid();
         newGameObj.name = gameObjName.ToString() + "_" + newGameObj.name;
         SetupInteractableObject(newGameObj, true, false);
+        gameObject.GetComponent<VRTK_InteractTouch>().ForceTouch(newGameObj);
+        gameObject.GetComponent<VRTK_InteractGrab>().AttemptGrab();
     }
 
 	public void GetNewRadialMenuOptions()
@@ -262,7 +267,9 @@ public class ModVR_WandController : MonoBehaviour {
                 string parentName = selectedObj.transform.parent.name;
                 if (parentName.Equals("MenuRight") || parentName.Equals("MenuLeft"))
                 {
-                    CreateSelectedObject(selectedObj);
+                    gameObject.GetComponent<VRTK_InteractTouch>().ForceStopTouching();
+
+                    StartCoroutine(CreateSelectedObject(selectedObj));
                 }
             }
         }
