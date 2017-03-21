@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System;
 
 public class KeyPressTrigger : MonoBehaviour {
   void Update() {
@@ -57,6 +58,46 @@ public class KeyPressTrigger : MonoBehaviour {
       // objExporter.GetComponent<ObjectExporter>().MeshToFile(cube1Mesh,"testexport1");
       // ObjExporter.MeshToFile(cube1Mesh);
       print("object saved to: " + Directory.GetCurrentDirectory());
+    }
+     if (Input.GetKeyDown("p")){
+      print("testing...");
+      GameObject groupUtil = GameObject.Find("groupUtil");
+      int i = 0;
+      float j = 0;
+      List<GameObject> objects = new List<GameObject>();
+      System.Random rand = new System.Random();
+      while(i < 100)
+      {
+        
+        GameObject newObj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        newObj.name = "i" + i.ToString();
+        newObj.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
+        newObj.transform.position = new Vector3(j+(float)(rand.NextDouble()*0.02), j+(float)(rand.NextDouble()*0.02), j+(float)(rand.NextDouble()*0.2));
+        i ++;
+        j += 0.02f;
+        objects.Add(newObj);
+      }
+      ModVR_ObjExporter.GameObjectToFile(GameObject.Find("i0"));
+      GameObject merged = groupUtil.GetComponent<GroupUtil>().mergeMultipleObjects(objects);
+      float threshold = 0.001f;
+
+      // for (int m=1; m < 10;m++)
+      // {
+      //   GameObject mergedcopy = Instantiate(merged);  
+      //   threshold *= 2;
+      //   float bucketsize = 0.001f;
+      //   for (int n=1; n < 10; n++)
+      //   {
+      //     bucketsize *= 2;
+      //     groupUtil.GetComponent<GroupUtil>().autoWeld(mergedcopy.GetComponent<MeshFilter>().sharedMesh,threshold,bucketsize);
+      //     Debug.Log("t: " + threshold.ToString() + ", b: " + bucketsize.ToString() + ", v: " + mergedcopy.GetComponent<MeshFilter>().mesh.vertices.Length.ToString());
+      //     Destroy(mergedcopy);
+      //   }
+        
+      // }
+      groupUtil.GetComponent<GroupUtil>().autoWeld(merged.GetComponent<MeshFilter>().sharedMesh,0.004f,0.008f);
+      Debug.Log("v: " + merged.GetComponent<MeshFilter>().mesh.vertices.Length.ToString());
+      ModVR_ObjExporter.GameObjectToFile(merged);
     }
   }
 }

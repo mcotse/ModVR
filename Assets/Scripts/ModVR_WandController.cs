@@ -27,9 +27,11 @@ public class ModVR_WandController : MonoBehaviour {
     private bool showMenu;
     private bool triggerPressed;
     private bool gripPressed;
-
+    private Vector3 prevPosition;
     private GameObject selected;
     private GameObject grabbed;
+    private int fpsModifier;
+
     Color color = new Color(237, 241, 39);
 
     private UnityEngine.Events.UnityEvent OnGroup;
@@ -43,6 +45,8 @@ public class ModVR_WandController : MonoBehaviour {
         gripPressed = false;
         menu.SetActive(false);
         util = new GroupUtil();
+        prevPosition = gameObject.transform.position;
+        fpsModifier = 1;
 
         actions = GetComponent<VRTK_ControllerActions>();
         events = GetComponent<VRTK_ControllerEvents>();
@@ -441,6 +445,20 @@ public class ModVR_WandController : MonoBehaviour {
         go.transform.position = gameObject.transform.position;
 
     }
-
+    public void OnDragHold()
+    {
+        if (fpsModifier % 10 == 0)
+        {
+            float dist = Vector3.Distance(prevPosition, gameObject.transform.position);
+            if (dist > 0.03)
+            {
+                GameObject newObj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                newObj.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+                newObj.transform.position = gameObject.transform.position;
+            }
+            prevPosition = gameObject.transform.position;
+        }
+        fpsModifier ++;
+    }
     #endregion
 }
